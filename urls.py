@@ -1,6 +1,5 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
-#from django.contrib.auth.views import login, logout
 #from django.views.generic import list_detail
 import os
 
@@ -22,7 +21,7 @@ urlpatterns += patterns('szp.views.team',
     (r'^team/$', 'home'),
 	(r'^team/score/$', 'score'),
     (r'^team/clarification/$', 'clarification'),
-    (r'^team/submit/$', 'submit'),
+    (r'^team/submission/$', 'submission'),
 )
     
 if settings.DEBUG:

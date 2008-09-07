@@ -22,6 +22,6 @@ def clarification(request):
     return render_to_response('team_clarification.html', context_instance=RequestContext(request))
 
 @login_required
-def submit(request):
-    return render_to_response('team_submit.html', context_instance=RequestContext(request))
+def submission(request):
+    return render_to_response('team_submission.html', context_instance=RequestContext(request))
 

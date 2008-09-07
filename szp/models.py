@@ -1,6 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class Contest(models.Model):
+	STATUS_CHOICES = (("INITIALIZED", "INITIALIZED"),
+					  ("RUNNING", "RUNNING"),
+					  ("NOINFO", "NOINFO"),
+					  ("STOPPED", "STOPPED"))
+	starttime = models.DateTimeField(blank=True, null=True)
+	endtime = models.DateTimeField(blank=True, null=True)
+	status = models.CharField(max_length=11, choices=STATUS_CHOICES)
+	name = models.CharField(max_length=150)
+	date = models.DateField()
+	location = models.CharField(max_length=50)
+
+	def __unicode__(self):
+		return "%s, %s (%s)" % (self.name, self.location, self.date)
+
 class Autojudge(models.Model):
 	ip_address = models.IPAddressField()
 
@@ -38,17 +53,23 @@ class Judge(models.Model):
 class File(models.Model):
 	content = models.TextField()
 
+	def __unicode__(self):
+		return "File<%d>" % (self.id,)
+
 class Problem(models.Model):
-	letter = models.TextField()
-	prob_name = models.CharField(max_length=765)
-	balloon = models.CharField(max_length=765)
-	in_file_name = models.CharField(max_length=765)
-	out_file_name = models.CharField(max_length=765)
+	letter = models.CharField(max_length=1, unique=True)
+	name = models.CharField(max_length=100)
+	colour = models.CharField(max_length=20)
+	in_file_name = models.CharField(max_length=20)
+	out_file_name = models.CharField(max_length=20)
 	in_file = models.OneToOneField(File, related_name="problem_in_file")
 	out_file = models.OneToOneField(File, related_name="problem_out_file")
 	timelimit = models.IntegerField()
 	check_script_file_name = models.CharField(max_length=20)
 	check_script_file = models.OneToOneField(File, related_name="problem_check_script_file")
+
+	def __unicode__(self):
+		return "%s: %s" % (self.letter, self.name)
 
 class Clarreq(models.Model):
 	prob = models.ForeignKey(Problem, null=True, blank=True)
@@ -74,21 +95,6 @@ class Compiler(models.Model):
 	source_filename = models.CharField(max_length=765)
 	compile_line = models.CharField(max_length=765)
 	execute_line = models.CharField(max_length=765)
-
-class Contest(models.Model):
-	STATUS_CHOICES = (("I", "INITIALIZED"),
-					  ("R", "RUNNING"),
-					  ("N", "NOINFO"),
-					  ("S", "STOPPED"))
-	starttime = models.DateTimeField()
-	endtime = models.DateTimeField()
-	status = models.CharField(max_length=1, choices=STATUS_CHOICES)
-	name = models.CharField(max_length=150)
-	date = models.DateField()
-	location = models.CharField(max_length=50)
-
-	def __unicode__(self):
-		return "%s, %s (%s)" % (self.name, self.location, self.date)
 
 class FrozenScore(models.Model):
 	team = models.ForeignKey(Team)

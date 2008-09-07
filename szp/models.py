@@ -89,12 +89,15 @@ class Clar(models.Model):
 	read = models.BooleanField()
 
 class Compiler(models.Model):
-	compiler_name = models.CharField(max_length=765)
-	version = models.CharField(max_length=765)
-	extension = models.CharField(max_length=765)
-	source_filename = models.CharField(max_length=765)
-	compile_line = models.CharField(max_length=765)
-	execute_line = models.CharField(max_length=765)
+	name = models.CharField(max_length=100)
+	version = models.CharField(max_length=10)
+	extension = models.CharField(max_length=10)
+	source_filename = models.CharField(max_length=100)
+	compile_line = models.CharField(max_length=100)
+	execute_line = models.CharField(max_length=100)
+
+	def __unicode__(self):
+		return self.name
 
 class FrozenScore(models.Model):
 	team = models.ForeignKey(Team)
@@ -104,14 +107,21 @@ class FrozenScore(models.Model):
 	time_used = models.IntegerField()
 
 class Submission(models.Model):
+	STATUS_CHOICES = (("NEW", "NEW"),
+					  ("BEING_JUDGED", "BEING_JUDGED"),
+					  ("CHECKED", "CHECKED"),
+					  ("VERIFIED", "VERIFIED"))
 	problem = models.ForeignKey(Problem)
 	compiler = models.ForeignKey(Compiler)
 	file = models.OneToOneField(File)
 	file_name = models.CharField(max_length=200)
 	team = models.ForeignKey(Team)
-	status = models.TextField()
-	last_status_change = models.DateTimeField()
+	status = models.CharField(max_length=12, choices=STATUS_CHOICES)
+	last_status_change = models.DateTimeField(auto_now=True)
 	timestamp = models.DateTimeField(auto_now_add=True)
+
+	def __unicode__(self):
+		return "%s by %s (%s)" % (self.problem.letter, self.team.name, self.timestamp.strftime("%Y-%m-%d %H:%M:%S"))
 
 class Result(models.Model):
 	sub = models.ForeignKey(Submission)

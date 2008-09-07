@@ -1,0 +1,44 @@
+{% extends "team_base.html" %}
+
+{% block content %}
+
+<table class="content" align="center">
+  <tr class="content_header">
+    <td align="center" colspan="9">{{ contest }}</td>
+    <table class="content">
+      <tr class="content_header">
+	<td class="nr">No.</td>
+	<td>Team</td>
+	<td>Organisation</td>
+	<td>Class</td>
+	<td>Score</td>
+	<td>Time</td>
+	<td>A</td>
+	<td>B</td>
+	<td>C</td>
+      </tr>
+      <tr class="content_body1">
+	<td class="nr">&nbsp;&nbsp;<b>1</b></td>
+	<td>
+	  <b>test</b></td>
+	<td>
+	  <b>qa</b></td>
+	<td>
+	  <b>test</b></td>
+	<td class="score">
+	  <b>1</b></td>
+	<td class="time">
+	  <b>14</b></td>
+	<td class="app">
+	  <div class="app">1&nbsp;(14)</div>
+	</td>
+	<td class="not_app">
+	  <div class="not_app">-</div>
+	</td>
+	<td class="not_app">
+	  <div class="not_app">-</div>
+	</td>
+    </table>
+  </tr>
+</table>
+{% endblock %}

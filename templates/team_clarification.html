@@ -1,0 +1,99 @@
+{% extends "team_base.html" %}
+
+{% block content %}
+
+<table width="100%">
+  <tr>
+    <td align="left">
+      <H1>Clarifications</H1>
+    </td>
+  </tr>
+</table>
+<br>
+<table class="content">
+  <tr>
+    <td align="center" valign="top">
+      <form action="index.php?p=_mail&g=" method="post">
+	<table width="320">
+	  <tr class="content_header">
+	    <td class="content_header" colspan="2">&nbsp;Send Clarification Request to Jury</td>
+	  </tr>
+	  <tr class="content_body1">
+	    <td width="50%">
+	      <select name="prob">
+		<option value="_General">General</option>
+		<option value="1_A: Obfuscate">A: Obfuscate</option>
+		<option value="2_B: Epluribus">B: Epluribus</option>
+		<option value="3_C: Coneasoup">C: Coneasoup</option>
+	      </select>
+
+	    </td>
+	    <td width="50%">&nbsp;team_name</td>
+	  </tr>
+	  <tr class="content_body1">
+	    <td colspan="2">
+	      <input type="text" maxlength="40" name="subject" value="" size="40">
+	    </td>
+	  </tr>
+	  <tr class="content_body1">
+	    <td colspan="2">
+	      <textarea name="body" cols="40" rows="8">
+	      </textarea>
+	    </td>
+	  </tr>
+	  <tr class="content_body1">
+	    <td colspan="2" align="center">
+	      <input type="submit" name="send" value="Send">
+	    </td>
+	  </tr>
+	</table>
+      </form>
+    </td>
+    <td align="center" valign="top">
+      <table class="index">
+	<tr class="content_header">
+	  <td>&nbsp;Index</td>
+	</tr>
+	<tr class="content_body1">
+	  <td>
+	    <a class="index" href="index.php?p=_mail&g=req&m=">&nbsp;Sent Requests- 1 message
+	    </a>
+	  </td>
+	</tr>
+	<tr class="content_body2">
+	  <td>
+	    <a class="index" href="index.php?p=_mail&g=all&m=">&nbsp;All Clarifications- 1 message
+	    </a>
+	  </td>
+	</tr>
+	<tr class="content_body1">
+	  <td>
+	    <a class="index" href="index.php?p=_mail&g=general&m=">&nbsp;General - 1 message
+	    </a>
+	  </td>
+	</tr>
+	<tr class="content_body2">
+	  <td>
+	    <a class="index" href="index.php?p=_mail&g=1&m=">&nbsp;A: Obfuscate - 0 messages 
+
+	    </a>
+	  </td>
+	</tr>
+	<tr class="content_body1">
+	  <td>
+	    <a class="index" href="index.php?p=_mail&g=2&m=">&nbsp;B: Epluribus - 0 messages 
+	    </a>
+	  </td>
+	</tr>
+	<tr class="content_body2">
+	  <td>
+	    <a class="index" href="index.php?p=_mail&g=3&m=">&nbsp;C: Coneasoup - 0 messages 
+	    </a>
+	  </td>
+	</tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+{% endblock %}

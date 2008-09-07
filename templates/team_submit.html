@@ -1,0 +1,88 @@
+{% extends "team_base.html" %}
+
+{% block content %}
+
+<H1>Submissions</H1>
+<table class="content">
+  <tr>
+    <td align="center" valign="top">
+      <form enctype="multipart/form-data" action="index.php?p=_submit&g=" method="post">
+	<table width="320">
+	  <tr class="content_header">
+	    <td class="content_header" colspan="2">&nbsp;Submit file</td>
+	  </tr>
+	  <tr class="content_body1">
+	    <td colspan="2">&nbsp;test</td>
+	  </tr>
+	  <tr class="content_body2">
+	    <td width="50%">
+	      <select name="prob">
+		<option value="none">Choose a problem</option>
+		<option value="1_A: Obfuscate">A: Obfuscate</option>
+		<option value="2_B: Epluribus">B: Epluribus</option>
+		<option value="3_C: Coneasoup">C: Coneasoup</option>
+
+	      </select>
+	    </td>
+	    <td width="50%">&nbsp;Problem</td>
+	  </tr>
+	  <tr class="content_body1">
+	    <td width="50%">
+	      <select name="compiler">
+		<option value="none">Choose a compiler</option>
+		<option value="1_GNU C Compiler">GNU C Compiler</option>
+	      </select>
+	    </td>
+	    <td width="50%">&nbsp;Compiler</td>
+	  </tr>
+	  <tr class="content_body2">
+	    <td>
+	      <input type="hidden" name="MAX_FILE_SIZE" value="16000000" >
+	      <input type="file" name="file" value="">
+	    </td>
+	    <td>&nbsp;File</td>
+	  </tr>
+	  <tr class="content_body1">
+	    <td colspan="2" align="center">
+	      <input type="submit" name="send" value="Send">
+	    </td>
+	  </tr>
+	</table>
+      </form>
+    </td>
+    <td align="center" valign="top">
+      <table class="index">
+	<tr class="content_header">
+	  <td>&nbsp;Index</td>
+	</tr>
+	<tr class="content_body1">
+	  <td>
+	    <a class="index" href="index.php?p=_submit&g=all">&nbsp;All Submissions- (1)
+
+	    </a>
+	  </td>
+	</tr>
+	<tr class="content_body2">
+	  <td>
+	    <a class="index" href="index.php?p=_submit&g=1">&nbsp;A: Obfuscate - (1) 
+	    </a>
+	  </td>
+	</tr>
+	<tr class="content_body1">
+	  <td>
+	    <a class="index" href="index.php?p=_submit&g=2">&nbsp;B: Epluribus - (0) 
+	    </a>
+	  </td>
+	</tr>
+	<tr class="content_body2">
+	  <td>
+	    <a class="index" href="index.php?p=_submit&g=3">&nbsp;C: Coneasoup - (0) 
+	    </a>
+	  </td>
+	</tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+{% endblock %}

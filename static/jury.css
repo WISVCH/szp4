@@ -1,0 +1,284 @@
+/*page structure jury*/
+body
+{	
+  text-align: center;
+  font-family: verdana;
+  background-image: url('achtergrond.jpg');
+}
+span.judgename
+{
+
+  font-weight: bold;
+  font-size: 20px;
+}
+table.main
+{
+  width: 95%;
+}
+table.content
+{
+  width: 100%;
+}
+td.title
+
+{        
+  background-image: url('achtergrond2.jpg'); 
+  background-color: #4758BD;
+  text-align:center;
+  color: white;       
+  font-weight: bold;
+  font-size: 33px; 
+}
+td.menu
+{
+  text-align: center;
+  background-color: #FFffff;
+  width: 25%;
+  font-weight: bold;
+  font-size: 17px;
+}
+/*The jurytool background*/
+tr.body
+{	
+  /*background-color: #E7E9F7;*/
+  background-color: transparant;
+  vertical-align: top;
+}
+
+/*Main menu buttons*/
+a.menu 
+{
+  text-decoration: none;
+  color: white;
+}
+
+a:hover 
+{
+  text-decoration: none;
+  color: black;
+}
+a.back_to_groups
+{ 
+  text-decoration: none;
+  color: white;
+}
+
+a.back_to_groups:hover
+{
+  text-decoration: underline;
+  color: white;	
+}
+
+a.menu:active
+{
+  font-weight: bold;
+  color: black;
+}
+
+/* content table header */
+tr.content_header
+{
+  background-color:#4758BD;
+  /*color: #8F4008; */
+  color: white;
+  font-size:14px;
+  font-weight: bold;
+}
+tr.content_header_error
+{
+  background-color: red;
+  /*color: #8F4008; */
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+}
+a.content_header
+{
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+}
+/* content table row (2 colours alternating) */
+tr.content_body1
+{	font-size: 14px;
+  background-color: #E7E9F7;
+}
+tr.content_body2
+{	font-size: 14px;
+  background-color: #F0FFFF;
+}
+/* background of a piece of tekst (clarifications/request) */
+tr.message_body
+{
+  background-color: #F0FFFF;
+}
+
+/*columns in scores table*/
+td.special
+{
+  width:60px;
+}
+
+td.nr
+{
+  width:40px;
+}
+td.score
+{
+  width:40px;
+  text-align: center;
+  font-weight: bold;
+}
+td.time
+{
+  width:40px;
+  text-align: center;
+  font-size: 12px;
+}
+
+/*cell in scorelist representing a solved problem*/
+td.app
+{
+  background-color: #69b169!important;
+  background-image: url('correct.png');
+  background-position: right center;
+  background-repeat: no-repeat;
+  text-align: center;
+  font-weight: bold;
+  color: black;
+  width: 60px;
+}
+
+/*cell in scorelist representing a not-solved problem */
+td.not_app
+{
+  background-color: #ab5656!important;
+  background-image: url('incorrect.png');
+  background-position: right center;
+  background-repeat: no-repeat;
+  text-align: center;
+  font-weight: bold;
+  color: black;
+  min-width:25px;
+  width:60px;
+  
+}
+/*body tables*/
+table.index
+{
+  width: 100%;
+}
+table.clarindex
+{
+  width: 350px;
+}
+table.index_small
+{
+  width: 400px;
+}
+table.details
+{
+  width: 100%;
+}
+table.settings
+{
+  width: 680px;
+}
+td.index
+{
+  text-align: center;
+}
+
+a.index
+{
+  color: black;
+  text-decoration: none;
+}
+/*input fiels */
+input
+{
+  font-family: verdana;
+  font-size: 12px;
+}
+textarea
+{
+  font-family: verdana;
+  font-size: 12px;
+}
+
+/* status bar style */
+
+td.status_clarreq
+{
+  background:none;
+  color: white;
+  font-size: 8px;
+  text-align: center;
+  width: 50%;
+}
+
+td.status_clarreqnew
+{
+  background: url('button4.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  color: white;
+  font-size: 8px;
+  text-align: center;
+  width: 50%;
+}
+
+a.lampje
+{
+  color: white;
+  text-decoration: none;
+}
+a.lampje:hover
+{
+  color: white;
+  text-decoration: underline;
+}
+td.status_status
+{
+  background: none;
+  color: white;
+  font-size: 12px;
+  text-align: center;
+  width: 50%;
+}
+td.status_time
+{
+  background: #4758BD;
+  color: white;
+  font-size: 28px;
+  text-align: center;
+  width: 50%;
+}
+body.status
+{
+  background:#4758BD;
+  padding: 0px;
+}
+table.status
+{
+  background: #4758BD;
+  margin: 0px;
+  padding: 0px;
+  width: 100%;
+}
+
+/* Login page style */
+body.login
+{
+  background: #e7e9f7;
+
+  text-align: center;
+  vertical-align: middle;
+  
+}
+
+table.login
+{
+  width: 200px;
+}
+

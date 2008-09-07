@@ -1,0 +1,41 @@
+{% extends "team_base.html" %}
+
+{% block content %}
+<h1>Home</h1> 
+<p>Welcome team <b>{{ profile.team.name }}</b>,
+  <ul>
+    {% for member in teammembers %}
+    <li>{{ member.name }}</li>
+    {% endfor %}
+  </ul>
+  the Teamtool is your interface with the contest system. It consists basically of 5 parts, accessible by the menu buttons on top:  
+  <h3>Home</h3>  
+<p>This page, here you can find a small explanation of the five different parts.</p>  
+<h3>Scorelist</h3>  
+<p>These are the standings of the contest. They are updated until 1 hour before the end of the contest. Standings are decided by:
+  <ul>
+    <li>the total number of problems solved (more is better)</li>
+    <li>the total time used for the solved problems (less is better)</li>
+  </ul>
+  The time is calculated by the time between the contest start and the time of submission. Every wrong
+  submission costs 20 penalty minutes, but they only count if you eventually solve the problem.
+</p>
+<h3>Clarifications</h3>  
+<p>
+  Here you can communicate with the jury. You can ask for clarifications on the assignments or on judgements
+  of solutions.  The standard answer will be to read the problem specifications better.  The jury may send
+  clarifications to you if they find it necessary, if the light "NEW CLARIFICATIONS" is lit, you can find new
+  clarifications in this section. Make sure you read them.
+</p> 
+<h3>Submissions</h3>  
+<p>
+  Here you can watch the status of your submissions. It is also possible to submit files here, but it's
+  recommended to use the command line tool to submit files
+</p>
+<h3>Status window</h3>  
+<p>
+  The status window in the upper right corner notifies you of new results or clarifications and shows the time since the
+  start of the contest.  It also shows the current rank of your team.
+</p>
+
+{% endblock %}

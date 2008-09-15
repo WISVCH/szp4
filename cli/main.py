@@ -129,6 +129,31 @@ class addcompiler():
 		compiler.version = args.version
 		compiler.save()
 
+class addautojudge():
+	def __init__(self, subparsers):
+		parser = subparsers.add_parser('addautojudge')
+		parser.set_defaults(obj=self)
+		parser.add_argument('ip_address', help='IP address of the autojudge')
+
+	def run(self, args):
+		autojudge = Autojudge()
+		autojudge.ip_address = args.ip_address
+		autojudge.save()
+
+class listautojudges():
+	def __init__(self, subparsers):
+		parser = subparsers.add_parser('listautojudges')
+		parser.set_defaults(obj=self)
+
+	def run(self, args):
+		autojudges = Autojudge.objects.all()
+		maxwidth_id = max([len(str(a.id)) for a in autojudges]+[len("id")])
+		maxwidth_ip = max([len(str(a.ip_address)) for a in autojudges]+[len("ip_address")])
+		print "%-*s  %-*s" % (maxwidth_id, "id", maxwidth_ip, "ip address")
+		for a in autojudges:
+			print "%-*s  %-*s" % (maxwidth_id, a.id, maxwidth_ip, a.ip_address)
+		
+
 def main():
 	parser = argparse.ArgumentParser(description='Sub Zero Programming command line interface')
 	subparsers = parser.add_subparsers()
@@ -139,9 +164,11 @@ def main():
 	parser_addteam = subparsers.add_parser('addteam')
 	parser_addteam.set_defaults(func=addteam)
 
+	addautojudge(subparsers)
 	addcompiler(subparsers)
 	addproblem(subparsers)
 	addteam(subparsers)
+	listautojudges(subparsers)
 	showcontest(subparsers)
 	setcontest(subparsers)
 

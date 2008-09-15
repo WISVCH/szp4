@@ -18,6 +18,8 @@ class Contest(models.Model):
 
 class Autojudge(models.Model):
 	ip_address = models.IPAddressField()
+	def __unicode__(self):
+		return "Autojudge %d (%s)" % (self.id, self.ip_address)
 
 class Teamclass(models.Model):
 	name = models.CharField(max_length=100)
@@ -117,6 +119,7 @@ class Submission(models.Model):
 	file_name = models.CharField(max_length=200)
 	team = models.ForeignKey(Team)
 	status = models.CharField(max_length=12, choices=STATUS_CHOICES)
+	judging_by = models.ForeignKey(Autojudge, null=True, blank=True)
 	last_status_change = models.DateTimeField(auto_now=True)
 	timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -132,7 +135,7 @@ class Result(models.Model):
 	check_output_file = models.OneToOneField(File, related_name="result_check_output_file")
 	auto_comment_file = models.OneToOneField(File, related_name="result_auto_comment_file")
 	judged_by = models.ForeignKey(Autojudge, null=True, blank=True)
-	verified_by = models.ForeignKey(Judge, null=True,  blank=True)
+	verified_by = models.ForeignKey(Judge, null=True, blank=True)
 	timestamp = models.DateTimeField()
 
 class Score(models.Model):

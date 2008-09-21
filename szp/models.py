@@ -119,7 +119,7 @@ class Submission(models.Model):
 	file_name = models.CharField(max_length=200)
 	team = models.ForeignKey(Team)
 	status = models.CharField(max_length=12, choices=STATUS_CHOICES)
-	judging_by = models.ForeignKey(Autojudge, null=True, blank=True)
+	autojudge= models.ForeignKey(Autojudge, null=True, blank=True)
 	last_status_change = models.DateTimeField(auto_now=True)
 	timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -127,16 +127,24 @@ class Submission(models.Model):
 		return "%s by %s (%s)" % (self.problem.letter, self.team.name, self.timestamp.strftime("%Y-%m-%d %H:%M:%S"))
 
 class Result(models.Model):
-	sub = models.ForeignKey(Submission)
-	result = models.TextField()
-	comment_file = models.OneToOneField(File, null=True, blank=True, related_name="result_comment_file")
-	compile_output_file = models.OneToOneField(File, related_name="result_compile_output_file")
-	run_output_file = models.OneToOneField(File, related_name="result_run_output_file")
-	check_output_file = models.OneToOneField(File, related_name="result_check_output_file")
-	auto_comment_file = models.OneToOneField(File, related_name="result_auto_comment_file")
-	judged_by = models.ForeignKey(Autojudge, null=True, blank=True)
+	RESULT_CHOICES = (("NAUGHTY_PROGRAM", "NAUGHTY_PROGRAM"),
+					  ("COMPILER_ERROR", "COMPILER_ERROR"),
+					  ("RUNTIME_ERROR", "RUNTIME_ERROR"),
+					  ("RUNTIME_EXCEEDED", "RUNTIME_EXCEEDED"),
+					  ("WRONG_OUTPUT", "WRONG_OUTPUT"),
+					  ("NO_OUTPUT", "NO_OUTPUT"),
+					  ("ACCEPTED", "ACCEPTED"))
+
+	submission = models.ForeignKey(Submission)
+	judgement = models.CharField(max_length=16, choices=RESULT_CHOICES)
+	judged_by = models.ForeignKey(Autojudge)
+	jury_comment = models.TextField(null=True, blank=True)
+	compiler_output_file = models.OneToOneField(File, related_name="result_compiler_output_file")
+	submission_output_file = models.OneToOneField(File, null=True, blank=True, related_name="result_submission_output_file")
+	autojudge_comment_file = models.OneToOneField(File, null=True, blank=True, related_name="result_autojudge_comment_file")
+	check_output_file = models.OneToOneField(File, null=True, blank=True, related_name="result_check_output_file")
 	verified_by = models.ForeignKey(Judge, null=True, blank=True)
-	timestamp = models.DateTimeField()
+	timestamp = models.DateTimeField(auto_now=True)
 
 class Score(models.Model):
 	team = models.ForeignKey(Team)

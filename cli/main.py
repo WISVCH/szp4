@@ -154,6 +154,28 @@ class listautojudges():
 			print "%-*s  %-*s" % (maxwidth_id, a.id, maxwidth_ip, a.ip_address)
 		
 
+class listcompilers():
+	def __init__(self, subparsers):
+		parser = subparsers.add_parser('listcompilers')
+		parser.set_defaults(obj=self)
+
+	def run(self, args):
+		compilers = Compiler.objects.all()
+		maxwidth_id = max([len(str(c.id)) for c in compilers]+[len("id")])
+		maxwidth_name = max([len(str(c.name)) for c in compilers]+[len("name")])
+		maxwidth_version = max([len(str(c.version)) for c in compilers]+[len("version")])
+		maxwidth_extension = max([len(str(c.extension)) for c in compilers]+[len("ext.")])
+		maxwidth_source_filename = max([len(str(c.source_filename)) for c in compilers]+[len("src filename")])
+		maxwidth_compile_line = max([len(str(c.compile_line)) for c in compilers]+[len("compile line")])
+		maxwidth_execute_line = max([len(str(c.execute_line)) for c in compilers]+[len("exec line")])
+		print "%-*s  %-*s  %-*s  %-*s  %-*s  %-*s  %-*s" % (maxwidth_id, "id", maxwidth_name, "name", maxwidth_version, "version",
+															maxwidth_extension, "ext.", maxwidth_source_filename, "src filename",
+															maxwidth_compile_line, "compile_line", maxwidth_execute_line, "exec line")
+		for c in compilers:
+			print "%-*s  %-*s  %-*s  %-*s  %-*s  %-*s  %-*s" % (maxwidth_id, c.id, maxwidth_name, c.name, maxwidth_version, c.version,
+																maxwidth_extension, c.extension, maxwidth_source_filename, c.source_filename,
+																maxwidth_compile_line, c.compile_line, maxwidth_execute_line, c.execute_line)
+		
 def main():
 	parser = argparse.ArgumentParser(description='Sub Zero Programming command line interface')
 	subparsers = parser.add_subparsers()
@@ -169,6 +191,7 @@ def main():
 	addproblem(subparsers)
 	addteam(subparsers)
 	listautojudges(subparsers)
+	listcompilers(subparsers)
 	showcontest(subparsers)
 	setcontest(subparsers)
 

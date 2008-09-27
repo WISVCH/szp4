@@ -127,16 +127,16 @@ class Submission(models.Model):
 		return "%s by %s (%s)" % (self.problem.letter, self.team.name, self.timestamp.strftime("%Y-%m-%d %H:%M:%S"))
 
 class Result(models.Model):
-	RESULT_CHOICES = (("NAUGHTY_PROGRAM", "NAUGHTY_PROGRAM"),
-					  ("COMPILER_ERROR", "COMPILER_ERROR"),
-					  ("RUNTIME_ERROR", "RUNTIME_ERROR"),
-					  ("RUNTIME_EXCEEDED", "RUNTIME_EXCEEDED"),
-					  ("WRONG_OUTPUT", "WRONG_OUTPUT"),
-					  ("NO_OUTPUT", "NO_OUTPUT"),
-					  ("ACCEPTED", "ACCEPTED"))
+	JUDGEMENT_CHOICES = (("NAUGHTY_PROGRAM", "NAUGHTY_PROGRAM"),
+						 ("COMPILER_ERROR", "COMPILER_ERROR"),
+						 ("RUNTIME_ERROR", "RUNTIME_ERROR"),
+						 ("RUNTIME_EXCEEDED", "RUNTIME_EXCEEDED"),
+						 ("WRONG_OUTPUT", "WRONG_OUTPUT"),
+						 ("NO_OUTPUT", "NO_OUTPUT"),
+						 ("ACCEPTED", "ACCEPTED"))
 
 	submission = models.ForeignKey(Submission)
-	judgement = models.CharField(max_length=16, choices=RESULT_CHOICES)
+	judgement = models.CharField(max_length=16, choices=JUDGEMENT_CHOICES)
 	judged_by = models.ForeignKey(Autojudge)
 	jury_comment = models.TextField(null=True, blank=True)
 	compiler_output_file = models.OneToOneField(File, related_name="result_compiler_output_file")
@@ -144,14 +144,28 @@ class Result(models.Model):
 	autojudge_comment_file = models.OneToOneField(File, null=True, blank=True, related_name="result_autojudge_comment_file")
 	check_output_file = models.OneToOneField(File, null=True, blank=True, related_name="result_check_output_file")
 	verified_by = models.ForeignKey(Judge, null=True, blank=True)
-	timestamp = models.DateTimeField(auto_now=True)
+	timestamp = models.DateTimeField(auto_now_add=True)
+
+	def __unicode__(self):
+		return "%s for %s by %s" % (self.judgement, self.submission.problem.letter, self.submission.team.name)
+
 
 class Score(models.Model):
 	team = models.ForeignKey(Team)
 	problem = models.ForeignKey(Problem)
 	submission_count = models.IntegerField()
-	score = models.IntegerField()
-	time_used = models.IntegerField()
+	correct = models.BooleanField()
+	time = models.IntegerField(null=True, blank=True)
+
+	def __unicode__(self):
+		if self.correct:
+			status = "OK"
+			time = self.time
+		else:
+			status = "WRONG"
+			time = 0
+
+		return "%s problem %s %s %d (%d)" % (self.team.name, self.problem.letter, status, self.submission_count, time)
 
 class Profile(models.Model):
 	user = models.ForeignKey(User, unique=True)

@@ -46,33 +46,15 @@
     <td align="center" valign="top">
       <table class="index">
 	<tr class="content_header">
-	  <td>&nbsp;Index</td>
+	  <td>&nbsp;Submissions</td>
 	</tr>
-	<tr class="content_body1">
+	{% for result in results %}
+	<tr class="{% cycle 'content_body1' 'content_body2'%}">
 	  <td>
-	    <a class="index" href="index.php?p=_submit&g=all">&nbsp;All Submissions- (1)
-
-	    </a>
+	    &nbsp;[{{result.time }}] {{result.problem}} ({{result.judgement}})
 	  </td>
 	</tr>
-	<tr class="content_body2">
-	  <td>
-	    <a class="index" href="index.php?p=_submit&g=1">&nbsp;A: Obfuscate - (1) 
-	    </a>
-	  </td>
-	</tr>
-	<tr class="content_body1">
-	  <td>
-	    <a class="index" href="index.php?p=_submit&g=2">&nbsp;B: Epluribus - (0) 
-	    </a>
-	  </td>
-	</tr>
-	<tr class="content_body2">
-	  <td>
-	    <a class="index" href="index.php?p=_submit&g=3">&nbsp;C: Coneasoup - (0) 
-	    </a>
-	  </td>
-	</tr>
+	{% endfor %}
       </table>
     </td>
   </tr>

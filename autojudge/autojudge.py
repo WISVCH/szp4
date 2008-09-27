@@ -50,7 +50,19 @@ def uploadresult(submission, judgement, compiler_output, submission_output=None,
 	submission.status = "CHECKED"
 	submission.save()
 
-	# FIXME: Change score table
+	try:
+		score = Score.objects.get(team=submission.team, problem=submission.problem)
+	except ObjectDoesNotExist:
+		score = Score(team=submission.team, problem=submission.problem, submission_count=0, correct=False)
+
+	score.submission_count += 1
+	if judgement == "ACCEPTED":
+		score.correct = True
+		contest = Contest.objects.get()
+		timedelta = (submission.timestamp - contest.starttime)
+		score.time = timedelta.days*24 + timedelta.seconds/60
+
+	score.save()
 
 if __name__ == '__main__':
 	# FIXME: Get our IP address.
@@ -111,10 +123,6 @@ if __name__ == '__main__':
 
 		compiler_output = compile.stdout.read()
 
-		print "exit status:", compile.returncode
-		print "Compiler output:"
-		print compiler_output
-
 		if compile.returncode != 0:
 			uploadresult(submission, "COMPILER_ERROR", compiler_output)
 			print "COMPILER_ERROR"
@@ -152,8 +160,6 @@ if __name__ == '__main__':
 		print "exit status:", run.returncode
 		print "watchdog output:"
 		print watchdog_output
-		print "submission output:"
-		print submission_output
 
 		if run.returncode == 1 or run.returncode == 2:
 			uploadresult(submission, "RUNTIME_ERROR", compiler_output, submission_output, watchdog_output)
@@ -190,9 +196,6 @@ if __name__ == '__main__':
 
 		check_output = check.stdout.read()
 		
-		print "check_output:"
-		print check_output
-
 		if check.returncode == 0:
 			uploadresult(submission, "ACCEPTED", compiler_output, submission_output, watchdog_output, check_output)
 			print "ACCEPTED"
@@ -200,6 +203,6 @@ if __name__ == '__main__':
 			uploadresult(submission, "WRONG_OUTPUT", compiler_output, submission_output, watchdog_output, check_output)
 			print "WRONG_OUTPUT"
 		else:
-			print "AUTOJUDGE ERROR: CHECKSCRIPT RETURNED UNKOWN VALUE"
+			print "AUTOJUDGE ERROR: CHECKSCRIPT RETURNED UNKNOWN VALUE"
 			sys.exit(1)
 

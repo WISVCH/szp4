@@ -3,8 +3,8 @@
 import os
 import sys
 
-# This will insert the parent duriectory to the path so we can import
-# settings.
+# This will insert the parent directory to the path so we can import
+# the settings.
 sys.path.insert(0, os.path.normpath(sys.path[0]+"/.."))
 
 from django.core.management import setup_environ

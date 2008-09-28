@@ -56,8 +56,9 @@ def submission(request, problem=None):
 	if request.method == 'POST':
 		form = SubmitForm(request.POST, request.FILES)
 		if form.is_valid():
+			# FIXME: Check contest state
 			# FIXME: Check whether extension is correct.
-			# FIXME: Check whether we already have an accepted solution for this
+			# FIXME: Check whether we already have an accepted solution for this problem
 			submission = Submission()
 			submission.status = "NEW"
 			submission.team = profile.team

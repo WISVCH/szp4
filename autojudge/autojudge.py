@@ -115,6 +115,8 @@ if __name__ == '__main__':
 		fp = open(in_file_name, "w")
 		fp.write(submission.problem.in_file.content)
 		fp.close()
+
+		print "Starting to judge submission from %s for problem %s, submitted at %s" % (submission.team, submission.problem.letter, submission.timestamp)
 		
 		cmd = submission.compiler.compile_line.replace("${LETTER}", submission.problem.letter).split()
 
@@ -156,10 +158,6 @@ if __name__ == '__main__':
 		watchdog_output = run.stderr.read()
 
 		# FIXME We currently don't implement backtraces of core dumps.
-
-		print "exit status:", run.returncode
-		print "watchdog output:"
-		print watchdog_output
 
 		if run.returncode == 1 or run.returncode == 2:
 			uploadresult(submission, "RUNTIME_ERROR", compiler_output, submission_output, watchdog_output)

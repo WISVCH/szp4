@@ -1,0 +1,50 @@
+<table class="content" align="center">
+  <tr class="content_header">
+    <td align="center" colspan="9">{{ contest }}</td>
+    <table class="content">
+      <tr class="content_header">
+	<td class="nr">No.</td>
+	<td>Team</td>
+	<td>Organisation</td>
+	<td>Class</td>
+	<td>Score</td>
+	<td>Time</td>
+	{% for problem in problems %}
+	<td>{{ problem.letter }}</td>
+	{% endfor %}
+      </tr>
+      {% for score in scorelist %}
+      <tr class="{% cycle 'content_body1' 'content_body2' %}">
+	<td class="nr">&nbsp;&nbsp;<b>{{ forloop.counter }}</b></td>
+	<td>
+	  <b>{{ score.name }}</b></td>
+	<td>
+	  <b>{{ score.organisation }}</b></td>
+	<td>
+	  <b>{{ score.class }}</b></td>
+	<td class="score">
+	  <b>{{ score.score }}</b></td>
+	<td class="time">
+	  <b>{{ score.time }}</b></td>
+	{% for problem in score.details %}
+	{% if problem.correct %}
+	<td class="app">
+	  <div class="app">{{problem.count}}&nbsp;({{problem.time}})</div>
+	</td>
+	{% else %}
+	<td class="not_app">
+	  <div class="not_app">
+	    {% if not problem.count %} 
+	    - 
+	    {% else %}
+	    {{ problem.count }}
+	    {% endif %}
+	  </div>
+	</td>
+	{% endif %}
+	{% endfor %}
+      </tr>
+      {% endfor %}
+    </table>
+  </tr>
+</table>

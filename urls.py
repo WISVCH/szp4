@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout_then_login'),
 )
 
+# FIXME: accounts/profile should point to different things for team and judge
 urlpatterns += patterns('szp.views.team',
 	(r'^accounts/profile/$', 'home'),
     (r'^team/$', 'home'),
@@ -23,7 +24,16 @@ urlpatterns += patterns('szp.views.team',
     (r'^team/clarification/$', 'clarification'),
     (r'^team/submission/$', 'submission'),
 )
-    
+
+urlpatterns += patterns('szp.views.jury',
+    (r'^jury/$', 'home'),
+	(r'^jury/score/$', 'score'),
+    (r'^jury/clarification/$', 'clarification'),
+    (r'^jury/submission/$', 'submission'),
+    (r'^jury/submission/([A-Z]|all)/$', 'submission_list'),
+    (r'^jury/submission/(\d+)/$', 'submission_details'),
+)
+
 if settings.DEBUG:
     urlpatterns += patterns('',
         (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': os.path.join(os.path.dirname(__file__), 'static')}),

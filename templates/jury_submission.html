@@ -1,0 +1,28 @@
+{% extends "jury_base.html" %}
+
+{% block content %}
+<h1>Submissions</h1> 
+
+<table align="center" class="index_small">
+  <tr class="content_header">
+    <td>&nbsp;Index</td>
+  </tr>
+  <tr class="content_body1">
+    <td>
+      <a class="index" href="/jury/submission/all/">&nbsp;All Submissions - ({{ total }})
+      </a>
+    </td>
+  </tr>
+  {% for problem in problemlist %}
+  <tr class="{% cycle 'content_body2' 'content_body1' %}">
+    <td>
+      <a class="index" href="/jury/submission/{{problem.letter}}/">
+	&nbsp;{{problem.letter}}: {{problem.name}} - ({{problem.count}}) 
+      </a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+
+{% endblock %}

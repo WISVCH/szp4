@@ -47,10 +47,14 @@ class Teammember(models.Model):
 	def __unicode__(self):
 		return self.name
 
-class Judge(models.Model):
-	judge_name = models.CharField(max_length=765)
-	username = models.CharField(max_length=765)
-	password = models.CharField(max_length=765)
+class Profile(models.Model):
+	user = models.ForeignKey(User, unique=True)
+
+	team = models.ForeignKey(Team, null=True, blank=True)
+	is_judge = models.BooleanField()
+
+	def __unicode__(self):
+		return self.user.username
 
 class File(models.Model):
 	content = models.TextField()
@@ -79,7 +83,7 @@ class Clarreq(models.Model):
 	msg = models.TextField()
 	sender = models.ForeignKey(Team)
 	timestamp = models.DateTimeField(auto_now_add=True)
-	read_by = models.ManyToManyField(Judge)
+	read_by = models.ManyToManyField(Profile)
 
 class Clar(models.Model):
 	prob = models.ForeignKey(Problem, null=True, blank=True)
@@ -138,12 +142,13 @@ class Result(models.Model):
 	submission = models.ForeignKey(Submission)
 	judgement = models.CharField(max_length=16, choices=JUDGEMENT_CHOICES)
 	judged_by = models.ForeignKey(Autojudge)
+	# FIXME: Change name to judge_comment
 	jury_comment = models.TextField(null=True, blank=True)
 	compiler_output_file = models.OneToOneField(File, related_name="result_compiler_output_file")
 	submission_output_file = models.OneToOneField(File, null=True, blank=True, related_name="result_submission_output_file")
 	autojudge_comment_file = models.OneToOneField(File, null=True, blank=True, related_name="result_autojudge_comment_file")
 	check_output_file = models.OneToOneField(File, null=True, blank=True, related_name="result_check_output_file")
-	verified_by = models.ForeignKey(Judge, null=True, blank=True)
+	verified_by = models.ForeignKey(Profile, null=True, blank=True)
 	timestamp = models.DateTimeField(auto_now_add=True)
 
 	def __unicode__(self):
@@ -167,11 +172,3 @@ class Score(models.Model):
 
 		return "%s problem %s %s %d (%d)" % (self.team.name, self.problem.letter, status, self.submission_count, time)
 
-class Profile(models.Model):
-	user = models.ForeignKey(User, unique=True)
-
-	team = models.ForeignKey(Team, null=True, blank=True)
-	judge = models.ForeignKey(Judge, null=True, blank=True)
-
-	def __unicode__(self):
-		return self.user.username

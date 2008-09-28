@@ -1,0 +1,58 @@
+{% extends "jury_base.html" %}
+
+{% block content %}
+<h1>Submissions</h1> 
+
+<table class="index">
+  <tr class="content_header">
+    <td width="100%" align="middle">{{ title }}</td>
+  </tr>
+</table>
+<table class="index">
+  <tr class="content_header">
+    <td class="index">time</td>
+    <td class="index">subm.</td>
+    <td class="index">team</td>
+    <td class="index">prob</td>
+    <td class="index">filename</td>
+    <td class="index">compiler</td>
+    <td class="index">result</td>
+    <td class="index">verified by</td>
+    <td class="index">details</td>
+  </tr>
+
+  {% for submission in submissionlist %}
+  <tr class="{% cycle 'content_body1' 'content_body2' %}">
+    <td class="index">{{submission.time}}</td>
+    <td class="index">
+      <a href="/jury/submission/{{submission.id}}/">{{submission.id}}</a>
+    </td>
+    <td class="index">
+      <span title="{{submission.team.name}}">{{submission.team.id}}</span>
+    </td>
+    <td class="index">
+      <span title="{{submission.problem.name}}">{{submission.problem.letter}}</span>
+    </td>
+    <td class="index">{{submission.filename}}</td>
+    <td class="index">{{submission.compiler}}</td>
+    <td class="index">{{submission.judgement}}</td>
+    <td class="index">{{submission.verified_by}}</td>
+    <td class="index">
+      <a href="/jury/submission/{{submission.id}}/">[details]</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+<table class="index">
+  <tr class="content_header">
+    <td width="25%">
+    </td>
+    <td align="center">
+      <a class="back_to_groups" href="/jury/submission" style=":hover (  text-decoration: underline; color: white; }">Back to Groups</a>
+    </td>
+    <td width="25%">
+    </td>
+</table>
+</table>
+
+{% endblock %}

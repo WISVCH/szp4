@@ -1,0 +1,41 @@
+{% extends "jury_base.html" %}
+
+{% block content %}
+<h1>Home</h1> 
+<p>Welcome judge <b>{{ request.user.username }}</b>,<br><br>
+  the JuryTool is your interface with the contest system. It consists basically of 5 parts, accessible by the menu
+  buttons on top:
+</p>
+<h3>Home</h3>  
+<p>
+  This page, here you can find a small explanation of the five different parts.
+</p>  
+<h3>Scorelist</h3>  
+<p>
+  These are the actual standings of the contest. Standings are decided by:
+  <ul>
+    <li>the total number of problems solved (more is better).</li>
+    <li>the total time used for the solved problems (less is better).</li>
+  </ul>
+  The time is calculated by the time between the contest start and the time of submission. Every wrong submission costs 20 penalty minutes,  
+  but they only count if you eventually solve the problem.  
+  They are updated for the jury even if the contest status is set to NOINFO when teams and viewers will see a frozen list. 
+</p>
+<h3>Clarifications</h3>  
+<p>
+  Here you can read clarification requests from teams and send clarification, global or to a specified team. requests
+  that are not yet answered by any jury member are marked "unanswered"
+</p> 
+<h3>Submissions</h3>  
+<p>
+  Here you can see all the submissions, possibly filtered on a specified problem. You can see details of the submission
+  and download source code
+</p>
+<h3>Status window</h3>  
+<p>
+  The status window in the upper right corner show the time since the start of the contest and the contest status. It
+  also shows who is logged in.
+</p> 
+
+
+{% endblock %}

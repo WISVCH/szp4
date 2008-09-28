@@ -48,6 +48,7 @@
 	<tr class="content_header">
 	  <td>&nbsp;Submissions</td>
 	</tr>
+	{% if results %}
 	{% for result in results %}
 	<tr class="{% cycle 'content_body1' 'content_body2'%}">
 	  <td>
@@ -55,6 +56,13 @@
 	  </td>
 	</tr>
 	{% endfor %}
+	{% else %}
+	<tr class="content_body1">
+	  <td>
+	    &nbsp;Nothing submitted yet
+	  </td>
+	</tr>
+	{% endif %}
       </table>
     </td>
   </tr>

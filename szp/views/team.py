@@ -28,9 +28,8 @@ def score(request):
 				score_dict = {'correct': score.correct, 'count': score.submission_count}
 				if score.correct:
 					# FIXME: 20 shouldn't be hard-coded here
-					time = (score.submission_count - 1)*20 + score.time
-					score_dict["time"] = time
-					row["time"] += time
+					score_dict["time"] = score.time
+					row["time"] += (score.submission_count - 1)*20 + score.time
 					row["score"] += 1
 			except ObjectDoesNotExist:
 				score_dict = {'correct': False, 'count': 0}

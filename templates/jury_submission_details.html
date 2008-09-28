@@ -1,0 +1,246 @@
+{% extends "jury_base.html" %}
+
+{% block content %}
+<h1>Submissions</h1> 
+<table class="details">
+  <tr class="content_header" align="middle">
+    <td>Submission details</td>
+    <td width="15%" align="center">
+      <a class="back_to_groups" href="/jury/submission/all/" style=":hover (  text-decoration: underline; color: white; }">Back to list</a>
+    </td>
+  </tr>
+</table>
+<table class="index">
+  <tr class="content_header">
+    <td class="index">time</td>
+    <td class="index">subm.</td>
+    <td class="index">team</td>
+    <td class="index">prob</td>
+    <td class="index">time limit</td>
+    <td class="index">filename</td>
+    <td class="index">compiler</td>
+    <td class="index">status</td>
+    <td class="index">result</td>
+    <td class="index">verified by</td>
+    <td class="index">change</td>
+  </tr>
+
+  <tr class="content_body1">
+    <td class="index">{{time}}</td>
+    <td class="index">{{submission.id}}</td>
+    <td class="index">
+      <span title="{{submission.team.id}}">{{submission.team.id}}</span>
+    </td>
+    <td class="index">
+      <span title="{{submission.problem.name}}">{{submission.problem.letter}}</span>
+    </td>
+    <td class="index">{{submission.problem.timelimit}} sec.</td>
+    <td class="index">{{submission.file_name}}</td>
+    <td class="index">{{submission.compiler.name}}</td>
+    <td class="index">{{submission.status}}</td>
+    <td class="index">{{judgement}}
+    </td>
+    <form method="post">
+      <td class="index">
+	{% if verified_by %}
+	{{verified_by}}
+	{% else %}
+	Nobody
+	<input type="submit" value="Verify" name="verify" {% if not has_result %}disabled {% endif %}>
+	{% endif %}
+      </td>
+    </form>
+
+    <td class="index">
+      <a href="/jury/submission/{{submission.id}}/changeresult">change</a>
+    </td>
+  </tr>
+</table>
+<br>
+<table width="100%">
+  <tr class="content_header">
+    <td width="40%">Program Code</td>
+    <form action="file.php" method="post">
+      <td>
+	<input type="hidden" name="filename" value="coneasoup.c">
+	<input type="hidden" name="file_id" value="15">
+	<input type="submit" name="download" value="Download">
+      </td>
+    </form>
+    <form action="index.php?p=_submit&g=all&m=2" method="post">
+      <td>
+	<input type="hidden" name="hide_field" value="de_code">
+
+	<input type="submit" name="config" value="Hide">
+      </td>
+    </form>
+    <td width="40%">&nbsp;Compiler Output</td>
+    <form action="file.php" method="post">
+      <td>
+	<input type="hidden" name="filename" value="compiler_output.txt">
+	<input type="hidden" name="file_id" value="16">
+	<input type="submit" name="download" value="Download">
+      </td>
+    </form>
+    <form action="index.php?p=_submit&g=all&m=2" method="post">
+      <td>
+	<input type="hidden" name="hide_field" value="de_c_out">
+	<input type="submit" name="config" value="Hide">
+      </td>
+    </form>
+  </tr>
+  <tr class="content_body1">
+    <td align="center" colspan="3">
+      <textarea cols="55" rows="24">{{ program_code }}</textarea>
+    </td>
+    <td align="center" colspan = "3">
+      <textarea cols="55" rows="24">{{ compiler_output }}</textarea>
+    </td>
+  </tr>
+</table>
+<br>
+<table width="100%">
+  <tr class="content_header">
+    <td width="40%">&nbsp;Observed Output File</td>
+    <form action="file.php" method="post">
+      <td>
+	<input type="hidden" name="filename" value="output.txt">
+	<input type="hidden" name="file_id" value="17">
+	<input type="submit" name="download" value="Download" disabled >
+      </td>
+    </form>
+    <form action="index.php?p=_submit&g=all&m=2" method="post">
+      <td>
+	<input type="hidden" name="hide_field" value="de_o_out">
+	<input type="submit" name="config" value="Hide">
+      </td>
+    </form>
+    
+    <td width="40%">&nbsp;Expected Output File</td>
+    <form action="file.php" method="post">
+      <td>
+	<input type="hidden" name="filename" value="B_output.txt">
+	<input type="hidden" name="file_id" value="5">
+	<input type="submit" name="download" value="Download">
+      </td>
+    </form>
+    <form action="index.php?p=_submit&g=all&m=2" method="post">
+      <td>
+	<input type="hidden" name="hide_field" value="de_e_out">
+	<input type="submit" name="config" value="Hide">
+      </td>
+    </form>
+  </tr>
+  <tr class="content_body1">
+    <td align="center" colspan = "3">
+      <textarea cols="55" rows="24">{{ submission_output }}</textarea>
+    </td>
+    <td align="center" colspan = "3">
+      <textarea cols="55" rows="24">{{ expected_output }}</textarea>
+    </td>
+  </tr>
+</table>
+<br>
+<table width="100%">
+  
+  <tr class="content_header">
+    <td width="40%">
+      &nbsp;Output Diff File</td>
+    <form action="file.php" method="post">
+      <td>
+	<input type="hidden" name="filename" value="output_diff.txt">
+	<input type="hidden" name="file_id" value="18">
+	<input type="submit" name="download" value="Download" disabled >
+      </td>
+    </form>
+    <form action="index.php?p=_submit&g=all&m=2" method="post">
+      <td>
+	<input type="hidden" name="hide_field" value="de_out_d">
+	<input type="submit" name="config" value="Hide">
+      </td>
+    </form>
+    <td width="40%">&nbsp;Input File</td>
+
+    <form action="file.php" method="post">
+      <td>
+	<input type="hidden" name="filename" value="B_input.txt">
+	<input type="hidden" name="file_id" value="4">
+	<input type="submit" name="download" value="Download">
+      </td>
+    </form>
+    <form action="index.php?p=_submit&g=all&m=2" method="post">
+      <td>
+	<input type="hidden" name="hide_field" value="de_inp_f">
+	<input type="submit" name="config" value="Hide">
+      </td>
+    </form>
+  </tr>
+  <tr class="content_body1">
+    <td align="center" colspan = "3">
+      <textarea cols="55" rows="24">{{ output_diff }}</textarea>
+    </td>
+    <td align="center" colspan = "3">
+      <textarea cols="55" rows="24">{{ problem_input }}</textarea>
+    </td>
+  </tr>
+</table>
+<br>
+<table width="100%">
+  <tr class="content_header">
+    <td width="40%">&nbsp;Judge Comment</td>
+    
+    <form action="file.php" method="post">
+      <td>
+	<input type="hidden" name="filename" value="">
+	<input type="hidden" name="file_id" value="0">
+	<input type="submit" name="download" value="Download" disabled >
+      </td>
+    </form>
+    <form action="index.php?p=_submit&g=all&m=2" method="post">
+      <td>
+	<input type="hidden" name="hide_field" value="de_m_com">
+	<input type="submit" name="config" value="Hide">
+      </td>
+    </form>
+    <td width="40%">&nbsp;Autojudge Comment</td>
+    <form action="file.php" method="post">
+      <td>
+	<input type="hidden" name="filename" value="autojudge_comment.txt">
+	<input type="hidden" name="file_id" value="19">
+	<input type="submit" name="download" value="Download">
+	
+      </td>
+    </form>
+    <form action="index.php?p=_submit&g=all&m=2" method="post">
+      <td>
+	<input type="hidden" name="hide_field" value="de_a_com">
+	<input type="submit" name="config" value="Hide">
+      </td>
+    </form>
+  </tr>
+  <tr class="content_body1">
+    <td align="center" colspan = "3">
+      <table>
+	<form action="index.php?p=_submit&g=all&m=2" method="post">
+	  <tr>
+	    <td>
+	      <textarea cols="55" rows="8" name="text">{{ judge_comment }}</textarea>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+	      <input type = "hidden" value="0" name="file_id">
+	      <input type = "submit" value="Save" name="save">
+	    </td>
+	  </tr>
+	</form>
+      </table>
+    </td>
+    <td align="center" colspan = "3">
+      <textarea cols="55" rows="10">{{ autojudge_comment }}</textarea>
+    </td>
+  </tr>
+</table>
+
+
+{% endblock %}

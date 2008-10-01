@@ -1,9 +1,11 @@
 import sys
 import datetime
 import string
+from getpass import getpass
 
 import argparse
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User, Permission
 from szp.models import *
 
 class showcontest():
@@ -72,6 +74,7 @@ class addteam():
 		parser.add_argument('member3', nargs='?', default=None)
 		parser.add_argument('e-mail3', nargs='?', default=None)
 
+# FIXME: Implement
 	def run(self, args):
 		print "Not yet finished"
 		print args
@@ -176,6 +179,27 @@ class listcompilers():
 																maxwidth_extension, c.extension, maxwidth_source_filename, c.source_filename,
 																maxwidth_compile_line, c.compile_line, maxwidth_execute_line, c.execute_line)
 		
+class addjudge():
+	def __init__(self, subparsers):
+		parser = subparsers.add_parser('addjudge')
+		parser.set_defaults(obj=self)
+		parser.add_argument('username', help='Username of judge')
+
+	def run(self, args):
+		password = getpass("Password: ")
+		password_check = getpass("Password again: ")
+		if password != password_check:
+			print "Passwords don't match"
+			sys.exit(1)
+		user = User(username=args.username)
+		user.set_password(password)
+		user.save(Profile.Permission)
+		user.user_permissions = ["jury"]
+		user.save()
+		profile = Profile()
+		profile.user = user
+		profile.save()
+
 def main():
 	parser = argparse.ArgumentParser(description='Sub Zero Programming command line interface')
 	subparsers = parser.add_subparsers()
@@ -188,6 +212,7 @@ def main():
 
 	addautojudge(subparsers)
 	addcompiler(subparsers)
+	addjudge(subparsers)
 	addproblem(subparsers)
 	addteam(subparsers)
 	listautojudges(subparsers)

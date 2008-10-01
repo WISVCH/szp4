@@ -49,12 +49,16 @@ class Teammember(models.Model):
 
 class Profile(models.Model):
 	user = models.ForeignKey(User, unique=True)
-
 	team = models.ForeignKey(Team, null=True, blank=True)
-	is_judge = models.BooleanField()
 
 	def __unicode__(self):
 		return self.user.username
+
+	class Meta:
+		permissions = (
+			("team", "Team"),
+            ("jury", "Jury"),
+        )
 
 class File(models.Model):
 	content = models.TextField()

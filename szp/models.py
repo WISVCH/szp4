@@ -82,19 +82,19 @@ class Problem(models.Model):
 		return "%s: %s" % (self.letter, self.name)
 
 class Clarreq(models.Model):
-	prob = models.ForeignKey(Problem, null=True, blank=True)
+	problem = models.ForeignKey(Problem, null=True, blank=True)
 	subject = models.CharField(max_length=80)
-	msg = models.TextField()
-	sender = models.ForeignKey(Team)
+	message = models.TextField()
+	sender = models.ForeignKey(Profile, related_name="sender")
 	timestamp = models.DateTimeField(auto_now_add=True)
-	read_by = models.ManyToManyField(Profile)
+	read_by = models.ManyToManyField(Profile, related_name="read_by")
 
 class Clar(models.Model):
-	prob = models.ForeignKey(Problem, null=True, blank=True)
+	problem = models.ForeignKey(Problem, null=True, blank=True)
 	req = models.ForeignKey(Clarreq, null=True, blank=True)
-	subject = models.CharField(max_length=765)
-	msg = models.TextField()
-	receiver = models.ForeignKey(Team)
+	subject = models.CharField(max_length=80)
+	message = models.TextField()
+	receiver = models.ForeignKey(Profile)
 	timestamp = models.DateTimeField()
 	read = models.BooleanField()
 

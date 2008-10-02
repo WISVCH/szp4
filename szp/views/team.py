@@ -47,8 +47,34 @@ def score(request):
 
 @login_required
 def clarification(request):
-    return render_to_response('team_clarification.html', context_instance=RequestContext(request))
+	profile = request.user.get_profile()
+	problemlist = Problem.objects.order_by("letter")
 
+	return render_to_response('team_clarification.html', {"problemlist": problemlist, "profile": profile},
+							  context_instance=RequestContext(request))
+
+@login_required
+def clarification_sent(request):
+	# FIXME: Make a django form for this.
+	if request.method != 'POST':
+		return HttpResponseRedirect('/team/clarification/')
+
+	profile = request.user.get_profile()
+
+	problem = request.POST['problem']
+	subject = request.POST['subject']
+	body = request.POST['body']
+
+	clar = Clarreq()
+	if problem != "General":
+		clar.problem = Problem.objects.get(letter=problem)
+	clar.subject = subject
+	clar.message = body
+	clar.sender = profile
+	clar.save()
+
+	return render_to_response('team_clarification_sent.html', {"profile": profile},
+							  context_instance=RequestContext(request))
 @login_required
 def submission(request, problem=None):
 	profile = request.user.get_profile()

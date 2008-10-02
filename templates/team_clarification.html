@@ -6,22 +6,22 @@
 <table class="content">
   <tr>
     <td align="center" valign="top">
-      <form action="index.php?p=_mail&g=" method="post">
+      <form action="/team/clarification/sent/" method="post">
 	<table width="320">
 	  <tr class="content_header">
 	    <td class="content_header" colspan="2">&nbsp;Send Clarification Request to Jury</td>
 	  </tr>
 	  <tr class="content_body1">
 	    <td width="50%">
-	      <select name="prob">
-		<option value="_General">General</option>
-		<option value="1_A: Obfuscate">A: Obfuscate</option>
-		<option value="2_B: Epluribus">B: Epluribus</option>
-		<option value="3_C: Coneasoup">C: Coneasoup</option>
+	      <select name="problem">
+		<option value="General">General</option>
+		{% for problem in problemlist %}
+		<option value="{{problem.letter}}">{{problem.letter}}: {{problem.name}}</option>
+		{% endfor %}
 	      </select>
 
 	    </td>
-	    <td width="50%">&nbsp;team_name</td>
+	    <td width="50%">&nbsp;{{ profile.team.name }}</td>
 	  </tr>
 	  <tr class="content_body1">
 	    <td colspan="2">
@@ -30,8 +30,7 @@
 	  </tr>
 	  <tr class="content_body1">
 	    <td colspan="2">
-	      <textarea name="body" cols="40" rows="8">
-	      </textarea>
+	      <textarea name="body" cols="40" rows="8"></textarea>
 	    </td>
 	  </tr>
 	  <tr class="content_body1">

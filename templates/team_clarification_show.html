@@ -1,0 +1,60 @@
+{% extends "team_base.html" %}
+
+{% block content %}
+
+<H1>Clarifications</H1>
+<table class="content">
+  <tr>
+    <td align="center" valign="top">
+      <table width="320">
+	<tr class="content_header">
+	  <td class="content_header" colspan="2">&nbsp;Viewing message</td>
+	</tr>
+	<tr class="content_body1">
+	  <td width="50%">A: Obfuscate</td>
+	  <td width="50%">&nbsp;test</td>
+	</tr>
+	<tr class="content_body1">
+	  <td colspan="2">&nbsp;test a</td>
+	</tr>
+	<tr class="message_body">
+	  <td colspan="2">test</td>
+	</tr>
+	<form action="index.php?p=_mail&g=all" method="post">
+	  <tr class="content_body1">
+	    <td colspan="2" align="center">
+	      <input type="submit" name="new" value="New Message">
+	    </td>
+	  </tr>
+	</form>
+      </table>
+    </td>
+    <td align="center" valign="top">
+      <table class="index">
+
+	<tr class="content_header">
+	  <td colspan="3">&nbsp;Index of: All</td>
+	</tr>
+	<tr class="content_body1">
+	  <td colspan="3">&nbsp;[104:31:45] <a class="index" href="index.php?p=_mail&g=all&m=4">test a</a>
+	  </td>
+	</tr>
+	<tr class="content_body2">
+	  <td colspan="3">&nbsp;[-838:59:59] <a class="index" href="index.php?p=_mail&g=all&m=2">test gen</a>
+	  </td>
+	</tr>
+	<tr class="content_header">
+	  <td width="25%">
+	  </td>
+	  <td align=center>
+	    <a class="back_to_groups" href="index.php?p=_mail"style=":hover (  text-decoration: underline; color: white; }">Back to Groups</a>
+	  </td>
+	  <td width="25%">
+	  </td>
+	</tr>
+      </table>
+    </td>
+</table>
+
+
+{% endblock %}

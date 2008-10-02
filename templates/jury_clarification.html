@@ -1,41 +1,46 @@
-{% extends "team_base.html" %}
+{% extends "jury_base.html" %}
 
 {% block content %}
-
-<H1>Clarifications</H1>
+<H1>Clarification</H1>
 <table class="content">
   <tr>
     <td align="center" valign="top">
       <form action="index.php?p=_mail&g=" method="post">
 	<table width="320">
 	  <tr class="content_header">
-	    <td class="content_header" colspan="2">&nbsp;Send Clarification Request to Jury</td>
+	    <td class="content_header" colspan="2">&nbsp;Send Clarification to Team(s)</td>
 	  </tr>
 	  <tr class="content_body1">
-	    <td width="50%">
+	    <td>
 	      <select name="prob">
 		<option value="_General">General</option>
 		<option value="1_A: Obfuscate">A: Obfuscate</option>
 		<option value="2_B: Epluribus">B: Epluribus</option>
 		<option value="3_C: Coneasoup">C: Coneasoup</option>
-	      </select>
 
+	      </select>
 	    </td>
-	    <td width="50%">&nbsp;team_name</td>
+	    <td>
+	      <select name="team">
+		<option value="none">Choose Team</option>
+		<option value="global">Global (everyone)</option>
+		<option value="1: test">1: test (test)</option>
+	      </select>
+	    </td>
+	  <tr class="content_body1">
+	    <td colspan="2">
+	      <input type="text" maxlength="50" name="subject" value="" size="50">
+	    </td>
 	  </tr>
 	  <tr class="content_body1">
 	    <td colspan="2">
-	      <input type="text" maxlength="40" name="subject" value="" size="40">
-	    </td>
-	  </tr>
-	  <tr class="content_body1">
-	    <td colspan="2">
-	      <textarea name="body" cols="40" rows="8">
+	      <textarea name="body" cols="50" rows="8">
 	      </textarea>
 	    </td>
 	  </tr>
 	  <tr class="content_body1">
 	    <td colspan="2" align="center">
+	      <input type="hidden" value="NULL" name="reply">
 	      <input type="submit" name="send" value="Send">
 	    </td>
 	  </tr>
@@ -43,50 +48,53 @@
       </form>
     </td>
     <td align="center" valign="top">
-      <table class="index">
+      <table class="clarindex">
 	<tr class="content_header">
 	  <td>&nbsp;Index</td>
 	</tr>
 	<tr class="content_body1">
 	  <td>
-	    <a class="index" href="index.php?p=_mail&g=req&m=">&nbsp;Sent Requests- 1 message
+	    <a class="index" href="index.php?p=_mail&g=clar">&nbsp;Sent Clarifications- 2 messages 
 	    </a>
 	  </td>
 	</tr>
-	<tr class="content_body2">
-	  <td>
-	    <a class="index" href="index.php?p=_mail&g=all&m=">&nbsp;All Clarifications- 1 message
-	    </a>
-	  </td>
-	</tr>
-	<tr class="content_body1">
-	  <td>
-	    <a class="index" href="index.php?p=_mail&g=general&m=">&nbsp;General - 1 message
-	    </a>
-	  </td>
-	</tr>
-	<tr class="content_body2">
-	  <td>
-	    <a class="index" href="index.php?p=_mail&g=1&m=">&nbsp;A: Obfuscate - 0 messages 
 
+	<tr class="content_body2">
+	  <td>
+	    <a class="index" href="index.php?p=_mail&g=all">&nbsp;All Clarification Requests- 3 messages 
+	      <b>(3 unanswered)</b>
 	    </a>
 	  </td>
 	</tr>
 	<tr class="content_body1">
 	  <td>
-	    <a class="index" href="index.php?p=_mail&g=2&m=">&nbsp;B: Epluribus - 0 messages 
+	    <a class="index" href="index.php?p=_mail&g=general&m=">&nbsp;General - 0 messages 
 	    </a>
 	  </td>
 	</tr>
 	<tr class="content_body2">
 	  <td>
-	    <a class="index" href="index.php?p=_mail&g=3&m=">&nbsp;C: Coneasoup - 0 messages 
+	    <a class="index" href="index.php?p=_mail&g=1">&nbsp;A: Obfuscate -  1 message 
+	      <b>(1 unanswered)</b>
+	    </a>
+	  </td>
+	</tr>
+	<tr class="content_body1">
+	  <td>
+	    <a class="index" href="index.php?p=_mail&g=2">&nbsp;B: Epluribus -  1 message 
+	      <b>(1 unanswered)</b>
+	    </a>
+	  </td>
+	</tr>
+	<tr class="content_body2">
+	  <td>
+	    <a class="index" href="index.php?p=_mail&g=3">&nbsp;C: Coneasoup - 0 messages 
 	    </a>
 	  </td>
 	</tr>
       </table>
     </td>
-  </tr>
 </table>
+
 
 {% endblock %}

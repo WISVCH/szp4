@@ -1,0 +1,58 @@
+{% extends "jury_base.html" %}
+
+{% block content %}
+<H1>Clarification</H1>
+<table class="content">
+  <tr>
+    <td align="center" valign="top">
+      <table width="320">
+	<tr class="content_header">
+	  <td class="content_header" colspan="2">&nbsp;Received: Clarification Request</td>
+	</tr>
+	<tr class="content_body1">
+	  <td width="50%">&nbsp;A: Obfuscate</td>
+	  <td width="50%">&nbsp;test</td>
+	</tr>
+	<tr class="content_body1">
+	  <td colspan="2">&nbsp;Automessage: Submit before contest start</td>
+	</tr>
+	<tr class="message_body">
+	  <td colspan="2">This message was automatically created because the team: 'test'<br>tried to submit the file: 'obfuscate.c' before the contest started.</td>
+	</tr>
+	<form action="index.php?p=_mail&g=1&r=1" method="post">
+	  <tr class="content_body1">
+	    <td colspan="2" align="center">
+	      <input type="submit" name="new" value="Reply">
+	    </td>
+	  </tr>
+	</form>
+      </table>
+
+    </td>
+    <td align="center" valign="top">
+      <table class="clarindex">
+	<tr class="content_header">
+	  <td colspan="3">&nbsp;Index of: A: Obfuscate</td>
+	</tr>
+	<tr class="content_body1">
+	  <td colspan="3">
+	    <span title="From: test">&nbsp;[-838:59:59] 1: <a class="index" href="index.php?p=_mail&g=1&m=1">Automessage: Submit before con... <b>(unanswered)</b>
+	      </a>
+	    </span>
+	  </td>
+	</tr>
+	<tr class="content_header">
+	  <td width="25%">
+	  </td>
+	  <td align=middle>
+	    <a class="back_to_groups" href="index.php?p=_mail" style=":hover (  text-decoration: underline; color: white; }">Back to Groups</a>
+	  </td>
+	  <td width="25%">
+	  </td>
+	</tr>
+      </table>
+    </td>
+</table>
+
+
+{% endblock %}

@@ -272,9 +272,11 @@ body.login
   left: 0;
   background-color: #E7E9F7;
   margin: 0;
+  padding: 0;
 }
 
 #masthead li {
+  margin: 10px;
   display: table-cell;
 }
 

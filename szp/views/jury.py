@@ -49,7 +49,34 @@ def score(request):
 
 @login_required
 def clarification(request):
-			
+	if request.method == 'POST':
+		if request.POST['team'] != "global":
+			teamlist = [Team.objects.get(id=request.POST['team'])]
+		else:
+			teamlist = Team.objects.all()
+
+		if request.POST['problem'] != "General":
+			problem = Problem.objects.get(letter=request.POST['problem'])
+		else:
+			problem = None
+
+		for team in teamlist:
+			clar = Clar()
+			clar.probem = problem
+			clar.subject = request.POST['subject']
+			clar.message = request.POST['message']
+			clar.receiver = team
+			clar.read = False
+			clar.save()
+		
+		sentclar = Sentclar()
+		sentclar.probem = problem
+		sentclar.subject = request.POST['subject']
+		sentclar.message = request.POST['message']
+		if request.POST['team'] != "global":
+			sentclar.receiver = team
+		sentclar.save()
+		
 
 	problemlist = Problem.objects.order_by("letter")
 

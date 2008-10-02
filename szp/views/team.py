@@ -64,7 +64,7 @@ def clarification(request):
 			clar.problem = Problem.objects.get(letter=problem)
 		clar.subject = subject
 		clar.message = body
-		clar.sender = profile
+		clar.sender = profile.team
 		clar.save()
 
 		return HttpResponseRedirect('/team/clarification/sent/%s/' % clar.id)

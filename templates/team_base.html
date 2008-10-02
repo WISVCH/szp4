@@ -1,114 +1,31 @@
 <html>
-  <head>
-    <title>SZP TeamTool</title>
-    <link rel="stylesheet" href="/static/team.css" type="text/css">
-  </head>
+<head>
+	<title>SZP TeamTool</title>
+	<link rel="stylesheet" href="/static/team.css" type="text/css">
+</head>
 
-  <body>
-    <table class="main" align="center">
-      <tr height="80">
-	<td background="/static/achtergrond2.jpg" colspan="3" class="title">SZP TeamTool</td>
-	<td width="210" class="title">
-	  <table>
-	    <tr>
-	      <a target="_top" href="/team/submission/">
-		<td class="status_new"><a class="lampje" target="_top" href="/team/submission/">NEW<br>RESULTS</a>
-		</td>
-	      </a>
-	      <a target="_top" href="/team/clarification/">
-		<td class="status_no_new">
-		  <a class="lampje" target="_top" href="/team/clarification/">NO NEW<br>CLARIFICATIONS</a>
-		</td>
-	      </a>
-	    </tr>
-	    <tr>
-	      <td colspan="2" class="status_rank">WAIT&nbsp;&nbsp;Team&nbsp;rank:&nbsp;1st</td>
-	    </tr>
-	  </table>
-	</td>
-      </tr>
-    </table>
-          
-    <table cellpadding="3" cellspacing="0" class="main" align="center">
-      <tr cellpadding="0" cellspacing="0">
-        <td bgcolor="e7e9f7">
-          <center>	
-            <table cellspacing="0" width="1" border="0" cellpadding="2" align="center">
-	      <tr>		
-		<td background="/static/button_front.jpg" width="21"><img align="absmiddle" src="/static/leeg.gif" width="12" height="0"></td>
-		
-		<td align="center" background="/static/button_mid.jpg" width="140" class="button">
-		  <img align="absmiddle" src="/static/leeg.gif" width="0" height="29">
-		  <a class="menu" href="/team/">
-		    <b>&nbsp&nbsp;&nbsp;&nbsp;Home&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></a>
-		</td>
-		<td background="/static/button_back.jpg" width="32"><img align="absmiddle" src="/static/leeg.gif" width="20" height="0"></td>
-		
-	      </tr>
-	    </table>
-            
-            
-          </center>
-	
-	</td>
-	<td bgcolor="e7e9f7">
-          	
-         <center>	
-         <table cellspacing="0" width="1" border="0" cellpadding="2" align="center">
-		<tr>
-		
-		  <td background="/static/button_front.jpg" width="21"><img align="absmiddle" src="/static/leeg.gif" width="12" height="0"></td>
-		  <td align="center" background="/static/button_mid.jpg" width="140" class="button">
-		    <img align="absmiddle" src="/static/leeg.gif" width="0" height="29">
-		    <a class="menu" href="/team/score/"><b>&nbsp;&nbsp;&nbsp;&nbsp;Scorelist&nbsp;&nbsp;&nbsp;</b></a>
-		  </td>
-		  <td background="/static/button_back.jpg" width="32"><img align="absmiddle" src="/static/leeg.gif" width="20" height="0"></td>
-		</tr>
-	 </table>
-	 </center>          
-          </td>
-	<td bgcolor="e7e9f7">
-          
-          <center>	
-            <table cellspacing="0" width="1" border="0" cellpadding="2" align="center">
-	      <tr>
-		
-		<td background="/static/button_front.jpg" width="21"><img align="absmiddle" src="/static/leeg.gif" width="12" height="0"></td>
-		<td align="center" background="/static/button_mid.jpg" width="140" class="button">
-		  <img align="absmiddle" src="/static/leeg.gif" width="0" height="29">
-		  <a class="menu" href="/team/clarification/"><b>&nbsp;Clarifications&nbsp;&nbsp;</b></a>
-		</td>
-		<td background="/static/button_back.jpg" width="32">
-		  <img align="absmiddle" src="/static/leeg.gif" width="20" height="0">
-		</td>
-	      </tr>
-	    </table>
-	  </center>    
-          
-        </td>
-	<td bgcolor="e7e9f7">
-          <center>	
-            <table cellspacing="0" width="1" border="0" cellpadding="2" align="center">
-	      <tr>
-		<td background="/static/button_front.jpg" width="21"><img align="absmiddle" src="/static/leeg.gif" width="12" height="0"></td>
-		<td Align="center" background="/static/button_mid.jpg" width="140" class="button">
-		  <img align="absmiddle" src="/static/leeg.gif" width="0" height="29">
-		  <a class="menu" href="/team/submission/"><b>&nbsp;&nbsp;Submissions&nbsp;&nbsp;&nbsp;</b></a>
-		</td>
-		<td background="/static/button_back.jpg" width="32"><img align="absmiddle" src="/static/leeg.gif" width="20" height="0"></td>
-		
-	      </tr>
-	    </table>
-	  </center>               
-          
-        </td>
-      </tr>
+<body>
 
-      <tr class="body">
-	<td color="transparant" colspan="4">
-	  {% block content %}{% endblock %}
-	</td>
-      </tr>
-    </table>
-  </body>
+<div id="masthead">
+	<h1>SZP TeamTool</h1>
+	<div id="status">
+		<div class="status_new status_button">
+			<a href="/team/submission/">NEW<br/>RESULTS</a>
+		</div>
+		<div class="status_no_new status_button">
+			<a href="/team/clarification/">NO NEW<br/>CLARIFICATIONS</a>
+		</div>
+
+		<div id="contest_time">WAIT</div>
+		<div class="status_rank">Team rank: 1st</div>
+	</div>
+	<ul>
+		<li><a href="/team/">Home</a></li>
+		<li><a href="/team/submission/">Scorelist</a></li>
+		<li><a href="/team/clarification">Clarifications</a></li>
+		<li><a href="/team/submission">Submissions</a></li>
+	</ul>
+</div>
+	<div class="body">{% block content %}{% endblock %}</div>
+</body>
 </html>

@@ -77,18 +77,26 @@ class Clarreq(models.Model):
 	problem = models.ForeignKey(Problem, null=True, blank=True)
 	subject = models.CharField(max_length=80)
 	message = models.TextField()
-	sender = models.ForeignKey(Profile, related_name="sender")
+	sender = models.ForeignKey(Team)
 	timestamp = models.DateTimeField(auto_now_add=True)
-	read_by = models.ManyToManyField(Profile, related_name="read_by")
+	dealt_with = models.BooleanField()
 
 class Clar(models.Model):
 	problem = models.ForeignKey(Problem, null=True, blank=True)
 	req = models.ForeignKey(Clarreq, null=True, blank=True)
 	subject = models.CharField(max_length=80)
 	message = models.TextField()
-	receiver = models.ForeignKey(Profile)
-	timestamp = models.DateTimeField()
+	receiver = models.ForeignKey(Team)
+	timestamp = models.DateTimeField(auto_now_add=True)
 	read = models.BooleanField()
+
+class Sentclar(models.Model):
+	problem = models.ForeignKey(Problem, null=True, blank=True)
+	req = models.ForeignKey(Clarreq, null=True, blank=True)
+	subject = models.CharField(max_length=80)
+	message = models.TextField()
+	receiver = models.ForeignKey(Team, null=True, blank=True)
+	timestamp = models.DateTimeField(auto_now_add=True)
 
 class Compiler(models.Model):
 	name = models.CharField(max_length=100)

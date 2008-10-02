@@ -17,7 +17,7 @@
 	  <td colspan="2">&nbsp;{{ clarreq.subject }}</td>
 	</tr>
 	<tr class="message_body">
-	  <td colspan="2">{{ clarreq.message }}</td>
+	  <td colspan="2">{{ clarreq.message|linebreaks }}</td>
 	</tr>
 	<form action="{{ request.path }}" method="post">
 	  <tr class="content_body1">
@@ -38,7 +38,7 @@
 	{% for clar in clarlist %}
 	<tr class="{% cycle 'content_body1' 'content_body2' %}">
 	  <td colspan="3">
-	    <span title="From: {{row.from}}">
+	    <span title="From: {{clar.from}}">
 	      <a class="index" href="/jury/clarification/{{clar.url}}/">&nbsp;[{{clar.time}}]
 		{{ clar.subject }} 
 		{% if clar.unhandled %}

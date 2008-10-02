@@ -198,6 +198,11 @@ def clarification_show(request, which):
 			   "sender": clar.sender,
 			   "unhandled": not clar.dealt_with}
 	
+	if clar.problem:
+		clarreq["problem"] = clar.problem
+	else:
+		clarreq["problem"] = "General"
+
 	clars = Clarreq.objects.filter(problem=clar.problem).order_by("-timestamp")
 	clarlist = []
 	for c in clars:
@@ -208,7 +213,7 @@ def clarification_show(request, which):
 		clarlist.append(row)
 
 	return render_to_response('jury_clarification_show.html',
-							  {"clarreq": clarreq, "clarlist": clarlist, "title": title},
+							  {"clarreq": clarreq, "clarlist": clarlist},
 							  context_instance=RequestContext(request))
 
 @login_required

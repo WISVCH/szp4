@@ -4,10 +4,9 @@
 
 body 
 {
-  text-align: center;
   font-family: verdana;
-  /*background: #e7e9f7;*/
-  background-image: url('achtergrond.jpg');
+  background: #cdd5f6 url('achtergrond.jpg');
+  margin-top: 140px;
 }
 
 span.teamname 
@@ -65,20 +64,6 @@ a.back_to_groups:hover
 {
   text-decoration: underline;
   color: white;	
-}
-
-a.lampje
-{
-  text-decoration: none;
-  font-weight: normal;
-  color: white;
-}
-
-a.lampje:hover
-{
-  text-decoration: underline;
-  font-weight: normal;
-  color: white;
 }
 
 tr.content_body1
@@ -232,6 +217,7 @@ body.login
   top: 0;
   left: 0;
   height: 90px;
+  text-align: center;
 }
 
 /* status bar style */
@@ -253,8 +239,16 @@ body.login
   height: 30px;
   padding-top: 8px;
   float: left;
-  background-color: pink;
   font-size: 8px;
+}
+
+.status_button a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.status_button a:hover {
+  text-decoration: underline;
 }
 
 .status_new {
@@ -292,4 +286,8 @@ body.login
   height: 29px;
   background: #e8e7f5 url(button.png) no-repeat center center;
   padding-top: 10px;
+}
+
+#masthead li a:hover {
+  text-decoration: underline;
 }

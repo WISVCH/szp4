@@ -9,14 +9,14 @@
 <div id="masthead">
 	<h1>SZP TeamTool</h1>
 	<div id="status">
-		<div class="status_new status_button"><a class="lampje" target="_top"
-		href="/team/submission/">NEW<br>
-		RESULTS</a></div>
-		<div class="status_no_new status_button"><a class="lampje" target=
-		"_top" href="/team/clarification/">NO NEW<br>
-		CLARIFICATIONS</a></div>
+		<div class="status_new status_button">
+			<a href="/team/submission/">NEW<br/>RESULTS</a>
+		</div>
+		<div class="status_no_new status_button">
+			<a href="/team/clarification/">NO NEW<br/>CLARIFICATIONS</a>
+		</div>
 
-		<div>WAIT</div>
+		<div id="contest_time">WAIT</div>
 		<div class="status_rank">Team rank: 1st</div>
 	</div>
 	<ul>
@@ -26,16 +26,6 @@
 		<li><a href="/team/submission">Submissions</a></li>
 	</ul>
 </div>
-
-
-		<!-- <td background="/static/achtergrond2.jpg" colspan="3" class"title">SZP TeamTool</td> -->
-
-
-		<!-- <td bgcolor="#E7E9F7"> -->
-		<!-- <td background="/static/button_front.jpg" width="21"> -->
-		<!-- "/static/button_mid.jpg" width="140" class="button"> -->
-		<!-- <td background="/static/button_back.jpg" width="32"> -->
-
-		<div class="body">{% block content %}{% endblock %}</div>
+	<div class="body">{% block content %}{% endblock %}</div>
 </body>
 </html>

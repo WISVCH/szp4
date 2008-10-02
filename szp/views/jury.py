@@ -49,6 +49,8 @@ def score(request):
 
 @login_required
 def clarification(request):
+			
+
 	problemlist = Problem.objects.order_by("letter")
 
 	teamlist = Team.objects.order_by("name")

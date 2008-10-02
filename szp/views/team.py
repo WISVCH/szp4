@@ -6,6 +6,13 @@ from szp.models import *
 from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
 
+def gettime(timestamp, contest):
+	timedelta = timestamp - contest.starttime
+	hours = timedelta.days*24+timedelta.seconds / 3600
+	minutes = timedelta.seconds % 3600 / 60
+	seconds = timedelta.seconds % 60
+	return "%02d:%02d:%02d" % (hours, minutes, seconds)	
+
 @login_required
 def home(request):
 	profile = request.user.get_profile()
@@ -45,33 +52,50 @@ def score(request):
 @login_required
 def clarification(request):
 	profile = request.user.get_profile()
+
+	if request.method == 'POST':
+		# FIXME: Make a django form for this.
+		problem = request.POST['problem']
+		subject = request.POST['subject']
+		body = request.POST['body']
+
+		clar = Clarreq()
+		if problem != "General":
+			clar.problem = Problem.objects.get(letter=problem)
+		clar.subject = subject
+		clar.message = body
+		clar.sender = profile
+		clar.save()
+
+		return HttpResponseRedirect('/team/clarification/sent/%s/' % clar.id)
+
 	problemlist = Problem.objects.order_by("letter")
 
 	return render_to_response('team_clarification.html', {"problemlist": problemlist, "profile": profile},
 							  context_instance=RequestContext(request))
 
 @login_required
-def clarification_sent(request):
-	# FIXME: Make a django form for this.
-	if request.method != 'POST':
-		return HttpResponseRedirect('/team/clarification/')
-
+def clarification_sent(request, clarid):
 	profile = request.user.get_profile()
+	clar = Clarreq.objects.get(id=clarid)
+	contest = Contest.objects.get()
 
-	problem = request.POST['problem']
-	subject = request.POST['subject']
-	body = request.POST['body']
+	if not clar.problem:
+		problem = "General"
+	else:
+		problem = str(clar.problem)
 
-	clar = Clarreq()
-	if problem != "General":
-		clar.problem = Problem.objects.get(letter=problem)
-	clar.subject = subject
-	clar.message = body
-	clar.sender = profile
-	clar.save()
+	ourclars = Clarreq.objects.filter(sender=profile).order_by("-timestamp")
+	
+	clarlist = []
+	for c in ourclars:
+		row = {'id': c.id, 'time': gettime(c.timestamp, contest), 'subject': c.subject}
+		clarlist.append(row)
 
-	return render_to_response('team_clarification_sent.html', {"profile": profile},
+	return render_to_response('team_clarification_sent.html',
+							  {"profile": profile, "clar": clar, "problem": problem, "clarlist": clarlist},
 							  context_instance=RequestContext(request))
+
 @login_required
 def submission(request, problem=None):
 	profile = request.user.get_profile()
@@ -79,8 +103,8 @@ def submission(request, problem=None):
 		form = SubmitForm(request.POST, request.FILES)
 		if form.is_valid():
 			# FIXME: Check contest state
-			# FIXME: Check whether extension is correct.
 			# FIXME: Check whether we already have an accepted solution for this problem
+			# FIXME: Maybe check whether extension is correct.
 			submission = Submission()
 			submission.status = "NEW"
 			submission.team = profile.team
@@ -113,11 +137,7 @@ def submission(request, problem=None):
 		except ObjectDoesNotExist:
 			judgement = "Pending..."
 			
-		timedelta = s.timestamp - contest.starttime
-		hours = timedelta.days*24+timedelta.seconds / 3600
-		minutes = timedelta.seconds % 3600 / 60
-		seconds = timedelta.seconds % 60
-		r = {'time': "%02d:%02d:%02d" % (hours, minutes, seconds), 'problem': s.problem, 'judgement': judgement}
+		r = {'time': gettime(s.timestamp, contest), 'problem': s.problem, 'judgement': judgement}
 		result_list.append(r)
 
 	return render_to_response('team_submission.html',

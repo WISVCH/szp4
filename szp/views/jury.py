@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from szp.models import *
 from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
+from team import gettime
 
 @login_required
 def home(request):
@@ -48,7 +49,13 @@ def score(request):
 
 @login_required
 def clarification(request):
-    return render_to_response('jury_clarification.html', context_instance=RequestContext(request))
+	problemlist = Problem.objects.order_by("letter")
+
+	teamlist = Team.objects.order_by("name")
+
+	return render_to_response('jury_clarification.html',
+							  {"problemlist": problemlist, "teamlist": teamlist},
+							  context_instance=RequestContext(request))
 
 @login_required
 def submission(request):
@@ -91,12 +98,7 @@ def submission_list(request, problem):
 			row['judgement'] = "Pending..."
 			row['verified_by'] = ""
 
-		timedelta = s.timestamp - contest.starttime
-		hours = timedelta.days*24+timedelta.seconds / 3600
-		minutes = timedelta.seconds % 3600 / 60
-		seconds = timedelta.seconds % 60
-
-		row.update({'time': "%02d:%02d:%02d" % (hours, minutes, seconds), 'id': s.id,
+		row.update({'time': gettime(s.timestamp, contest), 'id': s.id,
 					'problem': s.problem, 'filename': s.file_name, 'team': s.team,
 					'compiler': s.compiler.name})
 		
@@ -121,11 +123,7 @@ def submission_details(request, number):
 			
 	contest = Contest.objects.get()
 		
-	timedelta = submission.timestamp - contest.starttime
-	hours = timedelta.days*24+timedelta.seconds / 3600
-	minutes = timedelta.seconds % 3600 / 60
-	seconds = timedelta.seconds % 60
-	time = "%02d:%02d:%02d" % (hours, minutes, seconds)
+	time = gettime(submission.timestamp, contest)
 
 	program_code = submission.file.content
 	problem_input = submission.problem.in_file.content

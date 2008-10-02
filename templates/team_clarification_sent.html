@@ -11,16 +11,16 @@
 	  <td class="content_header" colspan="2">Message sent successfully</td>
 	</tr>
 	<tr class="content_body1">
-	  <td width="50%">&nbsp;General</td>
-	  <td width="50%">&nbsp;test</td>
+	  <td width="50%">{{ problem }}</td>
+	  <td width="50%">&nbsp;{{ profile.team.name }}</td>
 	</tr>
 	<tr class="content_body1">
-	  <td colspan="2">&nbsp;test</td>
+	  <td colspan="2">&nbsp;{{ clar.subject }}</td>
 	</tr>
 	<tr class="message_body">
-	  <td colspan="2">test</td>
+	  <td colspan="2">{{ clar.message }}</td>
 	</tr>
-	<form action="index.php?p=_mail&g=req" method="post">
+	<form action="/team/clarification/" method="get">
 	  <tr class="content_body1">
 	    <td colspan="2" align="center">
 	      <input type="submit" name="new" value="New Message">
@@ -35,27 +35,18 @@
 	<tr class="content_header">
 	  <td colspan="3">&nbsp;Index of: Sent Clarification Requests</td>
 	</tr>
-	<tr class="content_body1">
-	  <td colspan="3">&nbsp;[104:38:16] <a class="index" href="index.php?p=_mail&g=req&m=4">test</a>
+	{% for c in clarlist %}
+	<tr class="{% cycle 'content_body1' 'content_body2' %}">
+	  <td colspan="3">&nbsp;{{c.time}} 
+	    <a class="index" href="/team/clarification/sent/{{ c.id }}/">{{ c.subject }}</a>
 	  </td>
 	</tr>
-	<tr class="content_body2">
-	  <td colspan="3">&nbsp;[-03:50:52] <a class="index" href="index.php?p=_mail&g=req&m=3">Automessage: Submit before con...</a>
-	  </td>
-	</tr>
-	<tr class="content_body1">
-	  <td colspan="3">&nbsp;[-482:35:44] <a class="index" href="index.php?p=_mail&g=req&m=2">Automessage: Submit before con...</a>
-	  </td>
-	</tr>
-	<tr class="content_body2">
-	  <td colspan="3">&nbsp;[-838:59:59] <a class="index" href="index.php?p=_mail&g=req&m=1">Automessage: Submit before con...</a>
-	  </td>
-	</tr>
+	{% endfor %}
 	<tr class="content_header">
 	  <td width="25%">
 	  </td>
-	  <td align=center>
-	    <a class="back_to_groups" href="index.php?p=_mail"style=":hover (  text-decoration: underline; color: white; }">Back to Groups</a>
+	  <td align="center">
+	    <a class="back_to_groups" href="/team/clarification/" style=":hover (  text-decoration: underline; color: white; }">Back to Groups</a>
 	  </td>
 	  <td width="25%">
 	  </td>

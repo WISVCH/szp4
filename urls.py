@@ -22,7 +22,7 @@ urlpatterns += patterns('szp.views.team',
     (r'^team/$', 'home'),
 	(r'^team/score/$', 'score'),
     (r'^team/clarification/$', 'clarification'),
-    (r'^team/clarification/sent/$', 'clarification_sent'),
+    (r'^team/clarification/sent/(\d+)/$', 'clarification_sent'),
     (r'^team/submission/$', 'submission'),
 )
 

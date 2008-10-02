@@ -210,7 +210,9 @@ class addjudge():
 		parser.add_argument('password', nargs='?', default=None)
 
 	def run(self, args):
-		if not password:
+		if args.password:
+			password = args.password
+		else:
 			password = getpass("Password: ")
 			password_check = getpass("Password again: ")
 			if password != password_check:

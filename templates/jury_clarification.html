@@ -12,19 +12,19 @@
 	  </tr>
 	  <tr class="content_body1">
 	    <td>
-	      <select name="prob">
-		<option value="_General">General</option>
-		<option value="1_A: Obfuscate">A: Obfuscate</option>
-		<option value="2_B: Epluribus">B: Epluribus</option>
-		<option value="3_C: Coneasoup">C: Coneasoup</option>
-
+	      <select name="problem">
+		<option value="General">General</option>
+		{% for problem in problemlist %}
+		<option value="{{problem.letter}}">{{problem.letter}}: {{problem.name}}</option>
+		{% endfor %}
 	      </select>
 	    </td>
 	    <td>
 	      <select name="team">
-		<option value="none">Choose Team</option>
 		<option value="global">Global (everyone)</option>
-		<option value="1: test">1: test (test)</option>
+		{% for team in teamlist %}
+		<option value="{{team.id}}">{{ team.name }}</option>
+		{% endfor %}
 	      </select>
 	    </td>
 	  <tr class="content_body1">

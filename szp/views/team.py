@@ -59,15 +59,16 @@ def clarification(request):
 		subject = request.POST['subject']
 		body = request.POST['body']
 
-		clar = Clarreq()
+		clarreq = Clarreq()
 		if problem != "General":
-			clar.problem = Problem.objects.get(letter=problem)
-		clar.subject = subject
-		clar.message = body
-		clar.sender = profile.team
-		clar.save()
+			clarreq.problem = Problem.objects.get(letter=problem)
+		clarreq.subject = subject
+		clarreq.message = body
+		clarreq.sender = profile.team
+		clarreq.dealt_with = False
+		clarreq.save()
 
-		return HttpResponseRedirect('/team/clarification/sent/%s/' % clar.id)
+		return HttpResponseRedirect('/team/clarification/sent/%s/' % clarreq.id)
 
 	problemlist = Problem.objects.order_by("letter")
 
@@ -77,15 +78,15 @@ def clarification(request):
 @login_required
 def clarification_sent(request, clarid):
 	profile = request.user.get_profile()
-	clar = Clarreq.objects.get(id=clarid)
+	clarreq = Clarreq.objects.get(id=clarid)
 	contest = Contest.objects.get()
 
-	if not clar.problem:
+	if not clarreq.problem:
 		problem = "General"
 	else:
-		problem = str(clar.problem)
+		problem = str(clarreq.problem)
 
-	ourclars = Clarreq.objects.filter(sender=profile).order_by("-timestamp")
+	ourclars = Clarreq.objects.filter(sender=profile.team).order_by("-timestamp")
 	
 	clarlist = []
 	for c in ourclars:
@@ -93,7 +94,7 @@ def clarification_sent(request, clarid):
 		clarlist.append(row)
 
 	return render_to_response('team_clarification_sent.html',
-							  {"profile": profile, "clar": clar, "problem": problem, "clarlist": clarlist},
+							  {"profile": profile, "clarreq": clarreq, "problem": problem, "clarlist": clarlist},
 							  context_instance=RequestContext(request))
 
 @login_required

@@ -5,35 +5,38 @@
 <table class="content">
   <tr>
     <td align="center" valign="top">
-      <table width="320">
-	<tr class="content_header">
-	  <td class="content_header" colspan="2">&nbsp;Received: Clarification Request</td>
-	</tr>
-	<tr class="content_body1">
-	  <td width="50%">&nbsp;{{ clarreq.problem }}</td>
-	  <td width="50%">&nbsp;{{ clarreq.sender }}</td>
-	</tr>
-	<tr class="content_body1">
-	  <td colspan="2">&nbsp;{{ clarreq.subject }}</td>
-	</tr>
-	<tr class="message_body">
-	  <td colspan="2">{{ clarreq.message }}</td>
-	</tr>
-	<form action="{{ request.path }}" method="post">
+      <form action="{{ request.path }}" method="post">
+	<table width="320">
+	  <tr class="content_header">
+	    <td class="content_header" colspan="2">&nbsp;Send Clarification to Team(s)</td>
+	  </tr>
 	  <tr class="content_body1">
-	    <td colspan="2" align="center">
-	      <input type="submit" name="button" value="Reply">
-	      <input type="submit" name="button" value="Dealt With">
+	    <td>{{reply.problem}}</td>
+	    <td>{{reply.to}}</td>
+	  <tr class="content_body1">
+	    <td colspan="2">
+	      <input type="text" maxlength="50" name="subject"
+		value="{{reply.subject}}" size="50">
 	    </td>
 	  </tr>
-	</form>
-      </table>
-
+	  <tr class="content_body1">
+	    <td colspan="2">
+	      <textarea name="message" cols="50" rows="8">{{reply.message}}</textarea>
+	    </td>
+	  </tr>
+	  <tr class="content_body1">
+	    <td colspan="2" align="center">
+	      <input type="hidden" value="NULL" name="reply">
+	      <input type="submit" name="send" value="Send">
+	    </td>
+	  </tr>
+	</table>
+      </form>
     </td>
     <td align="center" valign="top">
       <table class="clarindex">
 	<tr class="content_header">
-	  <td colspan="3">&nbsp;Index of: {{ clarreq.problem }}</td>
+	  <td colspan="3">&nbsp;Index of: {{ reply.problem }}</td>
 	</tr>
 	{% for clar in clarlist %}
 	<tr class="{% cycle 'content_body1' 'content_body2' %}">

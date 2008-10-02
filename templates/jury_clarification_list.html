@@ -15,7 +15,8 @@
 	      <select name="problem">
 		<option value="General">General</option>
 		{% for problem in problemlist %}
-		<option value="{{problem.letter}}">{{problem.letter}}: {{problem.name}}</option>
+		<option value="{{problem.letter}}" {% ifequal problem.letter selected %}selected{% endifequal %}>
+		  {{problem.letter}}: {{problem.name}}</option>
 		{% endfor %}
 	      </select>
 	    </td>
@@ -49,44 +50,41 @@
     <td align="center" valign="top">
       <table class="clarindex">
 	<tr class="content_header">
-	  <td>&nbsp;Index</td>
+	  <td colspan="3">&nbsp;Index of: {{ title }}</td>
 	</tr>
-	<tr class="content_body1">
-	  <td>
-	    <a class="index" href="/jury/clarification/sent/">&nbsp;Sent Clarifications- {{total_sent}} messages 
-	    </a>
-	  </td>
-	</tr>
-
-	<tr class="content_body2">
-	  <td>
-	    <a class="index" href="/jury/clarification/all/">&nbsp;All Clarification Requests- {{total}} messages
-	      {% ifnotequal total_unhandled 0 %}
-	      <b>({{total_unhandled}} unanswered)</b>
-	      {% endifnotequal %}
-	    </a>
-	  </td>
-	</tr>
-	<tr class="content_body1">
-	  <td>
-	    <a class="index" href="/jury/clarification/general/">&nbsp;General - {{total_general}} messages 
-	      {% ifnotequal total_general_unhandled 0 %}
-	      <b>({{total_general_unhandled}} unanswered)</b>
-	      {% endifnotequal %}
-	    </a>
-	  </td>
-	</tr>
-	{% for clarreq in prob_clarreqs %}
-	<tr class="{% cycle 'content_body2' 'content_body1' %}">
-	  <td>
-	    <a class="index" href="/jury/clarification/{{clarreq.problem.letter}}/">&nbsp;{{clarreq.problem}} -  {{clarreq.num}} messages
-	      {% ifnotequal clarreq.unhandled 0 %}
-	      <b>({{clarreq.unhandled}} unanswered)</b>
-	      {% endifnotequal %}
-	    </a>
+	{% for clar in clarlist %}
+	<tr class="{% cycle 'content_body1' 'content_body2' %}">
+	  <td colspan="3">
+	    {% if clar.from %}
+	    <span title="From: {{clar.from}}">
+	      {% endif %}
+	      <a class="index" href="/jury/clarification/{{clar.url}}/">&nbsp;[{{clar.time}}]
+	      {{ clar.subject }} 
+		{% if clar.unhandled %}
+		<b>(unhandled)</b>
+		{% endif %}
+	      </a>
+	      {% if clar.from %}
+	    </span>
+	    {% endif %}
 	  </td>
 	</tr>
 	{% endfor %}
+	<tr class="content_header">
+	  <td width="25%">
+	  </td>
+	  <td align="middle">
+	    <a class="back_to_groups" href="/jury/clarification/" style=":hover ( text-decoration: underline; color: white; }">
+	      Back to Groups
+	    </a>
+	  </td>
+	  <td width="25%">
+	  </td>
+	</tr>
+      </table>
+    </td>
+
+
       </table>
     </td>
 </table>

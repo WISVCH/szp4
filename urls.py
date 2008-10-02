@@ -30,9 +30,14 @@ urlpatterns += patterns('szp.views.jury',
     (r'^jury/$', 'home'),
 	(r'^jury/score/$', 'score'),
     (r'^jury/clarification/$', 'clarification'),
+    (r'^jury/clarification/([A-Z]|all|general|sent)/$', 'clarification_list'),
+    (r'^jury/clarification/sent/(\d+)/$', 'clarification_show_sent'),
+    (r'^jury/clarification/(\d+)/$', 'clarification_show'),
+    (r'^jury/clarification/(\d+)/reply/$', 'clarification_reply'),
     (r'^jury/submission/$', 'submission'),
     (r'^jury/submission/([A-Z]|all)/$', 'submission_list'),
     (r'^jury/submission/(\d+)/$', 'submission_details'),
+					  
 )
 
 if settings.DEBUG:

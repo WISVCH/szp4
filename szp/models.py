@@ -83,7 +83,6 @@ class Clarreq(models.Model):
 
 class Clar(models.Model):
 	problem = models.ForeignKey(Problem, null=True, blank=True)
-	req = models.ForeignKey(Clarreq, null=True, blank=True)
 	subject = models.CharField(max_length=80)
 	message = models.TextField()
 	receiver = models.ForeignKey(Team)
@@ -92,7 +91,6 @@ class Clar(models.Model):
 
 class Sentclar(models.Model):
 	problem = models.ForeignKey(Problem, null=True, blank=True)
-	req = models.ForeignKey(Clarreq, null=True, blank=True)
 	subject = models.CharField(max_length=80)
 	message = models.TextField()
 	receiver = models.ForeignKey(Team, null=True, blank=True)

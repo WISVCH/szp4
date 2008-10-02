@@ -24,6 +24,7 @@ urlpatterns += patterns('szp.views.team',
     (r'^team/clarification/$', 'clarification'),
     (r'^team/clarification/sent/(\d+)/$', 'clarification_sent'),
     (r'^team/submission/$', 'submission'),
+		(r'^team/status/$', 'status'),
 )
 
 urlpatterns += patterns('szp.views.jury',

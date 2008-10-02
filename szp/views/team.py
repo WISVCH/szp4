@@ -21,6 +21,14 @@ def home(request):
 							  context_instance=RequestContext(request))
 
 @login_required
+def status(request):
+	profile = request.user.get_profile()
+	teammembers = profile.team.teammember_set.all()
+	return render_to_response('team_status.html',
+							  {"profile": profile, "teammembers": teammembers},
+							  context_instance=RequestContext(request))
+
+@login_required
 def score(request):
 	contest = Contest.objects.get()
 	problems = Problem.objects.order_by("letter")

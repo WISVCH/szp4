@@ -80,8 +80,8 @@ if __name__ == '__main__':
 			#submission = Submission.objects.order_by("timestamp")[0]
 		except IndexError:
 			# FIXME: No pending submission, sleep and try again.
-			print "No pending submissions, sleeping for 2 seconds"
-			time.sleep(2)
+			print "No pending submissions, sleeping for 5 seconds"
+			time.sleep(5)
 			continue
 			
 
@@ -204,3 +204,5 @@ if __name__ == '__main__':
 			print "AUTOJUDGE ERROR: CHECKSCRIPT RETURNED UNKNOWN VALUE"
 			sys.exit(1)
 
+		print "Submission judged, sleeping for 2 seconds"
+		

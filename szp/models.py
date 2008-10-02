@@ -33,16 +33,7 @@ class Team(models.Model):
 	location = models.CharField(max_length=100)
 	teamclass = models.ForeignKey(Teamclass)
 	organisation = models.CharField(max_length=100)
-	id_key = models.CharField(max_length=96)
 	ip_address = models.IPAddressField()
-
-	def __unicode__(self):
-		return self.name
-
-class Teammember(models.Model):
-	team = models.ForeignKey(Team)
-	name = models.CharField(max_length=100)
-	email = models.EmailField()
 
 	def __unicode__(self):
 		return self.name
@@ -50,7 +41,8 @@ class Teammember(models.Model):
 class Profile(models.Model):
 	user = models.ForeignKey(User, unique=True)
 	team = models.ForeignKey(Team, null=True, blank=True)
-
+	is_judge = models.BooleanField()
+	
 	def __unicode__(self):
 		return self.user.username
 

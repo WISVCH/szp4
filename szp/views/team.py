@@ -9,9 +9,8 @@ from django.core.exceptions import ObjectDoesNotExist
 @login_required
 def home(request):
 	profile = request.user.get_profile()
-	teammembers = profile.team.teammember_set.all()
 	return render_to_response('team_home.html',
-							  {"profile": profile, "teammembers": teammembers},
+							  {"profile": profile},
 							  context_instance=RequestContext(request))
 
 @login_required
@@ -40,8 +39,6 @@ def score(request):
 
 	scorelist.sort(key=lambda s: s["score"]*1000000-s["time"], reverse=True)
 
-	print scorelist
- 	
 	return render_to_response('team_score.html', {"contest": contest, "problems":problems, "scorelist": scorelist},
 							  context_instance=RequestContext(request))
 

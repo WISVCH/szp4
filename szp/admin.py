@@ -4,7 +4,6 @@ from django.contrib import admin
 admin.site.register(Autojudge)
 admin.site.register(Teamclass)
 admin.site.register(Team)
-admin.site.register(Teammember)
 admin.site.register(File)
 admin.site.register(Problem)
 admin.site.register(Clarreq)

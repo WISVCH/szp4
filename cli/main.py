@@ -58,26 +58,49 @@ class setcontest():
 
 		contest.save()
 
+class addteamclass():
+	def __init__(self, subparsers):
+		parser = subparsers.add_parser('addteamclass')
+		parser.set_defaults(obj=self)
+		parser.add_argument('rank')
+		parser.add_argument('name')
+
+	def run(self, args):
+		teamclass = Teamclass()
+		teamclass.name = args.name
+		teamclass.rank = args.rank
+		teamclass.save()
+		
 class addteam():
 	def __init__(self, subparsers):
 		parser = subparsers.add_parser('addteam')
 		parser.set_defaults(obj=self)
 		parser.add_argument('name')
 		parser.add_argument('organisation')
-		parser.add_argument('class')
+		parser.add_argument('teamclass', type=int)
 		parser.add_argument('location')
 		parser.add_argument('ip')
-		parser.add_argument('member1')
-		parser.add_argument('e-mail1')
-		parser.add_argument('member2', nargs='?', default=None)
-		parser.add_argument('e-mail2', nargs='?', default=None)
-		parser.add_argument('member3', nargs='?', default=None)
-		parser.add_argument('e-mail3', nargs='?', default=None)
+		parser.add_argument('loginname')
+		parser.add_argument('password')
 
-# FIXME: Implement
 	def run(self, args):
-		print "Not yet finished"
-		print args
+		team = Team()
+		team.name = args.name
+		team.organisation = args.organisation
+		team.teamclass = Teamclass.objects.get(id=args.teamclass)
+		team.location = args.location
+		team.ip_address = args.ip
+		team.save()
+		user = User(username=args.loginname)
+		user.set_password(args.password)
+		user.save()
+		profile = Profile()
+		profile.is_judge = False
+		profile.user = user
+		profile.team = team
+		profile.save()
+		
+		
 
 class addproblem():
 	def __init__(self, subparsers):
@@ -120,7 +143,7 @@ class addcompiler():
 		parser.add_argument('execute_line', help='the command-line to run the source-file')
 		parser.add_argument('extension', help='the default extension for this compiler (including the dot (.))')
 		parser.add_argument('name', help='name of the compiler')
-		parser.add_argument('version', help='optional version of the compiler')
+		parser.add_argument('version', help='version of the compiler')
 
 	def run(self, args):
 		compiler = Compiler()
@@ -184,19 +207,20 @@ class addjudge():
 		parser = subparsers.add_parser('addjudge')
 		parser.set_defaults(obj=self)
 		parser.add_argument('username', help='Username of judge')
+		parser.add_argument('password', nargs='?', default=None)
 
 	def run(self, args):
-		password = getpass("Password: ")
-		password_check = getpass("Password again: ")
-		if password != password_check:
-			print "Passwords don't match"
-			sys.exit(1)
+		if not password:
+			password = getpass("Password: ")
+			password_check = getpass("Password again: ")
+			if password != password_check:
+				print "Passwords don't match"
+				sys.exit(1)
 		user = User(username=args.username)
 		user.set_password(password)
-		user.save(Profile.Permission)
-		user.user_permissions = ["jury"]
 		user.save()
 		profile = Profile()
+		profile.is_judge = False
 		profile.user = user
 		profile.save()
 
@@ -204,17 +228,12 @@ def main():
 	parser = argparse.ArgumentParser(description='Sub Zero Programming command line interface')
 	subparsers = parser.add_subparsers()
 
-	parser_showcontest = subparsers.add_parser('showcontest')
-	parser_showcontest.set_defaults(func=showcontest)
-
-	parser_addteam = subparsers.add_parser('addteam')
-	parser_addteam.set_defaults(func=addteam)
-
 	addautojudge(subparsers)
 	addcompiler(subparsers)
 	addjudge(subparsers)
 	addproblem(subparsers)
 	addteam(subparsers)
+	addteamclass(subparsers)
 	listautojudges(subparsers)
 	listcompilers(subparsers)
 	showcontest(subparsers)

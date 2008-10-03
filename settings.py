@@ -88,6 +88,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 #    'django.core.context_processors.debug',
 #    'django.core.context_processors.i18n',
     'django.core.context_processors.request',
+	'szp.context_processors.statuswindow',
 )
 
 AUTH_PROFILE_MODULE = "szp.Profile"

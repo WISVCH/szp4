@@ -10,6 +10,9 @@ from team import gettime
 @login_required
 def home(request):
 	profile = request.user.get_profile()
+	if not profile.is_judge:
+		return HttpResponseRedirect('/team/')
+	
 
 	return render_to_response('jury_home.html',
 							  {"profile": profile},
@@ -17,6 +20,10 @@ def home(request):
 
 @login_required
 def score(request):
+	profile = request.user.get_profile()
+	if not profile.is_judge:
+		return HttpResponseRedirect('/team/')
+
 	contest = Contest.objects.get()
 	problems = Problem.objects.order_by("letter")
 
@@ -49,6 +56,10 @@ def score(request):
 
 @login_required
 def clarification(request):
+	profile = request.user.get_profile()
+	if not profile.is_judge:
+		return HttpResponseRedirect('/team/')
+
 	if request.method == 'POST':
 		if request.POST['team'] != "global":
 			teamlist = [Team.objects.get(id=request.POST['team'])]
@@ -109,6 +120,10 @@ def clarification(request):
 
 @login_required
 def clarification_list(request, which):
+	profile = request.user.get_profile()
+	if not profile.is_judge:
+		return HttpResponseRedirect('/team/')
+
 	contest = Contest.objects.get()
 	problemlist = Problem.objects.order_by("letter")
 	teamlist = Team.objects.order_by("name")
@@ -151,6 +166,10 @@ def clarification_list(request, which):
 		
 @login_required
 def clarification_show_sent(request, which):
+	profile = request.user.get_profile()
+	if not profile.is_judge:
+		return HttpResponseRedirect('/team/')
+
 	contest = Contest.objects.get()
 
 	clar = Sentclar.objects.get(id=which)
@@ -181,6 +200,10 @@ def clarification_show_sent(request, which):
 	
 @login_required
 def clarification_show(request, which):
+	profile = request.user.get_profile()
+	if not profile.is_judge:
+		return HttpResponseRedirect('/team/')
+
 	if request.method == 'POST':
 		print request.POST
 		if request.POST['button'] == "Dealt With":
@@ -218,6 +241,10 @@ def clarification_show(request, which):
 
 @login_required
 def clarification_reply(request, which):
+	profile = request.user.get_profile()
+	if not profile.is_judge:
+		return HttpResponseRedirect('/team/')
+
 	if request.method == 'POST':
 		clarreq = Clarreq.objects.get(id=which)
 
@@ -278,6 +305,10 @@ def clarification_reply(request, which):
 
 @login_required
 def submission(request):
+	profile = request.user.get_profile()
+	if not profile.is_judge:
+		return HttpResponseRedirect('/team/')
+
 	problems = Problem.objects.order_by("letter")
 	total = Submission.objects.count()
 	problemlist = []
@@ -293,6 +324,10 @@ def submission(request):
 
 @login_required
 def submission_list(request, problem):
+	profile = request.user.get_profile()
+	if not profile.is_judge:
+		return HttpResponseRedirect('/team/')
+
 	contest = Contest.objects.get()
 
 	if problem == "all":
@@ -329,6 +364,10 @@ def submission_list(request, problem):
 
 @login_required
 def submission_details(request, number):
+	profile = request.user.get_profile()
+	if not profile.is_judge:
+		return HttpResponseRedirect('/team/')
+
 	submission = Submission.objects.get(id=number)
 
 	if request.method == 'POST':

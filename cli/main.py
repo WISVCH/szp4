@@ -222,7 +222,7 @@ class addjudge():
 		user.set_password(password)
 		user.save()
 		profile = Profile()
-		profile.is_judge = False
+		profile.is_judge = True
 		profile.user = user
 		profile.save()
 

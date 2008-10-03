@@ -1,0 +1,93 @@
+{% extends "jury_base.html" %}
+
+{% block content %}
+<H1>Clarification</H1>
+<table class="content">
+  <tr>
+    <td align="center" valign="top">
+      <form action="/jury/clarification/" method="post">
+	<table width="320">
+	  <tr class="content_header">
+	    <td class="content_header" colspan="2">&nbsp;Send Clarification to Team(s)</td>
+	  </tr>
+	  <tr class="content_body1">
+	    <td>
+	      <select name="problem">
+		<option value="General">General</option>
+		{% for problem in problemlist %}
+		<option value="{{problem.letter}}" {% ifequal problem.letter selected %}selected{% endifequal %}>
+		  {{problem.letter}}: {{problem.name}}</option>
+		{% endfor %}
+	      </select>
+	    </td>
+	    <td>
+	      <select name="team">
+		<option value="global">Global (everyone)</option>
+		{% for team in teamlist %}
+		<option value="{{team.id}}">{{ team.name }}</option>
+		{% endfor %}
+	      </select>
+	    </td>
+	  <tr class="content_body1">
+	    <td colspan="2">
+	      <input type="text" maxlength="50" name="subject" value="" size="50">
+	    </td>
+	  </tr>
+	  <tr class="content_body1">
+	    <td colspan="2">
+	      <textarea name="message" cols="50" rows="8"></textarea>
+	    </td>
+	  </tr>
+	  <tr class="content_body1">
+	    <td colspan="2" align="center">
+	      <input type="hidden" value="NULL" name="reply">
+	      <input type="submit" name="send" value="Send">
+	    </td>
+	  </tr>
+	</table>
+      </form>
+    </td>
+    <td align="center" valign="top">
+      <table class="clarindex">
+	<tr class="content_header">
+	  <td colspan="3">&nbsp;Index of: {{ title }}</td>
+	</tr>
+	{% for clar in clarlist %}
+	<tr class="{% cycle 'content_body1' 'content_body2' %}">
+	  <td colspan="3">
+	    {% if clar.from %}
+	    <span title="From: {{clar.from}}">
+	      {% endif %}
+	      <a class="index" href="/jury/clarification/{{clar.url}}/">&nbsp;[{{clar.time}}]
+	      {{ clar.subject }} 
+		{% if clar.unhandled %}
+		<b>(unhandled)</b>
+		{% endif %}
+	      </a>
+	      {% if clar.from %}
+	    </span>
+	    {% endif %}
+	  </td>
+	</tr>
+	{% endfor %}
+	<tr class="content_header">
+	  <td width="25%">
+	  </td>
+	  <td align="middle">
+	    <a class="back_to_groups" href="/jury/clarification/" style=":hover ( text-decoration: underline; color: white; }">
+	      Back to Groups
+	    </a>
+	  </td>
+	  <td width="25%">
+	  </td>
+	</tr>
+      </table>
+    </td>
+
+
+      </table>
+    </td>
+</table>
+
+
+{% endblock %}

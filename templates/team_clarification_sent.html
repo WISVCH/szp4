@@ -1,0 +1,59 @@
+{% extends "team_base.html" %}
+
+{% block content %}
+
+<H1>Clarifications</H1>
+<table class="content">
+  <tr>
+    <td align="center" valign="top">
+      <table width="320">
+	<tr class="content_header">
+	  <td class="content_header" colspan="2">Message sent successfully</td>
+	</tr>
+	<tr class="content_body1">
+	  <td width="50%">{{ problem }}</td>
+	  <td width="50%">&nbsp;{{ profile.team.name }}</td>
+	</tr>
+	<tr class="content_body1">
+	  <td colspan="2">&nbsp;{{ clarreq.subject }}</td>
+	</tr>
+	<tr class="message_body">
+	  <td colspan="2">{{ clarreq.message }}</td>
+	</tr>
+	<form action="/team/clarification/" method="get">
+	  <tr class="content_body1">
+	    <td colspan="2" align="center">
+	      <input type="submit" name="new" value="New Message">
+	    </td>
+	  </tr>
+	</form>
+      </table>
+    </td>
+    <td align="center" valign="top">
+      <table class="index">
+
+	<tr class="content_header">
+	  <td colspan="3">&nbsp;Index of: Sent Clarification Requests</td>
+	</tr>
+	{% for c in clarlist %}
+	<tr class="{% cycle 'content_body1' 'content_body2' %}">
+	  <td colspan="3">&nbsp;{{c.time}} 
+	    <a class="index" href="/team/clarification/sent/{{ c.id }}/">{{ c.subject }}</a>
+	  </td>
+	</tr>
+	{% endfor %}
+	<tr class="content_header">
+	  <td width="25%">
+	  </td>
+	  <td align="center">
+	    <a class="back_to_groups" href="/team/clarification/" style=":hover (  text-decoration: underline; color: white; }">Back to Groups</a>
+	  </td>
+	  <td width="25%">
+	  </td>
+	</tr>
+      </table>
+    </td>
+</table>
+
+
+{% endblock %}

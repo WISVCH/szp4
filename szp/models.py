@@ -33,28 +33,25 @@ class Team(models.Model):
 	location = models.CharField(max_length=100)
 	teamclass = models.ForeignKey(Teamclass)
 	organisation = models.CharField(max_length=100)
-	id_key = models.CharField(max_length=96)
 	ip_address = models.IPAddressField()
-
-	def __unicode__(self):
-		return self.name
-
-class Teammember(models.Model):
-	team = models.ForeignKey(Team)
-	name = models.CharField(max_length=100)
-	email = models.EmailField()
 
 	def __unicode__(self):
 		return self.name
 
 class Profile(models.Model):
 	user = models.ForeignKey(User, unique=True)
-
 	team = models.ForeignKey(Team, null=True, blank=True)
 	is_judge = models.BooleanField()
-
+	new_results = models.BooleanField(default=False)
+	
 	def __unicode__(self):
 		return self.user.username
+
+	class Meta:
+		permissions = (
+			("team", "Team"),
+            ("jury", "Jury"),
+        )
 
 class File(models.Model):
 	content = models.TextField()
@@ -78,21 +75,27 @@ class Problem(models.Model):
 		return "%s: %s" % (self.letter, self.name)
 
 class Clarreq(models.Model):
-	prob = models.ForeignKey(Problem, null=True, blank=True)
+	problem = models.ForeignKey(Problem, null=True, blank=True)
 	subject = models.CharField(max_length=80)
-	msg = models.TextField()
+	message = models.TextField()
 	sender = models.ForeignKey(Team)
 	timestamp = models.DateTimeField(auto_now_add=True)
-	read_by = models.ManyToManyField(Profile)
+	dealt_with = models.BooleanField()
 
 class Clar(models.Model):
-	prob = models.ForeignKey(Problem, null=True, blank=True)
-	req = models.ForeignKey(Clarreq, null=True, blank=True)
-	subject = models.CharField(max_length=765)
-	msg = models.TextField()
+	problem = models.ForeignKey(Problem, null=True, blank=True)
+	subject = models.CharField(max_length=80)
+	message = models.TextField()
 	receiver = models.ForeignKey(Team)
-	timestamp = models.DateTimeField()
+	timestamp = models.DateTimeField(auto_now_add=True)
 	read = models.BooleanField()
+
+class Sentclar(models.Model):
+	problem = models.ForeignKey(Problem, null=True, blank=True)
+	subject = models.CharField(max_length=80)
+	message = models.TextField()
+	receiver = models.ForeignKey(Team, null=True, blank=True)
+	timestamp = models.DateTimeField(auto_now_add=True)
 
 class Compiler(models.Model):
 	name = models.CharField(max_length=100)

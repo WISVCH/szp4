@@ -22,23 +22,36 @@
 <body>
 	<div id="masthead">
 		<div id="status">
+		        {% if new_results %}
 			<div id="status_results" class="status_new">
 				<a href="/team/submission/">NEW<br/>RESULTS</a>
 			</div>
+			{% else %}
+			<div id="status_results" class="status_no_new">
+				<a href="/team/submission/">NO NEW<br/>RESULTS</a>
+			</div>
+			{% endif %}
+			{% ifequal new_clars 0 %}
 			<div id="status_clarifications" class="status_no_new">
 				<a href="/team/clarification/">NO NEW<br/>CLARIFICATIONS</a>
 			</div>
+			{% else %}
+			<div id="status_clarifications" class="status_new">
+				<a href="/team/clarification/">{{ new_clars }} NEW<br/>CLARIFICATIONS</a>
+			</div>
+			{% endifequal %}
 
-			<div id="contest_time">WAIT</div>
-			<div id="status_rank">Team rank: 1st</div>
+
+			<div id="contest_time">{{ status_time }}</div>
+			<div id="status_rank">Team rank: {{ rank }}</div>
 		</div>
 		<div id="loading"></div>
 		<h1>SZP TeamTool </h1>
 		<ul>
 			<li><a href="/team/">Home</a></li>
-			<li><a href="/team/submission/">Scorelist</a></li>
-			<li><a href="/team/clarification">Clarifications</a></li>
-			<li><a href="/team/submission">Submissions</a></li>
+			<li><a href="/team/score/">Scorelist</a></li>
+			<li><a href="/team/clarification/">Clarifications</a></li>
+			<li><a href="/team/submission/">Submissions</a></li>
 		</ul>
 	</div>
 	<div class="body">{% block content %}{% endblock %}</div>

@@ -16,7 +16,9 @@
 	      <select name="problem">
 		<option value="General">General</option>
 		{% for problem in problemlist %}
-		<option value="{{problem.letter}}">{{problem.letter}}: {{problem.name}}</option>
+		<option value="{{problem.letter}}" {% ifequal problem.letter selected %}selected{% endifequal %}>
+		  {{problem.letter}}: {{problem.name}}
+		</option>
 		{% endfor %}
 	      </select>
 
@@ -42,45 +44,33 @@
       </form>
     </td>
     <td align="center" valign="top">
-      <table class="index">
+      <table class="clarindex">
 	<tr class="content_header">
-	  <td>&nbsp;Index</td>
+	  <td colspan="3">&nbsp;Index of: {{ title }}</td>
 	</tr>
-	<tr class="content_body1">
-	  <td>
-	    <a class="index" href="/team/clarification/sent/">&nbsp;Sent Requests- {{total_sent}} message
-	    </a>
-	  </td>
-	</tr>
-	<tr class="content_body2">
-	  <td>
-	    <a class="index" href="/team/clarification/all/">&nbsp;All Clarifications- {{total}} messages
-	      {% ifnotequal total_new 0 %}
-	      <b>({{total_new}} new)</b>
-	      {% endifnotequal %}
-	    </a>
-	  </td>
-	</tr>
-	<tr class="content_body1">
-	  <td>
-	    <a class="index" href="/team/clarification/general/">&nbsp;General - {{total_general}} messages 
-	      {% ifnotequal total_general_new 0 %}
-	      <b>({{total_general_new}} new)</b>
-	      {% endifnotequal %}
-	    </a>
-	  </td>
-	</tr>
-	{% for clar in prob_clars %}
-	<tr class="{% cycle 'content_body2' 'content_body1' %}">
-	  <td>
-	    <a class="index" href="/team/clarification/{{clar.problem.letter}}/">&nbsp;{{clar.problem}} -  {{clar.num}} messages
-	      {% ifnotequal clar.new 0 %}
-	      <b>({{clar.new}} new)</b>
-	      {% endifnotequal %}
+	{% for clar in clarlist %}
+	<tr class="{% cycle 'content_body1' 'content_body2' %}">
+	  <td colspan="3">
+	    <a class="index" href="/team/clarification/{{clar.url}}/">&nbsp;[{{clar.time}}]
+	      {{ clar.subject }} 
+	      {% if clar.new %}
+	      <b>(new)</b>
+	      {% endif %}
 	    </a>
 	  </td>
 	</tr>
 	{% endfor %}
+	<tr class="content_header">
+	  <td width="25%">
+	  </td>
+	  <td align="middle">
+	    <a class="back_to_groups" href="/team/clarification/" style=":hover ( text-decoration: underline; color: white; }">
+	      Back to Groups
+	    </a>
+	  </td>
+	  <td width="25%">
+	  </td>
+	</tr>
       </table>
     </td>
   </tr>

@@ -22,17 +22,26 @@ urlpatterns += patterns('szp.views.team',
     (r'^team/$', 'home'),
 	(r'^team/score/$', 'score'),
     (r'^team/clarification/$', 'clarification'),
+    (r'^team/clarification/([A-Z]|all|general|sent)/$', 'clarification_list'),
+    (r'^team/clarification/sent/(\d+)/$', 'clarification_sent'),
+    (r'^team/clarification/(\d+)/$', 'clarification_show'),
     (r'^team/submission/$', 'submission'),
-		(r'^team/status/$', 'status'),
+	(r'^team/status/$', 'status'),
 )
 
 urlpatterns += patterns('szp.views.jury',
     (r'^jury/$', 'home'),
 	(r'^jury/score/$', 'score'),
     (r'^jury/clarification/$', 'clarification'),
+    (r'^jury/clarification/([A-Z]|all|general|sent)/$', 'clarification_list'),
+    (r'^jury/clarification/sent/(\d+)/$', 'clarification_show_sent'),
+    (r'^jury/clarification/(\d+)/$', 'clarification_show'),
+    (r'^jury/clarification/(\d+)/reply/$', 'clarification_reply'),
     (r'^jury/submission/$', 'submission'),
     (r'^jury/submission/([A-Z]|all)/$', 'submission_list'),
     (r'^jury/submission/(\d+)/$', 'submission_details'),
+	(r'^jury/status/$', 'status'),
+					  
 )
 
 if settings.DEBUG:

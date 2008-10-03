@@ -64,6 +64,10 @@ def uploadresult(submission, judgement, compiler_output, submission_output=None,
 
 	score.save()
 
+	profile = submission.team.profile_set.get()
+	profile.new_results = True
+	profile.save()
+
 if __name__ == '__main__':
 	# FIXME: Get our IP address.
 	ip_address = "127.0.0.1"
@@ -80,8 +84,8 @@ if __name__ == '__main__':
 			#submission = Submission.objects.order_by("timestamp")[0]
 		except IndexError:
 			# FIXME: No pending submission, sleep and try again.
-			print "No pending submissions, sleeping for 2 seconds"
-			time.sleep(2)
+			print "No pending submissions, sleeping for 5 seconds"
+			time.sleep(5)
 			continue
 			
 
@@ -149,7 +153,9 @@ if __name__ == '__main__':
 		output_filename = os.path.join(testdir, 'submission_output')
 		output = open(output_filename, "w+")
 
-		run = Popen(cmd, stdout=output, stderr=PIPE, close_fds=True, cwd=testdir, env=env)
+		input_fd = open(in_file_name, "r")
+
+		run = Popen(cmd, stdin=input_fd, stdout=output, stderr=PIPE, close_fds=True, cwd=testdir, env=env)
 		run.wait()
 
 		output.seek(0)
@@ -197,10 +203,12 @@ if __name__ == '__main__':
 		if check.returncode == 0:
 			uploadresult(submission, "ACCEPTED", compiler_output, submission_output, watchdog_output, check_output)
 			print "ACCEPTED"
-		elif check.returncode == 1:
+		elif check.returncode == 1 or check.returncode == 2:
 			uploadresult(submission, "WRONG_OUTPUT", compiler_output, submission_output, watchdog_output, check_output)
 			print "WRONG_OUTPUT"
 		else:
 			print "AUTOJUDGE ERROR: CHECKSCRIPT RETURNED UNKNOWN VALUE"
 			sys.exit(1)
 
+		print "Submission judged, sleeping for 2 seconds"
+		

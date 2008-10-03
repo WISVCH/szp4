@@ -1,0 +1,187 @@
+% Team informatie voor programmeerwedstrijden
+
+\documentclass[a4paper]{artikel3}
+
+\usepackage[dutch]{babel}
+\usepackage{pslatex,geometry}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\geometry{noheadfoot,left=0.75in,right=0.75in,top=1in,bottom=1in}
+\pagestyle{empty}
+
+\catcode`\|\active
+\def|#1|{\textsf{\textbf{#1}}}
+\renewcommand{\rmdefault}{bch}
+
+\hyphenpenalty=10000
+
+\begin{document}
+
+\section*{Richtlijnen voor het inzenden van programma's}
+
+Ingestuurde programma's worden op de computers van de jury automatisch
+gecompileerd en nagekeken. Dit gebeurt altijd onder
+GNU/Linux. Hieronder geven we aan op welke manier de programma's
+geacht worden hun invoer te lezen en uitvoer te schrijven. Verder
+geven we per programmeertaal informatie over de compiler en over de
+toegestane taalconstructies. Voor een goed verloop van het
+nakijk-proces, is het belangrijk dat jullie programma's zich exact aan
+de hier beschreven richtlijnen houden. Een kleine vergissing,
+bijvoorbeeld in de naam van het invoerbestand, en de inzending wordt
+onherroepelijk fout gerekend!
+
+Om programma's te compileren met dezelfde instellingen als die van de jury,
+hebben we een Makefile geschreven. Je hoeft hierbij alleen maar |make|
+te typen om programma's te compileren. De sourcebestanden moeten dan
+wel de juiste extensie hebben: |.c| voor C, |.cc| voor C++ en |.java|
+voor Java.
+
+Documentatie voor C, C++ en Java is beschikbaar in HTML, te lezen met
+Firefox. Bovendien zijn de |man|pages voor C ge\"installeerd.
+
+Let op, jullie programma's mogen geen gebruik maken van:
+\begin{itemize}
+\item assembler code, hetzij inline of op een andere manier,
+\item netwerktoegang,
+\item bestandstoegang anders dan de aangegeven invoerfile,
+\item procesmanipulatie (|system()|, |fork()|,
+  |exec()|, |kill()| en dergelijke),
+\item meer dan 512MB geheugen.
+\end{itemize}
+
+Het is jullie eigen verantwoordelijkheid om ervoor te zorgen dat de
+ingestuurde programma's voldoen aan de bovengenoemde regels. Bij het
+opzettelijk overtreden van de regels kan de jury het betreffende team
+diskwalificeren.
+
+Bij het gebruik van meer dan 512 MB geheugen of het geven van meer dan 64MB
+output, krijg je een \emph{runtime error}.
+
+\subsection*{Invoer en uitvoer}
+
+Invoer wordt gelezen vanuit een bestand met als naam de letter van de
+opgave, gevolgd door |'.in'|; alles in kleine letters. Zo staat de
+invoer voor opgave C dus in het bestand |'c.in'|. Uitvoer wordt
+geschreven naar de standaard-uitvoer (naar het 'scherm'). Let erop dat
+je exact het formaat aanhoudt dat in de opgave wordt
+beschreven. Gebruik \emph{geen hoofdletters} in de naam van het
+invoerbestand, bestandsnamen op GNU/Linux zijn namelijk
+hoofdlettergevoelig.
+
+Het lezen of schrijven van andere bestanden dan deze is niet toegestaan. Het
+lezen van standaard-invoer zal resulteren in een \emph{run time limit
+exceeded} omdat jullie programma zal blijven wachten op invoer van het
+toetsenbord (wat de jury niet zal gaan invoeren).
+
+\subsection*{C / C++}
+
+\begin{tabular}{rl}
+Compiler: & GNU GCC 4.3.1 \\
+C opties: & {\tt gcc -Wall -O2 -g -std=c99 -lm} \\
+C++ opties: & {\tt g++ -Wall -O2 -g -std=c++98 -lm} \\
+\end{tabular}
+
+Zorg ervoor dat jullie programma een \emph{exit code} van 0 geeft. In
+Java gebeurt dit automatisch; in C of C++, declareer |main| als |int|
+en gebruik een expliciet |return 0;| of |exit(0);| statement. Als
+|main| als |void| gedeclareerd wordt, kan een waarde anders dan 0
+teruggegeven worden, wat een \emph{runtime error} melding kan
+opleveren.
+
+Gebruik \emph{geen binary mode} voor het lezen van invoerbestanden.
+Schrijf dus niet |fopen("{}invoer", "rb")|, maar gewoon
+|fopen("{}invoer", "r")|.
+
+In C mag alleen gebruikt gemaakt worden van functies die gedefinieerd worden
+door de ISO C99 standaard. Hieronder vallen de volgende headers:
+|<assert.h>|, |<complex.h>|, |<ctype.h>|, |<errno.h>|, |<fenv.h>|,
+|<float.h>|, |<inttypes.h>|, |<iso646.h>|, |<limits.h>|,
+|<locale.h>|, |<math.h>|, |<setjmp.h>|, |<signal.h>|, |<stdarg.h>|,
+|<stdbool.h>|, |<stddef.h>|, |<stdint.h>|, |<stdio.h>|, |<stdlib.h>|,
+|<string.h>|, |<tgmath.h>|, |<time.h>|, |<wchar.h>|, |<wctype.h>|.
+
+Voor C++ gelden dezelfde regels als voor C, maar in dit geval mogen ook
+de standaard C++ headers gebruikt worden. Dit zijn: |<algorithm>|,
+|<bitset>|, |<deque>|, |<exception>|, |<fstream>|, |<functional>|,
+|<iomanip>|, |<ios>|, |<iosfwd>|, |<iostream>|, |<istream>|, |<iterator>|,
+|<list>|, |<map>|, |<memory>|, |<new>|, |<numeric>|, |<ostream>|, |<queue>|,
+|<set>|, |<sstream>|, |<stack>|, |<stdexcept>|, |<streambuf>|, |<typeinfo>|,
+|<utility>|, |<valarray>| en |<vector>|. Alle C-headers zijn ook
+toegestaan.
+
+Andere header files mogen niet gebruikt worden. |\#pragma| mag ook niet
+gebruikt worden. Het gebruik van STL is \emph{wel} toegestaan.
+
+Het gebruik van de C++ stream operators \verb|<<| en \verb|>>| zorgt ervoor
+dat je programma trager wordt, dan wanneer je de C-routines zou gebruiken.
+
+\subsection*{Java}
+
+\begin{tabular}{rl}
+Compiler: & JDK 1.6.0 \\
+Opties: & {\tt javac -O} \\
+\end{tabular}
+
+In Java zijn de volgende packages toegestaan: |java.io|, |java.lang|,
+|java.text|, |java.math| en |java.util|. Andere packages mogen dus niet.
+
+Het is toegestaan om meerdere \emph{classes} te gebruiken in je programma,
+maar deze moeten wel allemaal in een enkel |.java| bestand gedefinieerd
+worden. In dat geval mag je de classes niet als |public| definieren. E\'en
+van je classes moet een |main| method bevatten. De naam van deze class
+\emph{moet altijd} exact gelijk zijn aan |Problem| gevolgd door een
+hoofdletter die hoort bij het probleem wat je hebt opgelost.
+
+Voor het lezen van invoerbestanden is het handig om gebruik te maken van de
+class |StreamTokenizer|. Schrijven naar de uitvoer kan met de methode
+|System.out.print|. Bijvoorbeeld:
+
+\begin{verbatim}
+import java.io.*;
+class ProblemA {
+    public static void main(String[] args) {
+        try {
+            // Open invoerbestand
+            StreamTokenizer f = new StreamTokenizer(new FileReader("a.in"));
+            f.resetSyntax();
+            f.whitespaceChars(0, 0x20);  f.wordChars(0x21, 0xff);
+            f.nextToken();  String s = f.sval;
+            f.nextToken();  int i = Integer.parseInt(f.sval);
+            System.out.println("Hallo daar.");
+        } catch (IOException e) { System.err.println(e); }
+    }
+}
+\end{verbatim}
+
+\section*{Het GNU/Linux systeem tijdens de wedstrijd}
+
+\subsection*{Inloggen}
+
+Na het opstarten van de computer verschijnt het |gdm| login scherm,
+welke binnen 30 seconden automatisch de gebruiker |team| inlogt. De
+standaardomgeving die gestart wordt is GNOME. Wil je een andere window
+manager, log dan uit en kies bij gdm je window manager naar keuze. Log
+vervolgens in met gebruikersnaam |team| en wachtwoord |team|.
+
+Het is niet mogelijk om op het console (in tekst-mode) te werken omdat
+TeamTool een grafische browser nodig heeft. Na het inloggen kan je het
+beste meteen Firefox starten. Deze opent automatisch de TeamTool
+pagina, waar je kan inloggen met de username en wachtwoord die gegeven
+is.
+
+\subsection*{Printen}
+
+Printen is mogelijk met het |a2ps| programma vanaf de command-line: \\ {\tt
+a2ps \it filenaam}
+
+De meeste editors kunnen geopende bestanden ook direct vanuit de editor
+printen. Geprinte documenten worden door een runner naar je werkplek
+gebracht; loop \emph{niet} zelf naar de printer om het document op te halen.
+
+\subsection*{Documentatie}
+
+Via het |man| commando kun je documentatie van het systeem en de C
+library opvragen. Documentatie voor Java is beschikbaar in HTML, te
+lezen met Firefox. Er zijn bookmarks naar de beschikbare documentatie.
+
+\end{document}

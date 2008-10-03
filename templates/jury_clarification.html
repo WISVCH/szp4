@@ -1,0 +1,95 @@
+{% extends "jury_base.html" %}
+
+{% block content %}
+<H1>Clarification</H1>
+<table class="content">
+  <tr>
+    <td align="center" valign="top">
+      <form action="/jury/clarification/" method="post">
+	<table width="320">
+	  <tr class="content_header">
+	    <td class="content_header" colspan="2">&nbsp;Send Clarification to Team(s)</td>
+	  </tr>
+	  <tr class="content_body1">
+	    <td>
+	      <select name="problem">
+		<option value="General">General</option>
+		{% for problem in problemlist %}
+		<option value="{{problem.letter}}">{{problem.letter}}: {{problem.name}}</option>
+		{% endfor %}
+	      </select>
+	    </td>
+	    <td>
+	      <select name="team">
+		<option value="global">Global (everyone)</option>
+		{% for team in teamlist %}
+		<option value="{{team.id}}">{{ team.name }}</option>
+		{% endfor %}
+	      </select>
+	    </td>
+	  <tr class="content_body1">
+	    <td colspan="2">
+	      <input type="text" maxlength="50" name="subject" value="" size="50">
+	    </td>
+	  </tr>
+	  <tr class="content_body1">
+	    <td colspan="2">
+	      <textarea name="message" cols="50" rows="8"></textarea>
+	    </td>
+	  </tr>
+	  <tr class="content_body1">
+	    <td colspan="2" align="center">
+	      <input type="hidden" value="NULL" name="reply">
+	      <input type="submit" name="send" value="Send">
+	    </td>
+	  </tr>
+	</table>
+      </form>
+    </td>
+    <td align="center" valign="top">
+      <table class="clarindex">
+	<tr class="content_header">
+	  <td>&nbsp;Index</td>
+	</tr>
+	<tr class="content_body1">
+	  <td>
+	    <a class="index" href="/jury/clarification/sent/">&nbsp;Sent Clarifications- {{total_sent}} messages 
+	    </a>
+	  </td>
+	</tr>
+
+	<tr class="content_body2">
+	  <td>
+	    <a class="index" href="/jury/clarification/all/">&nbsp;All Clarification Requests- {{total}} messages
+	      {% ifnotequal total_unhandled 0 %}
+	      <b>({{total_unhandled}} unanswered)</b>
+	      {% endifnotequal %}
+	    </a>
+	  </td>
+	</tr>
+	<tr class="content_body1">
+	  <td>
+	    <a class="index" href="/jury/clarification/general/">&nbsp;General - {{total_general}} messages 
+	      {% ifnotequal total_general_unhandled 0 %}
+	      <b>({{total_general_unhandled}} unanswered)</b>
+	      {% endifnotequal %}
+	    </a>
+	  </td>
+	</tr>
+	{% for clarreq in prob_clarreqs %}
+	<tr class="{% cycle 'content_body2' 'content_body1' %}">
+	  <td>
+	    <a class="index" href="/jury/clarification/{{clarreq.problem.letter}}/">&nbsp;{{clarreq.problem}} -  {{clarreq.num}} messages
+	      {% ifnotequal clarreq.unhandled 0 %}
+	      <b>({{clarreq.unhandled}} unanswered)</b>
+	      {% endifnotequal %}
+	    </a>
+	  </td>
+	</tr>
+	{% endfor %}
+      </table>
+    </td>
+</table>
+
+
+{% endblock %}

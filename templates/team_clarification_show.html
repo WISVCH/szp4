@@ -30,24 +30,29 @@
       </table>
     </td>
     <td align="center" valign="top">
-      <table class="index">
-
+      <table class="clarindex">
 	<tr class="content_header">
-	  <td colspan="3">&nbsp;Index of: All</td>
+	  <td colspan="3">&nbsp;Index of: {{ clar.problem }}</td>
 	</tr>
-	<tr class="content_body1">
-	  <td colspan="3">&nbsp;[104:31:45] <a class="index" href="index.php?p=_mail&g=all&m=4">test a</a>
+	{% for c in clarlist %}
+	<tr class="{% cycle 'content_body1' 'content_body2' %}">
+	  <td colspan="3">
+	    <a class="index" href="/team/clarification/{{c.url}}/">&nbsp;[{{c.time}}]
+	      {{ c.subject }} 
+	      {% if c.new %}
+	      <b>(new)</b>
+	      {% endif %}
+	    </a>
 	  </td>
 	</tr>
-	<tr class="content_body2">
-	  <td colspan="3">&nbsp;[-838:59:59] <a class="index" href="index.php?p=_mail&g=all&m=2">test gen</a>
-	  </td>
-	</tr>
+	{% endfor %}
 	<tr class="content_header">
 	  <td width="25%">
 	  </td>
-	  <td align=center>
-	    <a class="back_to_groups" href="index.php?p=_mail"style=":hover (  text-decoration: underline; color: white; }">Back to Groups</a>
+	  <td align="middle">
+	    <a class="back_to_groups" href="/team/clarification/" style=":hover ( text-decoration: underline; color: white; }">
+	      Back to Groups
+	    </a>
 	  </td>
 	  <td width="25%">
 	  </td>

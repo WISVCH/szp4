@@ -112,7 +112,7 @@ if __name__ == '__main__':
 		fp.close()
 
 		in_file_name = os.path.join(testdir, submission.problem.in_file_name)
-		fp = open(in_file_name, "w")
+		fp = open(in_file_name, "r")
 		fp.write(submission.problem.in_file.content)
 		fp.close()
 
@@ -149,7 +149,9 @@ if __name__ == '__main__':
 		output_filename = os.path.join(testdir, 'submission_output')
 		output = open(output_filename, "w+")
 
-		run = Popen(cmd, stdout=output, stderr=PIPE, close_fds=True, cwd=testdir, env=env)
+		input_fd = open(in_file_name, "r")
+
+		run = Popen(cmd, stdin=input_fd, stdout=output, stderr=PIPE, close_fds=True, cwd=testdir, env=env)
 		run.wait()
 
 		output.seek(0)

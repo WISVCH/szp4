@@ -60,6 +60,7 @@ def score(request):
 @login_required
 def clarification(request):
 	profile = request.user.get_profile()
+	team = profile.team
 
 	if request.method == 'POST':
 		# FIXME: Make a django form for this.
@@ -72,7 +73,7 @@ def clarification(request):
 			clarreq.problem = Problem.objects.get(letter=problem)
 		clarreq.subject = subject
 		clarreq.message = body
-		clarreq.sender = profile.team
+		clarreq.sender = team
 		clarreq.dealt_with = False
 		clarreq.save()
 
@@ -80,8 +81,74 @@ def clarification(request):
 
 	problemlist = Problem.objects.order_by("letter")
 
-	return render_to_response('team_clarification.html', {"problemlist": problemlist, "profile": profile},
+	total_sent = Clarreq.objects.filter(sender=team).count()
+
+	total_general = Clar.objects.filter(problem=None).filter(receiver=team).count()
+	total_general_new = Clar.objects.filter(problem=None).filter(receiver=team).filter(read=False).count()
+
+	total = total_general
+	total_new = total_general_new
+
+	prob_clars = []
+	for problem in problemlist:
+		num = Clar.objects.filter(problem=problem).filter(receiver=team).count()
+		total += num
+		new = Clar.objects.filter(problem=problem).filter(receiver=team).filter(read=False).count()
+		total_new += new
+		row = {"num": num,
+			   "new": new,
+			   "problem": problem}
+		prob_clars.append(row)
+
+	return render_to_response('team_clarification.html',
+							  {"problemlist": problemlist, "team": team,
+							   "total": total, "total_new": total_new, "total_sent": total_sent,
+							   "total_general": total_general, "total_general_new": total_general_new,
+							   "prob_clars": prob_clars},
 							  context_instance=RequestContext(request))
+
+
+@login_required
+def clarification_list(request, which):
+	contest = Contest.objects.get()
+	problemlist = Problem.objects.order_by("letter")
+	profile = request.user.get_profile()
+	team = profile.team
+
+	select = None
+
+	if which == "all":
+		clars = Clar.objects.filter(receiver=team).order_by("-timestamp")
+		title = "All"
+	elif which == "sent":
+		clars = Clarreq.objects.filter(sender=team).order_by("-timestamp")
+		title = "Sent clarifications"
+	elif which == "general":
+		clars = Clar.objects.filter(receiver=team).filter(problem=None).order_by("-timestamp")
+		title = "General"
+	else:
+		problem = Problem.objects.get(letter=which)
+		clars = Clar.objects.filter(receiver=team).filter(problem=problem).order_by("-timestamp")
+		title = str(problem)
+		select = problem.letter
+
+	clarlist = []
+	for c in clars:
+		row = {"time": gettime(c.timestamp, contest), "subject": c.subject }
+		if which == "sent":
+			row["url"] = "sent/"+str(c.id)
+			row["new"] = False
+		else:
+			row["url"] = c.id
+			row["new"] = not c.read
+
+		clarlist.append(row)
+
+	return render_to_response('team_clarification_list.html',
+							  {"problemlist": problemlist, "team": team,
+							   "title": title, "clarlist": clarlist, "select": select},
+							  context_instance=RequestContext(request))
+
 
 @login_required
 def clarification_sent(request, clarid):
@@ -103,6 +170,37 @@ def clarification_sent(request, clarid):
 
 	return render_to_response('team_clarification_sent.html',
 							  {"profile": profile, "clarreq": clarreq, "problem": problem, "clarlist": clarlist},
+							  context_instance=RequestContext(request))
+
+@login_required
+def clarification_show(request, which):
+	contest = Contest.objects.get()
+	profile = request.user.get_profile()
+	team = profile.team
+
+	c = Clar.objects.get(id=which)
+	if c.receiver != team:
+		return HttpResponseRedirect('/team/clarification/')
+
+	clar = {"subject": c.subject,
+			"message": c.message,
+			"new": not c.read}
+	
+	if c.problem:
+		clar["problem"] = c.problem
+	else:
+		clar["problem"] = "General"
+
+	clars = Clar.objects.filter(receiver=team).filter(problem=c.problem).order_by("-timestamp")
+	clarlist = []
+	for c in clars:
+		row = {"time": gettime(c.timestamp, contest), "subject": c.subject }
+		row["url"] = c.id
+		row["new"] = not c.read
+		clarlist.append(row)
+
+	return render_to_response('team_clarification_show.html',
+							  {"clar": clar, "clarlist": clarlist},
 							  context_instance=RequestContext(request))
 
 @login_required

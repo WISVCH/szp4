@@ -22,9 +22,11 @@ urlpatterns += patterns('szp.views.team',
     (r'^team/$', 'home'),
 	(r'^team/score/$', 'score'),
     (r'^team/clarification/$', 'clarification'),
+    (r'^team/clarification/([A-Z]|all|general|sent)/$', 'clarification_list'),
     (r'^team/clarification/sent/(\d+)/$', 'clarification_sent'),
+    (r'^team/clarification/(\d+)/$', 'clarification_show'),
     (r'^team/submission/$', 'submission'),
-		(r'^team/status/$', 'status'),
+	(r'^team/status/$', 'status'),
 )
 
 urlpatterns += patterns('szp.views.jury',

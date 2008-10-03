@@ -16,7 +16,8 @@ szp addcompiler 'Problem${LETTER}.java' 'javac -O Problem${LETTER}.java' 'java P
 
 szp addteamclass 1 testers
 
-szp addteam tester qa 1 'dw 160' 127.0.0.1 team1 test
+szp addteam testteam1 qa 1 'dw 160' 127.0.0.1 team1 test
+szp addteam testteam2 qa 1 'dw 160' 127.0.0.2 team2 test
 
 pushd /home/jeroen/szptest
 szp addproblem A 30 Obfuscate Pink A.in A.out check

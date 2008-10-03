@@ -1,0 +1,44 @@
+\documentclass[a4paper]{artikel3}
+
+\usepackage[dutch]{babel}
+\usepackage{pslatex,geometry}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\geometry{noheadfoot,left=0.75in,right=0.75in,top=1in,bottom=1in}
+\pagestyle{empty}
+
+\catcode`\|\active
+\def|#1|{\textsf{\textbf{#1}}}
+\renewcommand{\rmdefault}{bch}
+
+\hyphenpenalty=10000
+
+\begin{document}
+
+\section*{Crash course programmeren voor DKP onder GNU/Linux}
+
+Programma's schrijven en compileren bestaat doorgaans uit die twee simpele
+stappen (IDEs als Eclipse daargelaten). Voor het eerste gedeelte, schrijven,
+zijn er verschillende editors beschikbaar. Vim en Emacs zijn aanwezig voor de
+liefhebbers, de rest raden we Kate of Gedit aan. 
+
+De volledige lijst beschikbare editors is te vinden onder
+Applications$\rightarrow$Debian$\rightarrow$Apps$\rightarrow$Editors
+.
+
+Als je je programma eenmaal geschreven hebt sla deze dan op met de juiste
+extensie, dat wil zeggen |.c| voor C, |.cc| voor C++ en |.java| voor Java. Om
+het zaakje te compileren open je een terminal (de Terminal snelkoppeling op de
+desktop of via het menu
+Applications$\rightarrow$Accessories$\rightarrow$Terminal ). Type in je
+terminal |make| in. Make zal alle source files in de directory compileren tot
+programma's.
+
+Om te controleren of het programma doet wat het moet doen kan je het uitvoeren
+door |./programma| in te geven, of (natuurlijk) |java ProblemA| in het geval
+van java.
+
+Mocht je de uitvoer op willen vangen om rustig na te kijken, dirigeer het dan
+naar file: |./programma > output| en open |output| in je editor.
+
+\end{document}

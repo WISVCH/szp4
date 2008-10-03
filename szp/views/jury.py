@@ -222,7 +222,7 @@ def clarification_reply(request, which):
 		clarreq = Clarreq.objects.get(id=which)
 
 		clar = Clar()
-		clar.probem = clarreq.problem
+		clar.problem = clarreq.problem
 		clar.subject = request.POST['subject']
 		clar.message = request.POST['message']
 		clar.receiver = clarreq.sender

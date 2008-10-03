@@ -4,7 +4,7 @@
 
 body 
 {
-  font-family: verdana;
+  font-family: Verdana;
   background: #cdd5f6 url('achtergrond.jpg');
   margin: 1em;
 }
@@ -154,7 +154,7 @@ td.menu
 tr.body
 {
   /*background-color: #E7E9F7;*/
-  background-color: transparant;
+  /*background-color: transparant;*/
   /*background-color: #CCCCCC; */
   vertical-align:top;
 }
@@ -243,12 +243,16 @@ body.login
   height: 80px;
 }
 
-#status_results, #status_clarifications {
+#status_time, #status_results, #status_clarifications {
   width: 85px;
   height: 30px;
   padding-top: 8px;
   float: left;
   font-size: 8px;
+}
+
+#status_time {
+  font-size: 22px;
 }
 
 #status_results a, #status_clarifications a {
@@ -270,6 +274,21 @@ body.login
   float: left;
   margin-left: 0.8em;
   margin-top: 1.1em;
+}
+
+#masthead.jury #contest_time {
+  padding-top: 1em;
+  clear: both;
+  float: none;
+  margin: 0;
+}
+
+#masthead.looktool #status_time {
+  display: block;
+  text-align: center;
+  clear: both;
+  width: 100%;
+  float: none;
 }
 
 /* menu bar */

@@ -27,4 +27,4 @@ popd
 
 szp addjudge testjudge test
 
-szp setcontest RUNNING
+#szp setcontest RUNNING

@@ -5,8 +5,11 @@ from django.http import HttpResponseRedirect
 from szp.models import *
 from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
+from datetime import datetime
 
 def gettime(timestamp, contest):
+	if contest.status == "INITIALIZED":
+		return "00:00:00"
 	timedelta = timestamp - contest.starttime
 	hours = timedelta.days*24+timedelta.seconds / 3600
 	minutes = timedelta.seconds % 3600 / 60
@@ -23,9 +26,45 @@ def home(request):
 @login_required
 def status(request):
 	profile = request.user.get_profile()
-	teammembers = profile.team.teammember_set.all()
+	contest = Contest.objects.get()
+	
+	new_clars = Clar.objects.filter(receiver=profile.team).filter(read=False).count()
+	new_results = profile.new_results
+	
+	scoredict = {}
+	
+	for team in Team.objects.all():
+		scoredict[team] = {"score": 0, "time": 0}
+		
+	for score in Score.objects.filter(correct=True):
+		scoredict[score.team]["score"] += 1
+		scoredict[score.team]["time"] += score.time
+
+	scorelist = []
+	for (team, score) in scoredict.items():
+		scorelist.append({"team": team, "score": score["score"], "time": score["time"]})
+		if team == profile.team:
+			ourscore = score["score"]
+			ourtime = score["time"]
+
+	for (rank, score) in enumerate(scorelist):
+		if score["time"] == ourtime and score["score"] == ourscore:
+			rank = rank+1
+			break
+	
+	if contest.status == "INITIALIZED":
+		status_time = "WAIT"
+	elif contest.status == "STOPPED":
+		status_time = "STOPPED"
+	else:
+		timedelta = datetime.now() - contest.starttime
+		hours = timedelta.days*24+timedelta.seconds / 3600
+		minutes = timedelta.seconds % 3600 / 60
+		status_time  = "%02d:%02d" % (hours, minutes)	
+
 	return render_to_response('team_status.html',
-							  {"profile": profile, "teammembers": teammembers},
+							  {"new_results": new_results, "new_clars": new_clars,
+							   "status_time": status_time, "rank": rank},
 							  context_instance=RequestContext(request))
 
 @login_required
@@ -233,6 +272,9 @@ def submission(request, problem=None):
 
 	else:
 		form = SubmitForm()
+
+	profile.new_results = False
+	profile.save()
 
 	contest = Contest.objects.get()
 

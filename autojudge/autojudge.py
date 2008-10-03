@@ -64,6 +64,10 @@ def uploadresult(submission, judgement, compiler_output, submission_output=None,
 
 	score.save()
 
+	profile = submission.team.profile_set.get()
+	profile.new_results = True
+	profile.save()
+
 if __name__ == '__main__':
 	# FIXME: Get our IP address.
 	ip_address = "127.0.0.1"

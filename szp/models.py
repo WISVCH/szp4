@@ -42,6 +42,7 @@ class Profile(models.Model):
 	user = models.ForeignKey(User, unique=True)
 	team = models.ForeignKey(Team, null=True, blank=True)
 	is_judge = models.BooleanField()
+	new_results = models.BooleanField(default=False)
 	
 	def __unicode__(self):
 		return self.user.username

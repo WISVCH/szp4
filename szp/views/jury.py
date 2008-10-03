@@ -62,7 +62,7 @@ def clarification(request):
 
 		for team in teamlist:
 			clar = Clar()
-			clar.probem = problem
+			clar.problem = problem
 			clar.subject = request.POST['subject']
 			clar.message = request.POST['message']
 			clar.receiver = team

@@ -11,16 +11,16 @@
 	  <td class="content_header" colspan="2">&nbsp;Viewing message</td>
 	</tr>
 	<tr class="content_body1">
-	  <td width="50%">A: Obfuscate</td>
-	  <td width="50%">&nbsp;test</td>
+	  <td width="50%">{{clar.problem}}</td>
+	  <td width="50%">{{team.name}}</td>
 	</tr>
 	<tr class="content_body1">
-	  <td colspan="2">&nbsp;test a</td>
+	  <td colspan="2">&nbsp;{{clar.subject}}</td>
 	</tr>
 	<tr class="message_body">
-	  <td colspan="2">test</td>
+	  <td colspan="2">{{clar.message|linebreaks}}</td>
 	</tr>
-	<form action="index.php?p=_mail&g=all" method="post">
+	<form action="/team/clarification/" method="get">
 	  <tr class="content_body1">
 	    <td colspan="2" align="center">
 	      <input type="submit" name="new" value="New Message">

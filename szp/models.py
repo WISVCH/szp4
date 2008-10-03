@@ -110,10 +110,20 @@ class Compiler(models.Model):
 
 class FrozenScore(models.Model):
 	team = models.ForeignKey(Team)
-	prob = models.ForeignKey(Problem)
+	problem = models.ForeignKey(Problem)
 	submission_count = models.IntegerField()
-	score = models.IntegerField()
-	time_used = models.IntegerField()
+	correct = models.BooleanField()
+	time = models.IntegerField(null=True, blank=True)
+
+	def __unicode__(self):
+		if self.correct:
+			status = "OK"
+			time = self.time
+		else:
+			status = "WRONG"
+			time = 0
+
+		return "%s problem %s %s %d (%d)" % (self.team.name, self.problem.letter, status, self.submission_count, time)
 
 class Submission(models.Model):
 	STATUS_CHOICES = (("NEW", "NEW"),

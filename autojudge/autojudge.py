@@ -112,7 +112,7 @@ if __name__ == '__main__':
 		fp.close()
 
 		in_file_name = os.path.join(testdir, submission.problem.in_file_name)
-		fp = open(in_file_name, "r")
+		fp = open(in_file_name, "w")
 		fp.write(submission.problem.in_file.content)
 		fp.close()
 
@@ -199,7 +199,7 @@ if __name__ == '__main__':
 		if check.returncode == 0:
 			uploadresult(submission, "ACCEPTED", compiler_output, submission_output, watchdog_output, check_output)
 			print "ACCEPTED"
-		elif check.returncode == 1:
+		elif check.returncode == 1 or check.returncode == 2:
 			uploadresult(submission, "WRONG_OUTPUT", compiler_output, submission_output, watchdog_output, check_output)
 			print "WRONG_OUTPUT"
 		else:

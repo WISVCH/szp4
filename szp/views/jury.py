@@ -375,7 +375,7 @@ def submission_details(request, number):
 		if result.autojudge_comment_file:
 			autojudge_comment = result.autojudge_comment_file.content
 		else:
-			autojudge_comment_file = ""
+			autojudge_comment = ""
 
 		has_result = True
 	except ObjectDoesNotExist:

@@ -182,9 +182,11 @@ def clarification_show(request, which):
 	if c.receiver != team:
 		return HttpResponseRedirect('/team/clarification/')
 
+	c.read = True
+	c.save()
+
 	clar = {"subject": c.subject,
-			"message": c.message,
-			"new": not c.read}
+			"message": c.message}
 	
 	if c.problem:
 		clar["problem"] = c.problem

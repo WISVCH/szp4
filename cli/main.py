@@ -48,6 +48,17 @@ class setcontest():
 		if contest.get_status_display() == "INITIALIZED" and args.status == "RUNNING":
 			contest.starttime = datetime.datetime.now()
 
+		if args.status == "NOINFO":
+			if contest.get_status_display() != "RUNNING":
+				print "We first need to be in RUNNING state before going to NOINFO"
+				sys.exit(1)
+
+			from django.db import connection
+			cursor = connection.cursor()
+			cursor.execute("INSERT INTO szp_frozenscore (id, team_id, problem_id, submission_count, correct, time) "+
+						   "SELECT id, team_id, problem_id, submission_count, correct, time FROM szp_score")
+			cursor.close()
+			
 		contest.status = args.status
 		if args.date:
 			contest.date = args.date

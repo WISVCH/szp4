@@ -21,9 +21,14 @@ def statuswindow(request):
 			for team in Team.objects.all():
 				scoredict[team] = {"score": 0, "time": 0}
 
-			for score in Score.objects.filter(correct=True):
-				scoredict[score.team]["score"] += 1
-				scoredict[score.team]["time"] += score.time
+			if contest.status == "INITIALIZED" or contest.status == "RUNNING":
+				for score in Score.objects.filter(correct=True):
+					scoredict[score.team]["score"] += 1
+					scoredict[score.team]["time"] += score.time
+			else:
+				for score in FrozenScore.objects.filter(correct=True):
+					scoredict[score.team]["score"] += 1
+					scoredict[score.team]["time"] += score.time
 
 			scorelist = []
 			for (team, score) in scoredict.items():
@@ -31,6 +36,8 @@ def statuswindow(request):
 				if team == profile.team:
 					ourscore = score["score"]
 					ourtime = score["time"]
+
+			scorelist.sort(key=lambda s: s["score"]*1000000-s["time"], reverse=True)
 
 			for (rank, score) in enumerate(scorelist):
 				if score["time"] == ourtime and score["score"] == ourscore:

@@ -16,7 +16,10 @@ def score(request):
 		row = {"name": team.name, "organisation": team.organisation, "class": team.teamclass.name, "score": 0, "time": 0, "details": []}
 		for p in problems:
 			try:
-				score = Score.objects.get(team=team, problem=p)
+				if contest.status == "INITIALIZED" or contest.status == "RUNNING":
+					score = Score.objects.get(team=team, problem=p)
+				else:
+					score = FrozenScore.objects.get(team=team, problem=p)
 				score_dict = {'correct': score.correct, 'count': score.submission_count}
 				if score.correct:
 					# FIXME: 20 shouldn't be hard-coded here

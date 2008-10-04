@@ -174,6 +174,7 @@ class Score(models.Model):
 	submission_count = models.IntegerField()
 	correct = models.BooleanField()
 	time = models.IntegerField(null=True, blank=True)
+	balloon = models.BooleanField(default=False)
 
 	def __unicode__(self):
 		if self.correct:

@@ -52,7 +52,7 @@
     </form>
 
     <td class="index">
-      <a href="/jury/submission/{{submission.id}}/changeresult">change</a>
+      <a href="/jury/submission/{{submission.id}}/changeresult/">change</a>
     </td>
   </tr>
 </table>
@@ -64,14 +64,7 @@
       <td>
 	<input type="hidden" name="filename" value="coneasoup.c">
 	<input type="hidden" name="file_id" value="15">
-	<input type="submit" name="download" value="Download">
-      </td>
-    </form>
-    <form action="index.php?p=_submit&g=all&m=2" method="post">
-      <td>
-	<input type="hidden" name="hide_field" value="de_code">
-
-	<input type="submit" name="config" value="Hide">
+	<input type="submit" name="download" value="Download" disabled>
       </td>
     </form>
     <td width="40%">&nbsp;Compiler Output</td>
@@ -79,21 +72,15 @@
       <td>
 	<input type="hidden" name="filename" value="compiler_output.txt">
 	<input type="hidden" name="file_id" value="16">
-	<input type="submit" name="download" value="Download">
-      </td>
-    </form>
-    <form action="index.php?p=_submit&g=all&m=2" method="post">
-      <td>
-	<input type="hidden" name="hide_field" value="de_c_out">
-	<input type="submit" name="config" value="Hide">
+	<input type="submit" name="download" value="Download" disabled>
       </td>
     </form>
   </tr>
   <tr class="content_body1">
-    <td align="center" colspan="3">
+    <td align="center" colspan="2">
       <textarea cols="55" rows="24">{{ program_code }}</textarea>
     </td>
-    <td align="center" colspan = "3">
+    <td align="center" colspan="2">
       <textarea cols="55" rows="24">{{ compiler_output }}</textarea>
     </td>
   </tr>
@@ -106,36 +93,24 @@
       <td>
 	<input type="hidden" name="filename" value="output.txt">
 	<input type="hidden" name="file_id" value="17">
-	<input type="submit" name="download" value="Download" disabled >
+	<input type="submit" name="download" value="Download" disabled>
       </td>
     </form>
-    <form action="index.php?p=_submit&g=all&m=2" method="post">
-      <td>
-	<input type="hidden" name="hide_field" value="de_o_out">
-	<input type="submit" name="config" value="Hide">
-      </td>
-    </form>
-    
+
     <td width="40%">&nbsp;Expected Output File</td>
     <form action="file.php" method="post">
       <td>
 	<input type="hidden" name="filename" value="B_output.txt">
 	<input type="hidden" name="file_id" value="5">
-	<input type="submit" name="download" value="Download">
-      </td>
-    </form>
-    <form action="index.php?p=_submit&g=all&m=2" method="post">
-      <td>
-	<input type="hidden" name="hide_field" value="de_e_out">
-	<input type="submit" name="config" value="Hide">
+	<input type="submit" name="download" value="Download" disabled>
       </td>
     </form>
   </tr>
   <tr class="content_body1">
-    <td align="center" colspan = "3">
+    <td align="center" colspan="2">
       <textarea cols="55" rows="24">{{ submission_output }}</textarea>
     </td>
-    <td align="center" colspan = "3">
+    <td align="center" colspan="2">
       <textarea cols="55" rows="24">{{ expected_output }}</textarea>
     </td>
   </tr>
@@ -150,13 +125,7 @@
       <td>
 	<input type="hidden" name="filename" value="output_diff.txt">
 	<input type="hidden" name="file_id" value="18">
-	<input type="submit" name="download" value="Download" disabled >
-      </td>
-    </form>
-    <form action="index.php?p=_submit&g=all&m=2" method="post">
-      <td>
-	<input type="hidden" name="hide_field" value="de_out_d">
-	<input type="submit" name="config" value="Hide">
+	<input type="submit" name="download" value="Download" disabled>
       </td>
     </form>
     <td width="40%">&nbsp;Input File</td>
@@ -165,21 +134,15 @@
       <td>
 	<input type="hidden" name="filename" value="B_input.txt">
 	<input type="hidden" name="file_id" value="4">
-	<input type="submit" name="download" value="Download">
-      </td>
-    </form>
-    <form action="index.php?p=_submit&g=all&m=2" method="post">
-      <td>
-	<input type="hidden" name="hide_field" value="de_inp_f">
-	<input type="submit" name="config" value="Hide">
+	<input type="submit" name="download" value="Download" disabled>
       </td>
     </form>
   </tr>
   <tr class="content_body1">
-    <td align="center" colspan = "3">
+    <td align="center" colspan="2">
       <textarea cols="55" rows="24">{{ output_diff }}</textarea>
     </td>
-    <td align="center" colspan = "3">
+    <td align="center" colspan="2">
       <textarea cols="55" rows="24">{{ problem_input }}</textarea>
     </td>
   </tr>
@@ -193,13 +156,7 @@
       <td>
 	<input type="hidden" name="filename" value="">
 	<input type="hidden" name="file_id" value="0">
-	<input type="submit" name="download" value="Download" disabled >
-      </td>
-    </form>
-    <form action="index.php?p=_submit&g=all&m=2" method="post">
-      <td>
-	<input type="hidden" name="hide_field" value="de_m_com">
-	<input type="submit" name="config" value="Hide">
+	<input type="submit" name="download" value="Download" disabled>
       </td>
     </form>
     <td width="40%">&nbsp;Autojudge Comment</td>
@@ -207,21 +164,15 @@
       <td>
 	<input type="hidden" name="filename" value="autojudge_comment.txt">
 	<input type="hidden" name="file_id" value="19">
-	<input type="submit" name="download" value="Download">
+	<input type="submit" name="download" value="Download" disabled>
 	
-      </td>
-    </form>
-    <form action="index.php?p=_submit&g=all&m=2" method="post">
-      <td>
-	<input type="hidden" name="hide_field" value="de_a_com">
-	<input type="submit" name="config" value="Hide">
       </td>
     </form>
   </tr>
   <tr class="content_body1">
-    <td align="center" colspan = "3">
+    <td align="center" colspan = "2">
       <table>
-	<form action="index.php?p=_submit&g=all&m=2" method="post">
+	<form action="{{ request.path }}" method="post">
 	  <tr>
 	    <td>
 	      <textarea cols="55" rows="8" name="text">{{ judge_comment }}</textarea>
@@ -229,14 +180,13 @@
 	  </tr>
 	  <tr>
 	    <td>
-	      <input type = "hidden" value="0" name="file_id">
-	      <input type = "submit" value="Save" name="save">
+	      <input type="submit" value="Save" name="save" {% if not has_result %}disabled {% endif %}>
 	    </td>
 	  </tr>
 	</form>
       </table>
     </td>
-    <td align="center" colspan = "3">
+    <td align="center" colspan = "2">
       <textarea cols="55" rows="10">{{ autojudge_comment }}</textarea>
     </td>
   </tr>

@@ -1,0 +1,7 @@
+{% for problem in problems %}{{problem.letter}}
+{{problem.name}}
+{% endfor %}
+{% for compiler in compilers %}{{compiler.id}}
+{{compiler.name}}
+{{compiler.extension}}
+{% endfor %}

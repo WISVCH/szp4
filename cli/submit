@@ -1,0 +1,104 @@
+#!/usr/bin/python
+
+import sys
+import urllib2
+
+url = "http://localhost:8000/team/infoscript"
+
+f = urllib2.urlopen(url)
+
+problems = []
+while True:
+	line = f.readline()
+	if line == '\n':
+		break
+	problems.append({"letter": line.strip(), "name": f.readline().strip()})
+
+compilers = []
+while True:
+	line = f.readline()
+	if line == '\n':
+		break
+	compilers.append({'id': int(line.strip()), 'name': f.readline().strip(), 'extension': f.readline().strip()})
+
+f.close()
+
+if len(sys.argv) != 4:
+	print "Usage: submit <problem> <language> <filename>"
+	print "Problem one of:"
+	for p in problems:
+		print "\t'%s' -> %s" % (p["letter"], p["name"])
+	print "Language one of:"
+	for c in compilers:
+		print "\t'L%d' -> %s" % (c["id"], c["name"])
+	print "Filename: the file you want to submit"
+	print "Example: submit B L1 ProblemB.c"
+	sys.exit(1)
+
+filename = sys.argv[3]
+
+problem = None
+for p in problems:
+	if p['letter'] == sys.argv[1].upper():
+		problem = p
+		break
+
+if not problem:
+	print "Error: Incorrect problem specification"
+	sys.exit(1)
+
+if sys.argv[2][0] != "L":
+	print "Error: Incorrect language specification"
+	sys.exit(1)
+
+compiler = None
+try:
+	for c in compilers:
+		if c['id'] == int(sys.argv[2][1:]):
+			compiler = c
+			break
+except ValueError:
+	print "Error: Incorrect language specification"
+	sys.exit(1)
+
+if not compiler:
+	print "Error: Incorrect language specification"
+	sys.exit(1)
+
+print "Program to submit   : %s" % filename
+print "Programming language: %s" % compiler['name']
+print "Solution to problem : %s (%s)" % (problem['letter'], problem['name'])
+print
+print "Are you sure you want to submit this? (Y/N): ",
+sys.stdout.flush()
+answer = sys.stdin.readline()
+print
+if answer.strip().lower() != "y":
+	print "Submission cancelled."
+	sys.exit(1)
+
+if not filename.endswith(compiler['extension']):
+	print """WARNING! The program you are about to submit has a non-standard extension for
+the chosen language (your extension: "%s"; standard: "%s").
+This could indicate that you have either specified the wrong file or the
+wrong language. Please make sure this program and compiler should really be
+used together!""" % ("."+filename.split(".")[-1], compiler['extension'])
+	print
+	print "Are you still sure you want to submit this? (Y/N):",
+	sys.stdout.flush()
+	answer = sys.stdin.readline()
+	print
+	if answer.strip().lower() != "y":
+		print "Submission cancelled."
+		sys.exit(1)
+
+try:
+	f = open(filename)
+	source = f.read()
+	f.close()
+except IOError:
+	print "Can't read file %s" % filename
+	sys.exit(1)
+
+
+

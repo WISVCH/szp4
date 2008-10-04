@@ -1,0 +1,59 @@
+{% extends "jury_base.html" %}
+
+{% block content %}
+<h1>Submissions</h1> 
+<i>Are you really sure you want to change the result?</i>
+
+<table class="index">
+  <tr class="content_header">
+    <td class="index">time</td>
+    <td class="index">subm.</td>
+    <td class="index">team</td>
+    <td class="index">prob</td>
+    <td class="index">time limit</td>
+    <td class="index">filename</td>
+    <td class="index">compiler</td>
+    <td class="index">status</td>
+    <td class="index">result</td>
+    <td class="index">verified by</td>
+    <td class="index">change</td>
+  </tr>
+
+  <tr class="content_body1">
+    <td class="index">{{time}}</td>
+    <td class="index">{{submission.id}}</td>
+    <td class="index">
+      <span title="{{submission.team.id}}">{{submission.team.id}}</span>
+    </td>
+    <td class="index">
+      <span title="{{submission.problem.name}}">{{submission.problem.letter}}</span>
+    </td>
+    <td class="index">{{submission.problem.timelimit}} sec.</td>
+    <td class="index">{{submission.file_name}}</td>
+    <td class="index">{{submission.compiler.name}}</td>
+    <td class="index">{{submission.status}}</td>
+    <form method="post">
+      <td class="index">
+	<select name="judgement">
+	{% for j in judgementlist %}
+	<option value="{{j.name}}"{% if j.selected %} selected{% endif %}>{{j.name}}</option>
+	{% endfor %}
+	</select>
+      </td>
+      <td class="index">
+	{% if verified_by %}
+	{{verified_by}}
+	{% else %}
+	Nobody
+	{% endif %}
+      </td>
+
+      <td class="index">
+	<input type="submit" value="Change" name="change">
+      </td>
+    </form>
+  </tr>
+</table>
+
+
+{% endblock %}

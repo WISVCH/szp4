@@ -6,7 +6,7 @@
 	<script type="text/javascript" charset="utf-8">
 	var refreshData = function() {
 			$.ajax({ 
-				method: "get",url: "/jury/status",
+				method: "get",url: "/jury/status/",
 				beforeSend: function(){$("#loading").fadeIn("fast");},
 				complete: function(){ $("#loading").fadeOut("fast");},
 				success: function(status) {

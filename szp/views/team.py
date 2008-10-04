@@ -16,6 +16,14 @@ def gettime(timestamp, contest):
 	seconds = timedelta.seconds % 60
 	return "%02d:%02d:%02d" % (hours, minutes, seconds)	
 
+
+def infoscript(request):
+	problems = Problem.objects.order_by('letter')
+	compilers = Compiler.objects.order_by('id')
+	
+	return render_to_response('infoscript',
+							  {"problems": problems, "compilers": compilers, })
+
 @login_required
 def home(request):
 	profile = request.user.get_profile()

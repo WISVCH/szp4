@@ -394,12 +394,15 @@ def submission_details(request, number):
 
 	if request.method == 'POST':
 		if "verify" in request.POST:
-			profile = request.user.get_profile()
 			result = submission.result_set.get()
 			result.verified_by = profile
 			submission.status = "VERIFIED"
 			result.save()
 			submission.save()
+		elif "save" in request.POST:
+			result = submission.result_set.get()
+			result.jury_comment = request.POST["text"]
+			result.save()
 			
 	contest = Contest.objects.get()
 		
@@ -460,3 +463,48 @@ def submission_details(request, number):
 							   },
 							  context_instance=RequestContext(request))
 
+
+def submission_changeresult(request, number):
+	profile = request.user.get_profile()
+	if not profile.is_judge:
+		return HttpResponseRedirect('/team/')
+
+	contest = Contest.objects.get()
+	submission = Submission.objects.get(id=number)
+	if request.method == 'POST':
+		# FIXME: This won't work when we don't have a result object yet
+		result = submission.result_set.get()
+		result.judgement = request.POST["judgement"]
+		result.save()
+
+		return HttpResponseRedirect('/jury/submission/%s/' % number)
+
+		
+	time = gettime(submission.timestamp, contest)
+
+	try:
+		result = submission.result_set.get()
+		judgement = result.judgement
+		if result.verified_by:
+			verified_by = result.verified_by.user.username
+		else:
+			verified_by = None
+	except ObjectDoesNotExist:
+		judgement = "Pending..."
+		verified_by = None
+
+	judgementlist = []
+	for j in Result.JUDGEMENT_CHOICES:
+		if judgement == j[0]:
+			judgementlist.append({"name": j[0], "selected": True})
+		else:
+			judgementlist.append({"name": j[0], "selected": False})
+
+	return render_to_response('jury_submission_changeresult.html',
+							  {'time': time, 'submission': submission,
+							   'judgement': judgement, 'verified_by': verified_by,
+							   'judgementlist': judgementlist,
+							   },
+							  context_instance=RequestContext(request))
+
+	

@@ -70,7 +70,7 @@ def uploadresult(submission, judgement, compiler_output, submission_output=None,
 
 if __name__ == '__main__':
 	# FIXME: Get our IP address.
-	ip_address = "127.0.0.1"
+	ip_address = sys.argv[1]
 	try:
 		autojudge = Autojudge.objects.get(ip_address=ip_address)
 	except ObjectDoesNotExist:

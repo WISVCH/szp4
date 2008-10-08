@@ -101,7 +101,7 @@ if __name__ == '__main__':
 		time.sleep(0.1)
 		try:
 			submission = Submission.objects.filter(id=submission.id, autojudge=autojudge).get()
-		except ObjextDoesNotExist:
+		except ObjectDoesNotExist:
 			print "Can't find submission we are supposed to judge, probably a rare race condition"
 			continue
 
@@ -146,7 +146,7 @@ if __name__ == '__main__':
 		# The maximum amount of spawned processes. [16]
 		env['WATCHDOG_LIMIT_NPROC']="16"
 		
-		cmd=['/home/jeroen/bzr/szp4/autojudge/watchdog',
+		cmd=['/home/szp/szp4/autojudge/watchdog',
 			 submission.compiler.execute_line.replace("${LETTER}", submission.problem.letter),
 			 str(submission.problem.timelimit)]
 

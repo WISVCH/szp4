@@ -357,7 +357,7 @@ def submission_list(request, problem):
 		submissions = Submission.objects.order_by("-timestamp")
 	else:
 		title = "List of submissions for problem "+problem
-		submissions = Submission.objects.filter(problem__letter=problem)
+		submissions = Submission.objects.filter(problem__letter=problem).order_by("-timestamp")
 
 	submissionlist = []
 	for s in submissions:

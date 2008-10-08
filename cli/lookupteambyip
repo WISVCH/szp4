@@ -9,7 +9,7 @@ if len(sys.argv) != 2:
 
 hostname = sys.argv[1]
 if hostname == "localhost":
-	print "SYSTEEM (INTERN)"
+	print "SYSTEEM \\(INTERN\\)",
 	sys.exit(0)
 
 # This will insert the parent directory to the path so we can import
@@ -27,6 +27,6 @@ from szp.models import Team
 try:
 	team = Team.objects.get(ip_address=hostname)
 
-	print "%s \\(%s\\)" % (team.name, team.location)
+	print "%s \\(%s\\)" % (team.name, team.location),
 except ObjectDoesNotExist:
 	print "UNKNOWN"

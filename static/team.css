@@ -321,3 +321,14 @@ body.login
 #masthead li a:hover {
   text-decoration: underline;
 }
+
+
+@media print {
+	body {
+		margin: 0;
+	}
+
+	#masthead {
+		display: none;
+	}
+}

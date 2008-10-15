@@ -146,6 +146,7 @@ if __name__ == '__main__':
 		# The maximum amount of spawned processes. [16]
 		env['WATCHDOG_LIMIT_NPROC']="16"
 		
+		# FIXME: We shouldn't hardcode this
 		cmd=['/home/szp/szp4/autojudge/watchdog',
 			 submission.compiler.execute_line.replace("${LETTER}", submission.problem.letter),
 			 str(submission.problem.timelimit)]
@@ -155,13 +156,18 @@ if __name__ == '__main__':
 
 		input_fd = open(in_file_name, "r")
 
-		run = Popen(cmd, stdin=input_fd, stdout=output, stderr=PIPE, close_fds=True, cwd=testdir, env=env)
+	        devnull = open("/dev/null", "w+")
+
+		run = Popen(cmd, stdin=input_fd, stdout=output, stderr=devnull, close_fds=True, cwd=testdir, env=env)
 		run.wait()
 
+		devnull.close()
 		output.seek(0)
 		submission_output = output.read()
 		output.close()
-		watchdog_output = run.stderr.read()
+		watchdog = open(os.path.join(testdir, "watchdog_output"), "r")
+		watchdog_output = watchdog.read()
+		watchdog.close()
 
 		# FIXME We currently don't implement backtraces of core dumps.
 
@@ -174,7 +180,7 @@ if __name__ == '__main__':
 			print "RUNTIME_EXCEEDED"
 			continue
 		elif run.returncode != 0:
-			print "AUTOJUDGE ERROR: WATCHDOG RETURNED UNKOWN VALUE"
+			print "AUTOJUDGE ERROR: WATCHDOG RETURNED UNKOWN VALUE: %d" % run.returncode
 			sys.exit(1)
 		
 		if len(submission_output) == 0:

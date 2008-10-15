@@ -118,6 +118,7 @@
 
 #define DEFAULT_SHELL		"/bin/sh"
 
+FILE *output;
 
 static struct {
 	const int resource;
@@ -148,7 +149,7 @@ volatile int aborted_by_user = 0;
 
 
 /*
- *  Print a message on stderr.
+ *  Write a message to watchdog output file.
  */
 void mesg(char *format, ...)
 {
@@ -160,26 +161,26 @@ void mesg(char *format, ...)
 	now = time(NULL);
 	local = localtime(&now);
 	strftime(timestr, 80, "%H:%M:%S", local);
-	fprintf(stderr, "watchdog: %s ", timestr);
+	fprintf(output, "watchdog: %s ", timestr);
 	va_start(args, format);
-	vfprintf(stderr, format, args);
+	vfprintf(output, format, args);
 	va_end(args);
-	fprintf(stderr, "\n");
-	fflush(stderr);
+	fprintf(output, "\n");
+	fflush(output);
 }
 
 
 /*
- *  Print message on stderr and exit.
+ *  Write message on watchdog output file and exit.
  */
 void fatal(char *format, ...)
 {
 	va_list args;
-	fprintf(stderr, "watchdog: ERROR: ");
+	fprintf(output, "watchdog: ERROR: ");
 	va_start(args, format);
-	vfprintf(stderr, format, args);
+	vfprintf(output, format, args);
 	va_end(args);
-	fprintf(stderr, "\n");
+	fprintf(output, "\n");
 	exit(EXIT_INTERNAL_ERROR);
 }
 
@@ -293,6 +294,8 @@ int main(int argc, char *argv[])
 	long elapsedsec, elapsedusec;
 
 	/* Check program arguments. */
+
+	output = fopen("watchdog_output", "w");
 
 	if (argc != 3)
 		fatal("Syntax: watchdog <command> <timelimit>");

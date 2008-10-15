@@ -59,7 +59,7 @@ def score(request):
 				if score.correct:
 					# FIXME: 20 shouldn't be hard-coded here
 					time = (score.submission_count - 1)*20 + score.time
-					score_dict["time"] = time
+					score_dict["time"] = score.time
 					row["time"] += time
 					row["score"] += 1
 			except ObjectDoesNotExist:

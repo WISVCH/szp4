@@ -1,14 +1,14 @@
 % Team informatie voor programmeerwedstrijden
-% English version
+% maar dan in het Engels.
 
 \documentclass[a4paper]{artikel3}
-
+\usepackage{fullpage}
 \usepackage[dutch]{babel}
-\usepackage{pslatex,geometry}
-\usepackage[latin1]{inputenc}
+\usepackage{pslatex}
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\geometry{noheadfoot,left=0.75in,right=0.75in,top=1in,bottom=1in}
-\pagestyle{empty}
+\usepackage{listings}
+% \pagestyle{empty}
 
 \catcode`\|\active
 \def|#1|{\textsf{\textbf{#1}}}
@@ -18,25 +18,14 @@
 
 \begin{document}
 
-{\bf \Large Guidelines for submitting solutions}
-\bigskip
+\section*{Guidelines for submitting solutions}
 
 Submitted programs will be automatically compiled and checked on the judges'
-computers. This will always be done on a Linux machine, even when your team
-uses a Windows computer. This document will describe to you how your program
-should read its input and how it should write its output. We will also
-tell you about the compiler and language constructs you're allowed to use.
-Please follow the guidelines carefully, since small mistakes will mean that
-your solution will be rejected.
+computers. This will always be done on GNU/Linux. This document will describe to you how your program should read its input and how it should write its output. We will also tell you about the compiler and language constructs you're allowed to use. Please follow the guidelines carefully, since small mistakes will mean that your solution will be rejected.
 
-We've created a few scripts which you can use to compile your program. These
-scripts use the same compiler flags the judges use. The scripts are called
-|makec|, |makecpp|, |makepas| and |makejava|. They take exactly one
-argument: the name of your program, without the extension.
+We've created a Makefile so you can compile your programs using the same settings as the jury. You'll only need to type |make| to compile programs. The only requirement is that the source files have the correct extension: |.c| for C, |.cc| for C++ and |.java| for Java.
 
-There's documentation available for C, FreePascal and Java. Firefox has
-bookmarks to the appropriate locations. On the Linux machines, we've also
-installed the |man|pages for C.
+There's HTML documentation available for C, C++ and Java, which can be accessed using Iceweasel (Firefox). We've also installed the |man|pages for C.
 
 Your program is not allowed to use:
 \begin{itemize}
@@ -45,13 +34,13 @@ Your program is not allowed to use:
 \item file access to files other than the input file,
 \item process manipulation (|system()|, |fork()|,
   |exec()|, |kill()| and the likes),
-\item more than 256MiB of memory.
+\item more than 512MiB of memory.
 \end{itemize}
 
 It's your own responsibility to make sure your programs comply with the
 above rules. The judges can disqualify your team if it disregards the rules.
 
-If your program uses more than 256 MiB of memory, or writes more than 64 MiB
+If your program uses more than 512 MiB of memory, or writes more than 64 MiB
 output, the result will be a \emph{runtime error}.
 
 \section*{Input and output}
@@ -59,20 +48,16 @@ output, the result will be a \emph{runtime error}.
 The name of the input file is the letter of the problem, followed by
 |'.in'|. The whole filename should be in lowercase! For example, input for
 problem C is supplied in the file called |'c.in'|. Make sure you use the
-format just described. \emph{Do not use capitals} in the filename. This will
-work under Windows, but it will fail on the judges' machines.
+format just described. \emph{Do not use capitals} in the filename, since filenames are case sensitive on our filesystems.
 
 Reading from or writing to other files is not allowed. If you read from
 stdin (the ``keyboard''), you will get a \emph{run time exceeded}, because
 your program will be waiting for input, which it won't get.
 
-Linux and Windows use different line endings. If you're working under
-Windows, be mindful of this. Your program will be judged on a Linux machine.
-
 \section*{C / C++}
 
 \begin{tabular}{rl}
-Compiler: & GNU GCC 3.3.5 \\
+Compiler: & GCC 4.3.2 \\
 C flags: & {\tt gcc -Wall -O2 -g -std=c99 -lm} \\
 C++ flags: & {\tt g++ -Wall -O2 -g -std=c++98 -lm} \\
 \end{tabular}
@@ -85,7 +70,7 @@ different from 0, which will result in a \emph{runtime error}.
 Don't use binary mode for reading of input files, e.g. don't use
 |fopen("{}a.in", "rb")|, but |fopen("{}a.in", "r")|.
 
-In C you can only use the following headers:
+In C you can only use the functions defined by the ISO C99 standard, which are as follows:
 |<assert.h>|, |<complex.h>|, |<ctype.h>|, |<errno.h>|, |<fenv.h>|,
 |<float.h>|, |<inttypes.h>|, |<iso646.h>|, |<limits.h>|,
 |<locale.h>|, |<math.h>|, |<setjmp.h>|, |<signal.h>|, |<stdarg.h>|,
@@ -93,157 +78,84 @@ In C you can only use the following headers:
 |<string.h>|, |<tgmath.h>|, |<time.h>|, |<wchar.h>|, |<wctype.h>|.
 
 The same rules apply for C++ as apply to C, but you can also use the
-following C++ headers: 
-|<algorithm>|, |<bitset>|, |<deque>|, |<exception>|, |<fstream>|,
-|<functional>|, |<iomanip>|, |<ios>|, |<iosfwd>|, |<iostream>|, |<istream>|,
-|<iterator>|, |<list>|, |<map>|, |<memory>|, |<new>|, |<numeric>|,
-|<ostream>|, |<queue>|, |<set>|, |<sstream>|, |<stack>|, |<stdexcept>|,
-|<streambuf>|, |<typeinfo>|, |<utility>|, |<valarray>| and |<vector>|.
+following standard C++ headers: |<algorithm>|,
+|<bitset>|, |<deque>|, |<exception>|, |<fstream>|, |<functional>|,
+|<iomanip>|, |<ios>|, |<iosfwd>|, |<iostream>|, |<istream>|, |<iterator>|,
+|<list>|, |<map>|, |<memory>|, |<new>|, |<numeric>|, |<ostream>|, |<queue>|,
+|<set>|, |<sstream>|, |<stack>|, |<stdexcept>|, |<streambuf>|, |<typeinfo>|,
+|<utility>|, |<valarray>| en |<vector>|. Of course, all C-headers are also allowed.
 
 The usage of other header files is not allowed. You are not allowed to use
-|\#pragma|. Using the STL is allowed.
+|\#pragma|. However, using the STL \emph{is allowed}.
 
 Please be careful when using the C++ stream operators \verb|<<| and
 \verb|>>|, these will make your program run slower than if you would use the
 equivalent C-functions.
 
-\section*{Pascal}
-
-\begin{tabular}{rl}
-Compiler: & FreePascal 2.0.0 \\
-Flags: & {\tt fpc -Sgh2 -O1 -Cr-t- -g} \\
-\end{tabular}
-
-In Pascal you can use the units |classes|, |getopts|, |math|, |objects|,
-|objpas|, |strings|, |strutils|, |system| and |sysyutils|. You can also use
-the boolean directives |\$H|, |\$I|, |\$P|, |\$Q|, |\$R|, |\$T|, |\$X| and
-|\$STATIC|, and the directives |\$DEFINE|, |\$ELSE|, |\$ENDIF|, |\$IF|,
-|\$IFDEF|, |\$IFNDEF|, |\$IFDEF|, |\$MACRO|, |\$MODE| and |\$UNDEF|. You are
-not allowed to use other units and directives.
-
-Please use the standard |ReadLn|, |Read| and |Eoln| functions for reading
-input files. Don't assume the lines are closed by a certain character, like
-|\#10| or |\#13\#10|.
-
-The {\tt -S2} compiler flag sets the |OBJFPC| mode. If you want to use a
-different mode, like |TP| or |DELPHI|, you can set it using the |\$MODE|
-directive.
-
-The FreePascal IDE is available. The command to run it is |fp-ide| (when
-you're using Linux; it will open in a new xterm) or |fp| (when you're using
-Windows). The |Alt|-key may not work. You can use |Esc| as a prefix to
-replace it, e.g. |Esc| followed by |X| will do the same as |Alt|+|X|.
-
 \section*{Java}
 
 \begin{tabular}{rl}
-Compiler: & JDK 1.5.0 \\
+Compiler: & Sun Java 1.6.0_07 \\
 Flags: & {\tt javac -O} \\
 \end{tabular}
 
 In Java you can use the packages |java.io|, |java.lang|, |java.text|,
 |java.math| and |java.util|. Using other packages is not allowed.
 
-You can use multiple classes in your program, but you'll need to define them
-all in a single |.java| file. If you do this, you can't define these classes
-as being |public|.
-
-One of your classes should have a |main| method. The name of this class
-should always be |Problem| followed by a capital letter indicating the
-problem you solved. For example: your class that solves problem A should be
-called |ProblemA|. Calling it differently will result in either a
-\emph{compiler error} (if your class is |public|) or a \emph{runtime error}
-(if your class is package private, i.e. when you haven't given an access
-specifier).
+You can use multiple classes in your program, but you'll need to define them all in a single |.java| file. If you do this, you can't define these classes as being |public|. One of your classes should have a |main| method. The name of this class should always be |Problem| followed by a capital letter indicating the problem you solved. For example: your class that solves problem A should be called |ProblemA|. Calling it differently will result in either a \emph{compiler error} (if your class is |public|) or a \emph{runtime error} (if your class is package private, i.e. when you haven't given an access specifier).
 
 For reading input files you can use the class |StreamTokenizer|. You can
 write output with |System.out.print| or |System.out.println|.
 
-\begin{verbatim}
-import java.io.*;
+\lstset{language=java,showstringspaces=false,basicstyle=\normalsize}
+\begin{lstlisting}
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
-public class ProblemA {
-    public static void main(String[] args) {
-        try {
-            // Open input file
-            StreamTokenizer f = new StreamTokenizer(new FileReader("a.in"));
-            f.resetSyntax();
-            f.whitespaceChars(0, 0x20);
-            f.wordChars(0x21, 0xff);
-            
-            // Read a word
-            f.nextToken();
-            String s = f.sval;
-            
-            // Read an integer
-            f.nextToken();
-            int i = Integer.parseInt(f.sval);
-            
-            // Write a line of output
-            System.out.println("Hello world!");
-        } catch (IOException e) {
-            System.err.println(e);
-        }
-    }
+public class ProblemX {
+	public static void main(String[] args) throws FileNotFoundException {
+		Scanner sc = new Scanner(new File("x.in"));
+	
+		int cases = sc.nextInt();
+		while (cases-- > 0) {
+			solve(sc);
+		}
+	}
+	
+	private static void solve(Scanner s) {
+		int a = s.nextInt();
+		String b = s.next();
+		System.out.println("Hello there, " + a + " and " + b);
+	}
 }
-\end{verbatim}
+\end{lstlisting}
 
-\vspace*{1cm}
-{\bf \Large The Linux system during the contest}
+When using the Eclipse IDE, note that its default settings are to allow only Java 1.4-compatible code. This can be changed in the Eclipse settings: from the menu, select Window$\rightarrow$Preferences, then Java$\rightarrow$Compiler. Select \emph{6.0} in the \emph{Compiler compliance level} field.
 
-\section*{Logging in}
+\section*{The GNU/Linux system during the contest}
 
-After booting the computer a |kdm| login screen appears. You can log in
-using the username |szp| and the password |team|. If you want you can choose
-a different window manager. Do this before logging in.
+\subsection*{Logging in}
 
-Don't log in on the console (text mode), you'll need a graphical browser to
-use the contest system.
+After booting the computer a |gdm| login screen appears. You can log in
+using the username |team| and the password |team|. If you want you can choose
+a different window manager. Do this before logging in. You cannot work from the console (text mode) because you'll need a graphical browser to access the contest system.
 
-It's recommended to start Firefox directly after logging in. Firefox will
-automatically open TeamTool.
+It's recommended to start Iceweasel directly after logging in. It will automatically open TeamTool.
 
-\section*{Printing}
+\subsection*{Printing}
 
-You can print using |lpr| from the command line: \\
-{\tt lpr \it filename}
+You can print using |a2ps| from the command line: \\ {\tt
+a2ps \it filenaam}
 
 Most editors are capable of printing opened files directly. Printed
 documents will be brought to your computer by a runner. You are not allowed
 to go to the printer to retrieve the document.
 
-\section*{Documentation}
+\subsection*{Documentation}
 
 Documentation for the C library and the system is available using the |man|
-command. FreePascal and Java documentation is available in HTML. Firefox
-contains bookmarks to the relevant locations.
-
-\vspace*{1cm}
-{\bf \Large The Windows system during the contest}
-
-\section*{Logging in}
-
-After booting you'll see a Windows XP login screen. Login to the account
-|szp| using |team| as password.
-
-It's recommended to start Firefox directly after logging in. Firefox will
-automatically open TeamTool.
-
-\section*{Saving files}
-
-You can save your files in |c:\string\team|. You can create sub-directories
-if you wish. You can also save them to My Documents. Don't use other
-locations for your files.
-
-\section*{Printing}
-
-You can use the default Windows printer driver (Generic Postscript Printer)
-to print your files. Printed documents will be brought to your computer by a
-runner. You are not allowed to go to the printer to retrieve the document.
-
-\section*{Documentation}
-
-Documentation for C, FreePascal and Java is available in HTML. Firefox has
-bookmarks to the relevant locations.
+command. Java documentation is available in HTML. Iceweasel contains bookmarks
+to the relevant locations.
 
 \end{document}

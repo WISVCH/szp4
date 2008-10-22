@@ -43,6 +43,7 @@ above rules. The judges can disqualify your team if it disregards the rules.
 If your program uses more than 512 MiB of memory, or writes more than 64 MiB
 output, the result will be a \emph{runtime error}.
 
+\vspace{-0.8cm}
 \section*{Input and output}
 
 The name of the input file is the letter of the problem, followed by
@@ -54,6 +55,7 @@ Reading from or writing to other files is not allowed. If you read from
 stdin (the ``keyboard''), you will get a \emph{run time exceeded}, because
 your program will be waiting for input, which it won't get.
 
+\vspace{-0.8cm}
 \section*{C / C++}
 
 \begin{tabular}{rl}
@@ -92,10 +94,11 @@ Please be careful when using the C++ stream operators \verb|<<| and
 \verb|>>|, these will make your program run slower than if you would use the
 equivalent C-functions.
 
+\vspace{-0.8cm}
 \section*{Java}
 
 \begin{tabular}{rl}
-Compiler: & Sun Java 1.6.0_07 \\
+Compiler: & Sun Java 1.6.0\_07 \\
 Flags: & {\tt javac -O} \\
 \end{tabular}
 
@@ -104,7 +107,7 @@ In Java you can use the packages |java.io|, |java.lang|, |java.text|,
 
 You can use multiple classes in your program, but you'll need to define them all in a single |.java| file. If you do this, you can't define these classes as being |public|. One of your classes should have a |main| method. The name of this class should always be |Problem| followed by a capital letter indicating the problem you solved. For example: your class that solves problem A should be called |ProblemA|. Calling it differently will result in either a \emph{compiler error} (if your class is |public|) or a \emph{runtime error} (if your class is package private, i.e. when you haven't given an access specifier).
 
-For reading input files you can use the class |StreamTokenizer|. You can
+For reading input files you can use the |Scanner| class. You can
 write output with |System.out.print| or |System.out.println|.
 
 \lstset{language=java,showstringspaces=false,basicstyle=\normalsize}
@@ -133,27 +136,27 @@ public class ProblemX {
 
 When using the Eclipse IDE, note that its default settings are to allow only Java 1.4-compatible code. This can be changed in the Eclipse settings: from the menu, select Window$\rightarrow$Preferences, then Java$\rightarrow$Compiler. Select \emph{6.0} in the \emph{Compiler compliance level} field.
 
+\vspace{-0.8cm}
 \section*{The GNU/Linux system during the contest}
-
+\vspace{-0.1cm}
 \subsection*{Logging in}
-
+\vspace{-0.2cm}
 After booting the computer a |gdm| login screen appears. You can log in
 using the username |team| and the password |team|. If you want you can choose
 a different window manager. Do this before logging in. You cannot work from the console (text mode) because you'll need a graphical browser to access the contest system.
 
 It's recommended to start Iceweasel directly after logging in. It will automatically open TeamTool.
-
+\vspace{-0.3cm}
 \subsection*{Printing}
-
+\vspace{-0.2cm}
 You can print using |a2ps| from the command line: \\ {\tt
 a2ps \it filenaam}
 
 Most editors are capable of printing opened files directly. Printed
-documents will be brought to your computer by a runner. You are not allowed
-to go to the printer to retrieve the document.
-
+documents will be brought to your computer by a runner. You are \emph{not} allowed to go to the printer to retrieve the document.
+\vspace{-0.3cm}
 \subsection*{Documentation}
-
+\vspace{-0.2cm}
 Documentation for the C library and the system is available using the |man|
 command. Java documentation is available in HTML. Iceweasel contains bookmarks
 to the relevant locations.

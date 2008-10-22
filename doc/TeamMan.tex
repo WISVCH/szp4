@@ -1,9 +1,11 @@
 % Copyright 2006, 2008 W.I.S.V. Christiaan Huygens
 
-\documentclass[a4paper,12pt]{article}
-\usepackage{a4wide}
+\documentclass[a4paper]{artikel3}
+
 \usepackage[english]{babel}
 \usepackage{epsfig}
+\usepackage{fullpage}
+\usepackage[T1]{fontenc}
 
 \newcommand{\szp}{\ensuremath{\mathcal{SZP}}}
 \newcommand{\cmd}[1]{\texttt{#1}}
@@ -38,10 +40,11 @@
 \end{center}
 \end{titlepage}
 
-\tableofcontents
+% \tableofcontents
 
 \bigskip
 
+\vspace{-0.8cm}
 \section{Introduction}
 
 TeamTool is your interface with the jury during the contest. It allows you
@@ -49,7 +52,9 @@ to submit solutions and send messages to the jury. It consists of two parts:
 \cmd{submit}, a command line tool to submit solutions and TeamTool, a web
 interface to get contest information and communicate with the jury.
 
+\vspace{-0.8cm}
 \section{\cmd{submit}}
+
 \label{sec:submit}
 
 When you solved a problem, you have to submit it, so it can be judged. You
@@ -85,6 +90,7 @@ generate an executable program.
 must put all the source code for your program in a single file.
 \end{citemize}
 
+\vspace{-0.8cm}
 \section{TeamTool}
 
 TeamTool is the web interface for all communication with the jury. After
@@ -107,12 +113,16 @@ In the following subsections, we will describe the login process, the status
 frame and three of the four main parts. Home is not discussed, as this only
 contains a small introduction to TeamTool and no dynamic parts.
 
+\vspace{-0.3cm}
 \subsection{Login}
+\vspace{-0.2cm}
 
 Your login with your username and password that's provided by the
 organisation.
 
+\vspace{-0.3cm}
 \subsection{Status frame}
+\vspace{-0.2cm}
 
 In the top right corner, the status frame will keep you informed about new
 information. It is refreshed automatically and contains four items:
@@ -139,7 +149,9 @@ at the start of the contest.
 
 \end{citemize}
 
+\vspace{-0.3cm}
 \subsection{Scorelist}
+\vspace{-0.2cm}
 
 The scorelist displays the standings of the contest. It is in general
 updated until one hour before the end of the contest and as soon as any
@@ -157,7 +169,9 @@ The time is calculated by the time between the contest start and the time of
 submission. Every wrong submission gives you 20 penalty minutes, but they
 only count if you eventually solve the problem.
 
+\vspace{-0.3cm}
 \subsection{Clarifications}
+\vspace{-0.2cm}
 
 In the clarifications part, you can send clarification requests or read
 clarifications from the jury. A clarification or clarification request can
@@ -179,7 +193,9 @@ If there are unread messages you will be notified by the yellow ``NEW
 CLARIFICATIONS'' field in the top right corner. This is refreshed every
 thirty seconds.
 
+\vspace{-0.3cm}
 \subsection{Submissions}
+\vspace{-0.2cm}
 
 The submissions part enables you to submit solutions and see the results of
 your submissions. You are advised not to use TeamTool's submission ability,

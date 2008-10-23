@@ -93,3 +93,4 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 AUTH_PROFILE_MODULE = "szp.Profile"
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'szp.auth.IpBackend')

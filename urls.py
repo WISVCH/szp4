@@ -12,16 +12,18 @@ urlpatterns = patterns('',
 
     # Uncomment this for admin:
     (r'^admin/(.*)', admin.site.root),
-	(r'^accounts/login/$', 'django.contrib.auth.views.login'),
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout_then_login'),
     (r'^look/$', 'szp.views.look.score'),
+    (r'^jury/login/$', 'django.contrib.auth.views.login'),
+	(r'^accounts/profile/$', 'django.views.generic.simple.redirect_to', {'url': '/jury/'}),
 )
 
 # FIXME: accounts/profile should point to different things for team and judge
 urlpatterns += patterns('szp.views.team',
-	(r'^accounts/profile/$', 'home'),
+	(r'^accounts/login/$', 'teamlogin'),
     (r'^team/$', 'home'),
-    (r'^team/infoscript$', 'infoscript'),
+    (r'^team/submitscript/$', 'submitscript'),
+    (r'^team/infoscript/$', 'infoscript'),
 	(r'^team/score/$', 'score'),
     (r'^team/clarification/$', 'clarification'),
     (r'^team/clarification/([A-Z]|all|general|sent)/$', 'clarification_list'),

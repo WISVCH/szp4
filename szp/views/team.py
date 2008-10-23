@@ -2,6 +2,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from django.contrib.auth import *
 from szp.models import *
 from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
@@ -24,8 +25,26 @@ def infoscript(request):
 	return render_to_response('infoscript',
 							  {"problems": problems, "compilers": compilers, })
 
-def login(request):
-	pass
+def submitscript(request):
+	ip_address = request.META['REMOTE_ADDR']
+	user = authenticate(ip_address=ip_address)
+	if user is not None and user.is_active:
+		print request.POST
+		return render_to_response('submitscript')
+	else:
+		return HttpResponseRedirect('/look/')
+
+def teamlogin(request):
+	ip_address = request.META['REMOTE_ADDR']
+	user = authenticate(ip_address=ip_address)
+	if user is not None:
+		if user.is_active:
+			login(request, user)
+			return HttpResponseRedirect('/team/')
+		else:
+			return HttpResponseRedirect('/look/')
+
+	return HttpResponseRedirect('/jury/login/')
 
 @login_required
 def home(request):

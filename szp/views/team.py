@@ -24,6 +24,9 @@ def infoscript(request):
 	return render_to_response('infoscript',
 							  {"problems": problems, "compilers": compilers, })
 
+def login(request):
+	pass
+
 @login_required
 def home(request):
 	profile = request.user.get_profile()

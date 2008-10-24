@@ -15,7 +15,7 @@ DATABASE_NAME = 'szp'          # Or path to database file if using sqlite3.
 #DATABASE_USER = 'szp'       # Not used with sqlite3.
 DATABASE_USER = ''
 DATABASE_PASSWORD = 'de7Loale'         # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
+DATABASE_HOST = '127.0.0.1'           # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
 # Local time zone for this installation. Choices can be found here:
@@ -34,7 +34,7 @@ SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
-USE_I18N = True
+USE_I18N = False
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"

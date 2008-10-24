@@ -83,8 +83,9 @@ if __name__ == '__main__':
 			# For testing
 			#submission = Submission.objects.order_by("timestamp")[0]
 		except IndexError:
-			# FIXME: No pending submission, sleep and try again.
-			print '.',
+			# No pending submission, sleep and try again.
+			sys.stdout.write('.')
+			sys.stdout.flush()
 			time.sleep(5)
 			continue
 			

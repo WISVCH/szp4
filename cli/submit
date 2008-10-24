@@ -3,9 +3,10 @@
 import sys
 import urllib
 import urllib2
+from os.path import basename
 
 # FIXME: Maybe we shouldn't hardcode this here
-url = "http://127.0.0.1:8000/team/"
+url = "https://szp/team/"
 
 f = urllib2.urlopen(url + "infoscript/")
 
@@ -104,8 +105,12 @@ except IOError:
 
 data = urllib.urlencode({"problem": problem['letter'],
 						 "compiler": compiler['id'],
-						 "submission": submission})
+						 "submission": submission,
+						 "filename": basename(filename)})
 
-f = urllib2.urlopen(url + "submitscript/", data)
+try:
+	f = urllib2.urlopen(url + "submitscript/", data)
+except urllib2.HTTPError, e:
+	print e.read()
 
-print f.readline()
+print f.read()

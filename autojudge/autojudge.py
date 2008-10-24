@@ -32,7 +32,11 @@ def uploadresult(submission, judgement, compiler_output, submission_output=None,
 	result.compiler_output_file = compiler_output_file
 
 	if submission_output:
-		submission_output_file = File(content=submission_output)
+		submission_output_file = File()
+		try:
+			submission_output_file.content = submission_output.decode("utf-8")
+		except UnicodeError:
+			submission_output_file.content = submission_output.decode("iso8859-1")
 		submission_output_file.save()
 		result.submission_output_file = submission_output_file
 
@@ -42,7 +46,11 @@ def uploadresult(submission, judgement, compiler_output, submission_output=None,
 		result.autojudge_comment_file = autojudge_comment_file
 
 	if check_output:
-		check_output_file = File(content=check_output)
+		check_output_file = File()
+		try:
+			check_output_file.content = check_output.decode("utf-8")
+		except UnicodeError:
+			check_output_file.content = check_output.decode("iso8859-1")
 		check_output_file.save()
 		result.check_output_file = check_output_file
 

@@ -332,7 +332,12 @@ def submission(request, problem=None):
 			submission.file_name = request.FILES['file'].name
 			# FIXME: Check upload size
 			file = File()
-			file.content = request.FILES['file'].read()
+			content = request.FILES['file'].read()
+			try:
+				file.content = content.decode("utf-8")
+			except UnicodeError:
+				file.content = content.decode("iso8859-1")
+				
 			file.save()
 			submission.file = file
 			submission.save()

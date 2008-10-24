@@ -113,7 +113,7 @@ if __name__ == '__main__':
 
 		source_file_name = os.path.join(testdir, submission.compiler.source_filename.replace("${LETTER}", submission.problem.letter))
 		fp = open(source_file_name, "w")
-		fp.write(submission.file.content)
+		fp.write(submission.file.content.encode("utf-8"))
 		fp.close()
 
 		in_file_name = os.path.join(testdir, submission.problem.in_file_name)

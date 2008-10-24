@@ -29,8 +29,35 @@ def submitscript(request):
 	ip_address = request.META['REMOTE_ADDR']
 	user = authenticate(ip_address=ip_address)
 	if user is not None and user.is_active:
-		print request.POST
-		return render_to_response('submitscript')
+		if not 'problem' in request.POST or not 'compiler' in request.POST or not 'submission' in request.POST or not 'filename' in request.POST:
+			return render_to_response('submitscript', {"message": "Missing POST variables"})
+		try:
+			problem = Problem.objects.get(letter=request.POST['problem'])
+		except:
+			return render_to_response('submitscript', {"message": "ERROR: Invalid problem"})
+		
+		try:
+			compiler = Compiler.objects.get(id=request.POST['compiler'])
+		except:
+			return render_to_response('submitscript', {"message": "ERROR: Invalid compiler"})
+
+		submission = Submission()
+		submission.status = "NEW"
+		profile = user.get_profile()
+		submission.team = profile.team
+
+		submission.problem = problem
+ 		submission.compiler = compiler
+
+ 		submission.file_name = request.POST['filename']
+ 		# FIXME: Check upload size
+ 		file = File()
+ 		file.content = request.POST['submission']
+ 		file.save()
+ 		submission.file = file
+ 		submission.save()
+
+		return render_to_response('submitscript', {"message": "Submission successful"})
 	else:
 		return HttpResponseRedirect('/look/')
 

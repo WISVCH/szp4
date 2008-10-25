@@ -32,7 +32,11 @@ def uploadresult(submission, judgement, compiler_output, submission_output=None,
 	result.compiler_output_file = compiler_output_file
 
 	if submission_output:
-		submission_output_file = File(content=submission_output)
+		submission_output_file = File()
+		try:
+			submission_output_file.content = submission_output.decode("utf-8")
+		except UnicodeError:
+			submission_output_file.content = submission_output.decode("iso8859-1")
 		submission_output_file.save()
 		result.submission_output_file = submission_output_file
 
@@ -42,7 +46,11 @@ def uploadresult(submission, judgement, compiler_output, submission_output=None,
 		result.autojudge_comment_file = autojudge_comment_file
 
 	if check_output:
-		check_output_file = File(content=check_output)
+		check_output_file = File()
+		try:
+			check_output_file.content = check_output.decode("utf-8")
+		except UnicodeError:
+			check_output_file.content = check_output.decode("iso8859-1")
 		check_output_file.save()
 		result.check_output_file = check_output_file
 
@@ -83,8 +91,9 @@ if __name__ == '__main__':
 			# For testing
 			#submission = Submission.objects.order_by("timestamp")[0]
 		except IndexError:
-			# FIXME: No pending submission, sleep and try again.
-			print '.',
+			# No pending submission, sleep and try again.
+			sys.stdout.write('.')
+			sys.stdout.flush()
 			time.sleep(5)
 			continue
 			
@@ -112,7 +121,7 @@ if __name__ == '__main__':
 
 		source_file_name = os.path.join(testdir, submission.compiler.source_filename.replace("${LETTER}", submission.problem.letter))
 		fp = open(source_file_name, "w")
-		fp.write(submission.file.content)
+		fp.write(submission.file.content.encode("utf-8"))
 		fp.close()
 
 		in_file_name = os.path.join(testdir, submission.problem.in_file_name)

@@ -7,6 +7,7 @@ from szp.models import *
 from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
+from szp.views.general import calc_scoreboard
 
 def gettime(timestamp, contest):
 	if contest.status == "INITIALIZED":
@@ -17,6 +18,39 @@ def gettime(timestamp, contest):
 	seconds = timedelta.seconds % 60
 	return "%02d:%02d:%02d" % (hours, minutes, seconds)	
 
+
+def getrank(ourteam):
+	contest = Contest.objects.get()
+
+	scoredict = {}
+			
+	for team in Team.objects.filter(teamclass=ourteam.teamclass):
+		scoredict[team] = {"score": 0, "time": 0}
+
+	if contest.status == "INITIALIZED" or contest.status == "RUNNING":
+		for score in Score.objects.filter(correct=True, team__teamclass=ourteam.teamclass):
+			scoredict[score.team]["score"] += 1
+			scoredict[score.team]["time"] += score.time
+	else:
+		for score in FrozenScore.objects.filter(correct=True, team__teamclass=ourteam.teamclass):
+			scoredict[score.team]["score"] += 1
+			scoredict[score.team]["time"] += score.time
+
+	scorelist = []
+	for (team, score) in scoredict.items():
+		scorelist.append({"team": team, "score": score["score"], "time": score["time"]})
+		if team == ourteam:
+			ourscore = score["score"]
+			ourtime = score["time"]
+
+	scorelist.sort(key=lambda s: s["score"]*1000000-s["time"], reverse=True)
+
+	for (rank, score) in enumerate(scorelist):
+		if score["time"] == ourtime and score["score"] == ourscore:
+			ourrank = rank+1
+			break
+
+	return ourrank
 
 def infoscript(request):
 	problems = Problem.objects.order_by('letter')
@@ -29,8 +63,35 @@ def submitscript(request):
 	ip_address = request.META['REMOTE_ADDR']
 	user = authenticate(ip_address=ip_address)
 	if user is not None and user.is_active:
-		print request.POST
-		return render_to_response('submitscript')
+		if not 'problem' in request.POST or not 'compiler' in request.POST or not 'submission' in request.POST or not 'filename' in request.POST:
+			return render_to_response('submitscript', {"message": "Missing POST variables"})
+		try:
+			problem = Problem.objects.get(letter=request.POST['problem'])
+		except:
+			return render_to_response('submitscript', {"message": "ERROR: Invalid problem"})
+		
+		try:
+			compiler = Compiler.objects.get(id=request.POST['compiler'])
+		except:
+			return render_to_response('submitscript', {"message": "ERROR: Invalid compiler"})
+
+		submission = Submission()
+		submission.status = "NEW"
+		profile = user.get_profile()
+		submission.team = profile.team
+
+		submission.problem = problem
+ 		submission.compiler = compiler
+
+ 		submission.file_name = request.POST['filename']
+ 		# FIXME: Check upload size
+ 		file = File()
+ 		file.content = request.POST['submission']
+ 		file.save()
+ 		submission.file = file
+ 		submission.save()
+
+		return render_to_response('submitscript', {"message": "Submission successful"})
 	else:
 		return HttpResponseRedirect('/look/')
 
@@ -75,17 +136,7 @@ def status(request):
 			scoredict[score.team]["score"] += 1
 			scoredict[score.team]["time"] += score.time
 
-	scorelist = []
-	for (team, score) in scoredict.items():
-		scorelist.append({"team": team, "score": score["score"], "time": score["time"]})
-		if team == profile.team:
-			ourscore = score["score"]
-			ourtime = score["time"]
-
-	for (rank, score) in enumerate(scorelist):
-		if score["time"] == ourtime and score["score"] == ourscore:
-			rank = rank+1
-			break
+	rank = getrank(profile.team)
 	
 	if contest.status == "INITIALIZED":
 		status_time = "WAIT"
@@ -107,31 +158,10 @@ def score(request):
 	contest = Contest.objects.get()
 	problems = Problem.objects.order_by("letter")
 
-	scorelist = []
-	for team in Team.objects.all():
-		row = {"name": team.name, "organisation": team.organisation, "class": team.teamclass.name, "score": 0, "time": 0, "details": []}
-		for p in problems:
-			try:
-				if contest.status == "INITIALIZED" or contest.status == "RUNNING":
-					score = Score.objects.get(team=team, problem=p)
-				else:
-					score = FrozenScore.objects.get(team=team, problem=p)
-				score_dict = {'correct': score.correct, 'count': score.submission_count}
-				if score.correct:
-					# FIXME: 20 shouldn't be hard-coded here
-					score_dict["time"] = score.time
-					row["time"] += (score.submission_count - 1)*20 + score.time
-					row["score"] += 1
-			except ObjectDoesNotExist:
-				score_dict = {'correct': False, 'count': 0}
+	scoreboard = calc_scoreboard()
 
-			row["details"].append(score_dict)
-
-		scorelist.append(row)
-
-	scorelist.sort(key=lambda s: s["score"]*1000000-s["time"], reverse=True)
-
-	return render_to_response('team_score.html', {"contest": contest, "problems":problems, "scorelist": scorelist},
+	return render_to_response('team_score.html', {"contest": contest, "problems":problems, "scoreboard": scoreboard,
+												  "colcount": 5+len(problems)},
 							  context_instance=RequestContext(request))
 
 @login_required
@@ -305,7 +335,12 @@ def submission(request, problem=None):
 			submission.file_name = request.FILES['file'].name
 			# FIXME: Check upload size
 			file = File()
-			file.content = request.FILES['file'].read()
+			content = request.FILES['file'].read()
+			try:
+				file.content = content.decode("utf-8")
+			except UnicodeError:
+				file.content = content.decode("iso8859-1")
+				
 			file.save()
 			submission.file = file
 			submission.save()

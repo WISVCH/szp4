@@ -7,6 +7,7 @@ from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
 from team import gettime
 from datetime import datetime
+from szp.views.general import calc_scoreboard
 
 @login_required
 def home(request):
@@ -49,31 +50,10 @@ def score(request):
 	contest = Contest.objects.get()
 	problems = Problem.objects.order_by("letter")
 
-	scorelist = []
-	for team in Team.objects.all():
-		row = {"name": team.name, "organisation": team.organisation, "class": team.teamclass.name, "score": 0, "time": 0, "details": []}
-		for p in problems:
-			try:
-				score = Score.objects.get(team=team, problem=p)
-				score_dict = {'correct': score.correct, 'count': score.submission_count}
-				if score.correct:
-					# FIXME: 20 shouldn't be hard-coded here
-					time = (score.submission_count - 1)*20 + score.time
-					score_dict["time"] = score.time
-					row["time"] += time
-					row["score"] += 1
-			except ObjectDoesNotExist:
-				score_dict = {'correct': False, 'count': 0}
+	scoreboard = calc_scoreboard(jury=True)
 
-			row["details"].append(score_dict)
-
-		scorelist.append(row)
-
-	scorelist.sort(key=lambda s: s["score"]*1000000-s["time"], reverse=True)
-
-	print scorelist
- 	
-	return render_to_response('jury_score.html', {"contest": contest, "problems":problems, "scorelist": scorelist},
+	return render_to_response('jury_score.html', {"contest": contest, "problems":problems,
+												  "scoreboard": scoreboard, "colcount": 5+len(problems)},
 							  context_instance=RequestContext(request))
 
 @login_required

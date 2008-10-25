@@ -6,22 +6,26 @@
 	<td class="nr">No.</td>
 	<td>Team</td>
 	<td>Organisation</td>
-	<td>Class</td>
+<!--	<td>Class</td>-->
 	<td>Score</td>
 	<td>Time</td>
 	{% for problem in problems %}
 	<td>{{ problem.letter }}</td>
 	{% endfor %}
       </tr>
-      {% for score in scorelist %}
+      {% for scorelist in scoreboard %}
+      <tr>
+	<td style="font-weight: bold" align="left" colspan="{{ colcount }}">{{ scorelist.name.capitalize }}</td>
+      </tr>
+      {% for score in scorelist.list %}
       <tr class="{% cycle 'content_body1' 'content_body2' %}">
 	<td class="nr">&nbsp;&nbsp;<b>{{ forloop.counter }}</b></td>
 	<td>
 	  <b>{{ score.name }}</b></td>
 	<td>
 	  <b>{{ score.organisation }}</b></td>
-	<td>
-	  <b>{{ score.class }}</b></td>
+<!--	<td>
+	  <b>{{ score.class }}</b></td>-->
 	<td class="score">
 	  <b>{{ score.score }}</b></td>
 	<td class="time">
@@ -44,6 +48,7 @@
 	{% endif %}
 	{% endfor %}
       </tr>
+      {% endfor %}
       {% endfor %}
     </table>
   </tr>

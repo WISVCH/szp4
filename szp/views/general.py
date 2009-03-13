@@ -10,7 +10,6 @@ def calc_scoreboard(jury=False):
 		scorelist = []
 
 		for team in Team.objects.filter(teamclass=teamclass):
-			print team, team.id
 			row = {"name": team.name, "organisation": team.organisation, "class": team.teamclass.name, "score": 0, "time": 0, "details": []}
 			for p in problems:
 				try:
@@ -18,8 +17,6 @@ def calc_scoreboard(jury=False):
 						score = Score.objects.get(team=team, problem=p)
 					else:
 						score = FrozenScore.objects.get(team=team, problem=p)
-
-					print score
 					score_dict = {'correct': score.correct, 'count': score.submission_count}
 					if score.correct:
 						# FIXME: 20 shouldn't be hard-coded here
@@ -37,6 +34,6 @@ def calc_scoreboard(jury=False):
 
 		scoreboard.append({"list": scorelist, "name": teamclass.name})
 
-#	print scoreboard
+	print scoreboard
 
 	return scoreboard

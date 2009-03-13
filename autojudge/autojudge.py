@@ -149,8 +149,8 @@ if __name__ == '__main__':
 		# The maximum file size a submission can create. [64 MiB]
 		env['WATCHDOG_LIMIT_FSIZE']="67108864"
 		
-		# The maximum amount of virtual memory a submission can use. [512 MiB]
-		env['WATCHDOG_LIMIT_AS']="536870912"
+		# The maximum amount of virtual memory a submission can use. [1024 MiB]
+		env['WATCHDOG_LIMIT_AS']="1073741824"
 		
 		# The maximum amount of spawned processes. [16]
 		env['WATCHDOG_LIMIT_NPROC']="16"

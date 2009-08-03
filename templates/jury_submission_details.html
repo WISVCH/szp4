@@ -3,196 +3,129 @@
 {% block content %}
 <h1>Submissions</h1> 
 <table class="details">
-  <tr class="content_header" align="middle">
-    <td>Submission details</td>
-    <td width="15%" align="center">
-      <a class="back_to_groups" href="/jury/submission/all/" style=":hover (  text-decoration: underline; color: white; }">Back to list</a>
-    </td>
-  </tr>
+	<tr class="content_header" align="middle">
+		<td>Submission details</td>
+		<td width="15%" align="center">
+			<a class="back_to_groups" href="/jury/submission/all/" style=":hover (  text-decoration: underline; color: white; }">Back to list</a>
+		</td>
+	</tr>
 </table>
 <table class="index">
-  <tr class="content_header">
-    <td class="index">time</td>
-    <td class="index">subm.</td>
-    <td class="index">team</td>
-    <td class="index">prob</td>
-    <td class="index">time limit</td>
-    <td class="index">filename</td>
-    <td class="index">compiler</td>
-    <td class="index">status</td>
-    <td class="index">result</td>
-    <td class="index">verified by</td>
-    <td class="index">change</td>
-  </tr>
+	<tr class="content_header">
+		<td class="index">time</td>
+		<td class="index">subm.</td>
+		<td class="index">team</td>
+		<td class="index">prob</td>
+		<td class="index">time limit</td>
+		<td class="index">filename</td>
+		<td class="index">compiler</td>
+		<td class="index">status</td>
+		<td class="index">result</td>
+		<td class="index">verified by</td>
+		<td class="index">change</td>
+	</tr>
 
-  <tr class="content_body1">
-    <td class="index">{{time}}</td>
-    <td class="index">{{submission.id}}</td>
-    <td class="index">
-      <span title="{{submission.team.id}}">{{submission.team.name}}</span>
-    </td>
-    <td class="index">
-      <span title="{{submission.problem.name}}">{{submission.problem.letter}}</span>
-    </td>
-    <td class="index">{{submission.problem.timelimit}} sec.</td>
-    <td class="index">{{submission.file_name}}</td>
-    <td class="index">{{submission.compiler.name}}</td>
-    <td class="index">{{submission.status}}</td>
-    <td class="index">{{judgement}}
-    </td>
-    <form method="post">
-      <td class="index">
-	{% if verified_by %}
-	{{verified_by}}
-	{% else %}
-	Nobody
-	<input type="submit" value="Verify" name="verify" {% if not has_result %}disabled {% endif %}>
-	{% endif %}
-      </td>
-    </form>
+	<tr class="content_body1">
+		<td class="index">{{time}}</td>
+		<td class="index">{{submission.id}}</td>
+		<td class="index">
+			<span title="{{submission.team.id}}">{{submission.team.name}}</span>
+		</td>
+		<td class="index">
+			<span title="{{submission.problem.name}}">{{submission.problem.letter}}</span>
+		</td>
+		<td class="index">{{submission.problem.timelimit}} sec.</td>
+		<td class="index">{{submission.file_name}}</td>
+		<td class="index">{{submission.compiler.name}}</td>
+		<td class="index">{{submission.status}}</td>
+		<td class="index">{{judgement}}
+		</td>
+		<form method="post">
+			<td class="index">
+				{% if verified_by %}
+				{{verified_by}}
+				{% else %}
+				Nobody
+				<input type="submit" value="Verify" name="verify" {% if not has_result %}disabled {% endif %}>
+				{% endif %}
+			</td>
+		</form>
 
-    <td class="index">
-      {% ifnotequal judgement "Pending..." %}
-      <a href="/jury/submission/{{submission.id}}/changeresult/">change</a>
-      {% endifnotequal %}
-    </td>
-  </tr>
+		<td class="index">
+			{% ifnotequal judgement "Pending..." %}
+			<a href="/jury/submission/{{submission.id}}/changeresult/">change</a>
+			{% endifnotequal %}
+		</td>
+	</tr>
 </table>
 <br>
 <table width="100%">
-  <tr class="content_header">
-    <td width="40%">Program Code</td>
-    <form action="file.php" method="post">
-      <td>
-	<input type="hidden" name="filename" value="coneasoup.c">
-	<input type="hidden" name="file_id" value="15">
-	<input type="submit" name="download" value="Download" disabled>
-      </td>
-    </form>
-    <td width="40%">&nbsp;Compiler Output</td>
-    <form action="file.php" method="post">
-      <td>
-	<input type="hidden" name="filename" value="compiler_output.txt">
-	<input type="hidden" name="file_id" value="16">
-	<input type="submit" name="download" value="Download" disabled>
-      </td>
-    </form>
-  </tr>
-  <tr class="content_body1">
-    <td align="center" colspan="2">
-      <textarea cols="55" rows="24">{{ program_code }}</textarea>
-    </td>
-    <td align="center" colspan="2">
-      <textarea cols="55" rows="24">{{ compiler_output }}</textarea>
-    </td>
-  </tr>
+	<tr class="content_header">
+		<td width="45%">&nbsp;Program Code</td>
+		<td width="5%"><a href="/jury/submission/{{submission.id}}/download/program_code">Download</a></td>
+		<td width="45%">&nbsp;Compiler Output</td>
+		<td width="5%"><a href="/jury/submission/{{submission.id}}/download/compiler_output">Download</a></td>
+	</tr>
+	<tr class="content_body1">
+		<td align="center" colspan="2">
+			<textarea cols="55" rows="24">{{ program_code }}</textarea>
+		</td>
+		<td align="center" colspan="2">
+			<textarea cols="55" rows="24">{{ compiler_output }}</textarea>
+		</td>
+	</tr>
 </table>
 <br>
 <table width="100%">
-  <tr class="content_header">
-    <td width="40%">&nbsp;Observed Output File</td>
-    <form action="file.php" method="post">
-      <td>
-	<input type="hidden" name="filename" value="output.txt">
-	<input type="hidden" name="file_id" value="17">
-	<input type="submit" name="download" value="Download" disabled>
-      </td>
-    </form>
-
-    <td width="40%">&nbsp;Expected Output File</td>
-    <form action="file.php" method="post">
-      <td>
-	<input type="hidden" name="filename" value="B_output.txt">
-	<input type="hidden" name="file_id" value="5">
-	<input type="submit" name="download" value="Download" disabled>
-      </td>
-    </form>
-  </tr>
-  <tr class="content_body1">
-    <td align="center" colspan="2">
-      <textarea cols="55" rows="24">{{ submission_output }}</textarea>
-    </td>
-    <td align="center" colspan="2">
-      <textarea cols="55" rows="24">{{ expected_output }}</textarea>
-    </td>
-  </tr>
+	<tr class="content_header">
+		<td width="45%">&nbsp;Observed Output File</td>
+		<td width="5%"><a href="/jury/submission/{{submission.id}}/download/submission_output">Download</a></td>
+		<td width="45%">&nbsp;Expected Output File</td>
+		<td width="5%"><a href="/jury/submission/{{submission.id}}/download/expected_output">Download</a></td>
+	</tr>
+	<tr class="content_body1">
+		<td align="center" colspan="2">
+			<textarea cols="55" rows="24">{{ submission_output }}</textarea>
+		</td>
+		<td align="center" colspan="2">
+			<textarea cols="55" rows="24">{{ expected_output }}</textarea>
+		</td>
+	</tr>
 </table>
 <br>
 <table width="100%">
-  
-  <tr class="content_header">
-    <td width="40%">
-      &nbsp;Output Diff File</td>
-    <form action="file.php" method="post">
-      <td>
-	<input type="hidden" name="filename" value="output_diff.txt">
-	<input type="hidden" name="file_id" value="18">
-	<input type="submit" name="download" value="Download" disabled>
-      </td>
-    </form>
-    <td width="40%">&nbsp;Input File</td>
-
-    <form action="file.php" method="post">
-      <td>
-	<input type="hidden" name="filename" value="B_input.txt">
-	<input type="hidden" name="file_id" value="4">
-	<input type="submit" name="download" value="Download" disabled>
-      </td>
-    </form>
-  </tr>
-  <tr class="content_body1">
-    <td align="center" colspan="2">
-      <textarea cols="55" rows="24">{{ output_diff }}</textarea>
-    </td>
-    <td align="center" colspan="2">
-      <textarea cols="55" rows="24">{{ problem_input }}</textarea>
-    </td>
-  </tr>
+	<tr class="content_header">
+		<td width="45%">&nbsp;Output Diff File</td>
+		<td width="5%"><a href="/jury/submission/{{submission.id}}/download/output_diff">Download</a></td>
+		<td width="45%">&nbsp;Input File</td>
+		<td width="5%"><a href="/jury/submission/{{submission.id}}/download/problem_input">Download</a></td>
+	</tr>
+	<tr class="content_body1">
+		<td align="center" colspan="2">
+			<textarea cols="55" rows="24">{{ output_diff }}</textarea>
+		</td>
+		<td align="center" colspan="2">
+			<textarea cols="55" rows="24">{{ problem_input }}</textarea>
+		</td>
+	</tr>
 </table>
 <br>
 <table width="100%">
-  <tr class="content_header">
-    <td width="40%">&nbsp;Judge Comment</td>
-    
-    <form action="file.php" method="post">
-      <td>
-	<input type="hidden" name="filename" value="">
-	<input type="hidden" name="file_id" value="0">
-	<input type="submit" name="download" value="Download" disabled>
-      </td>
-    </form>
-    <td width="40%">&nbsp;Autojudge Comment</td>
-    <form action="file.php" method="post">
-      <td>
-	<input type="hidden" name="filename" value="autojudge_comment.txt">
-	<input type="hidden" name="file_id" value="19">
-	<input type="submit" name="download" value="Download" disabled>
-	
-      </td>
-    </form>
-  </tr>
-  <tr class="content_body1">
-    <td align="center" colspan = "2">
-      <table>
-	<form action="{{ request.path }}" method="post">
-	  <tr>
-	    <td>
-	      <textarea cols="55" rows="8" name="text">{{ judge_comment }}</textarea>
-	    </td>
-	  </tr>
-	  <tr>
-	    <td>
-	      <input type="submit" value="Save" name="save" {% if not has_result %}disabled {% endif %}>
-	    </td>
-	  </tr>
-	</form>
-      </table>
-    </td>
-    <td align="center" colspan = "2">
-      <textarea cols="55" rows="10">{{ autojudge_comment }}</textarea>
-    </td>
-  </tr>
+	<tr class="content_header">
+		<td width="50%" colspan="2">&nbsp;Judge Comment</td>
+		<td width="50%" colspan="2">&nbsp;Autojudge Comment</td>
+	</tr>
+	<tr class="content_body1">
+		<td align="center" colspan="2">
+			<form action="{{ request.path }}" method="post">
+				<textarea cols="55" rows="10" name="text">{{ judge_comment }}</textarea><br/>
+				<input type="submit" value="Save" name="save" {% if not has_result %}disabled {% endif %}>
+			</form>
+		</td>
+		<td align="center" colspan="2" valign="top">
+			<textarea cols="55" rows="10">{{ autojudge_comment }}</textarea>
+		</td>
+	</tr>
 </table>
-
 
 {% endblock %}

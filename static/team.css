@@ -1,5 +1,3 @@
-/* @override http://localhost:8000/static/team.css */
-
 /*page structure team*/
 
 body 
@@ -41,14 +39,14 @@ td.error
   font-weight: bold;
 }
 
-a.content_header 
+a.content_header, .content_header a
 {
   text-decoration: none;
   font-weight: bold;
   color: white;
 }
 
-a.content_header:hover
+a.content_header:hover, .content_header a:hover
 {
   text-decoration: underline;
   color: black;

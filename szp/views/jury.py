@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from szp.models import *
 from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
@@ -445,11 +445,11 @@ def submission_details(request, number):
 
 
 def submission_changeresult(request, number):
-	# TODO: We might want to be able to manually accept submissions
 	profile = request.user.get_profile()
 	if not profile.is_judge:
 		return HttpResponseRedirect('/team/')
 
+	# TODO: We might want to be able to manually accept submissions
 	contest = Contest.objects.get()
 	submission = Submission.objects.get(id=number)
 	if request.method == 'POST':
@@ -486,4 +486,30 @@ def submission_changeresult(request, number):
 							   },
 							  context_instance=RequestContext(request))
 
+def submission_download(request, number, what):
+	profile = request.user.get_profile()
+	if not profile.is_judge:
+		return HttpResponseRedirect('/team/')
+
+	submission = Submission.objects.get(id=number)
+	result = submission.result_set.get()
+
+	if what == 'problem_input':
+		output = submission.problem.in_file.content
+	elif what == 'output_diff' and result.check_output_file:
+		output = result.check_output_file.content
+	elif what == 'expected_output':
+		output = submission.problem.out_file.content
+	elif what == 'submission_output' and result.submission_output_file:
+		output = result.submission_output_file.content
+	elif what == 'compiler_output':
+		output = result.compiler_output_file.content
+	elif what == 'program_code':
+		output = submission.file.content
+	else:
+		raise Http404
 	
+	response = HttpResponse(output, mimetype='text/plain')
+	response['Content-Disposition'] = 'attachment; filename=%s_%s' % (number, what)
+	return response
+

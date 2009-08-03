@@ -19,9 +19,8 @@ def calc_scoreboard(jury=False):
 						score = FrozenScore.objects.get(team=team, problem=p)
 					score_dict = {'correct': score.correct, 'count': score.submission_count}
 					if score.correct:
-						# FIXME: 20 shouldn't be hard-coded here
 						score_dict["time"] = score.time
-						row["time"] += (score.submission_count - 1)*20 + score.time
+						row["time"] += (score.submission_count - 1)*SUBMITFAIL_PENALTY + score.time
 						row["score"] += 1
 				except ObjectDoesNotExist:
 					score_dict = {'correct': False, 'count': 0}

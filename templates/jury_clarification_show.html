@@ -3,63 +3,64 @@
 {% block content %}
 <H1>Clarification</H1>
 <table class="content">
-  <tr>
-    <td align="center" valign="top">
-      <table width="320">
-	<tr class="content_header">
-	  <td class="content_header" colspan="2">&nbsp;Received: Clarification Request</td>
+	<tr>
+		<td align="center" valign="top">
+			<table width="320">
+				<tr class="content_header">
+					<td class="content_header" colspan="2">&nbsp;Received: Clarification Request</td>
+				</tr>
+				<tr class="content_body1">
+					<td width="50%">&nbsp;{{ clarreq.problem }}</td>
+					<td width="50%">&nbsp;{{ clarreq.sender }}</td>
+				</tr>
+				<tr class="content_body1">
+					<td colspan="2">&nbsp;{{ clarreq.subject }}</td>
+				</tr>
+				<tr class="message_body">
+					<td colspan="2">{{ clarreq.message|linebreaks }}</td>
+				</tr>
+				<form action="{{ request.path }}" method="post">
+					<tr class="content_body1">
+						<td colspan="2" align="center">
+							<input type="submit" name="button" value="Reply">
+							<input type="submit" name="button" value="Dealt With">
+						</td>
+					</tr>
+				</form>
+			</table>
+		</td>
+		
+		<td align="center" valign="top">
+			<table class="clarindex">
+				<tr class="content_header">
+					<td colspan="3">&nbsp;Index of: {{ clarreq.problem }}</td>
+				</tr>
+				{% for clar in clarlist %}
+				<tr class="{% cycle 'content_body1' 'content_body2' %}">
+					<td colspan="3">
+						<span title="From: {{clar.from}}">
+							<a class="index" href="/jury/clarification/{{clar.url}}/">&nbsp;[{{clar.time}}]
+								{{ clar.subject }} 
+								{% if clar.unhandled %}
+								<b>(unhandled)</b>
+								{% endif %}
+							</a>
+						</span>
+					</td>
+				</tr>
+				{% endfor %}
+				<tr class="content_header">
+					<td width="25%">
+					</td>
+					<td align=middle>
+						<a class="back_to_groups" href="/jury/clarification/" style=":hover (  text-decoration: underline; color: white; }">Back to Groups</a>
+					</td>
+					<td width="25%">
+					</td>
+				</tr>
+			</table>
+		</td>
 	</tr>
-	<tr class="content_body1">
-	  <td width="50%">&nbsp;{{ clarreq.problem }}</td>
-	  <td width="50%">&nbsp;{{ clarreq.sender }}</td>
-	</tr>
-	<tr class="content_body1">
-	  <td colspan="2">&nbsp;{{ clarreq.subject }}</td>
-	</tr>
-	<tr class="message_body">
-	  <td colspan="2">{{ clarreq.message|linebreaks }}</td>
-	</tr>
-	<form action="{{ request.path }}" method="post">
-	  <tr class="content_body1">
-	    <td colspan="2" align="center">
-	      <input type="submit" name="button" value="Reply">
-	      <input type="submit" name="button" value="Dealt With">
-	    </td>
-	  </tr>
-	</form>
-      </table>
-
-    </td>
-    <td align="center" valign="top">
-      <table class="clarindex">
-	<tr class="content_header">
-	  <td colspan="3">&nbsp;Index of: {{ clarreq.problem }}</td>
-	</tr>
-	{% for clar in clarlist %}
-	<tr class="{% cycle 'content_body1' 'content_body2' %}">
-	  <td colspan="3">
-	    <span title="From: {{clar.from}}">
-	      <a class="index" href="/jury/clarification/{{clar.url}}/">&nbsp;[{{clar.time}}]
-		{{ clar.subject }} 
-		{% if clar.unhandled %}
-		<b>(unhandled)</b>
-		{% endif %}
-	      </a>
-	    </span>
-	  </td>
-	</tr>
-	{% endfor %}
-	<tr class="content_header">
-	  <td width="25%">
-	  </td>
-	  <td align=middle>
-	    <a class="back_to_groups" href="/jury/clarification/" style=":hover (  text-decoration: underline; color: white; }">Back to Groups</a>
-	  </td>
-	  <td width="25%">
-	  </td>
-	</tr>
-      </table>
-    </td>
 </table>
 
 

@@ -316,15 +316,10 @@ def clarification_show(request, which):
 def submission(request, problem=None):
 	profile = request.user.get_profile()
 	contest = Contest.objects.get()
-	if request.method == 'POST':
-		if contest.status != "RUNNING" and contest.status != "NOINFO":
-			return HttpResponseRedirect('/team/')
-		
-		form = SubmitForm(request.POST, request.FILES)
+	if request.method == 'POST':		
+		form = SubmitForm(request.POST, request.FILES, request=request)
 		if form.is_valid():
-			# FIXME: Check contest state
-			# FIXME: Check whether we already have an accepted solution for this problem
-			# FIXME: Maybe check whether extension is correct.
+			# TODO: Maybe check whether extension is correct.
 			submission = Submission()
 			submission.status = "NEW"
 			submission.team = profile.team
@@ -333,7 +328,7 @@ def submission(request, problem=None):
 			submission.compiler = form.cleaned_data['compiler']
 
 			submission.file_name = request.FILES['file'].name
-			# FIXME: Check upload size
+			# TODO: Check upload size
 			file = File()
 			content = request.FILES['file'].read()
 			try:

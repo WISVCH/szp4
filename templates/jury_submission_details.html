@@ -29,7 +29,7 @@
     <td class="index">{{time}}</td>
     <td class="index">{{submission.id}}</td>
     <td class="index">
-      <span title="{{submission.team.id}}">{{submission.team.id}}</span>
+      <span title="{{submission.team.id}}">{{submission.team.name}}</span>
     </td>
     <td class="index">
       <span title="{{submission.problem.name}}">{{submission.problem.letter}}</span>
@@ -52,7 +52,9 @@
     </form>
 
     <td class="index">
+      {% ifnotequal judgement "Pending..." %}
       <a href="/jury/submission/{{submission.id}}/changeresult/">change</a>
+      {% endifnotequal %}
     </td>
   </tr>
 </table>

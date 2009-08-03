@@ -445,6 +445,7 @@ def submission_details(request, number):
 
 
 def submission_changeresult(request, number):
+	# TODO: We might want to be able to manually accept submissions
 	profile = request.user.get_profile()
 	if not profile.is_judge:
 		return HttpResponseRedirect('/team/')
@@ -452,14 +453,12 @@ def submission_changeresult(request, number):
 	contest = Contest.objects.get()
 	submission = Submission.objects.get(id=number)
 	if request.method == 'POST':
-		# FIXME: This won't work when we don't have a result object yet
 		result = submission.result_set.get()
 		result.judgement = request.POST["judgement"]
 		result.save()
 
 		return HttpResponseRedirect('/jury/submission/%s/' % number)
 
-		
 	time = gettime(submission.timestamp, contest)
 
 	try:

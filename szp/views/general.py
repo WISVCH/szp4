@@ -34,6 +34,4 @@ def calc_scoreboard(jury=False):
 
 		scoreboard.append({"list": scorelist, "name": teamclass.name})
 
-	print scoreboard
-
 	return scoreboard

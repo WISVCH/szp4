@@ -129,7 +129,7 @@ if __name__ == '__main__':
 		fp.write(submission.problem.in_file.content)
 		fp.close()
 
-		print "Starting to judge submission from %s for problem %s, submitted at %s" % (submission.team, submission.problem.letter, submission.timestamp)
+		print "Starting to judge submission from %s for problem %s, submitted at %s" % (submission.id, submission.problem.letter, submission.timestamp)
 		
 		cmd = submission.compiler.compile_line.replace("${LETTER}", submission.problem.letter).split()
 

@@ -1,11 +1,11 @@
 #!/bin/bash
-sudo dropdb szp
-sudo createdb szp
+#sudo dropdb szp
+#sudo createdb szp
 
 ~/szp4/manage.py syncdb --noinput
 ~/szp4/manage.py createsuperuser --username=admin --email=szp@ch.tudelft.nl
 
-szp setcontest INITIALIZED 2008-10-24 'Benelux Algorithm Programming Contest 2008' 'Delft'
+szp setcontest INITIALIZED 2008-10-25 'Benelux Algorithm Programming Contest 2008' 'Delft'
 
 szp addautojudge 131.180.158.61
 szp addautojudge 131.180.158.62

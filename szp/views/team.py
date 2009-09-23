@@ -30,11 +30,11 @@ def getrank(ourteam):
 	if contest.status == "INITIALIZED" or contest.status == "RUNNING":
 		for score in Score.objects.filter(correct=True, team__teamclass=ourteam.teamclass):
 			scoredict[score.team]["score"] += 1
-			scoredict[score.team]["time"] += score.time
+			scoredict[score.team]["time"] += (score.submission_count - 1)*20 + score.time
 	else:
 		for score in FrozenScore.objects.filter(correct=True, team__teamclass=ourteam.teamclass):
 			scoredict[score.team]["score"] += 1
-			scoredict[score.team]["time"] += score.time
+			scoredict[score.team]["time"] += (score.submission_count - 1)*20 + score.time
 
 	scorelist = []
 	for (team, score) in scoredict.items():

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 	<title>SZP JuryTool</title>
@@ -15,27 +16,14 @@
 				}
 			});
 	}
-	$(document).ready(function(){ $("#loading").html("Refreshing"); setTimeout("refreshData()", 5000); });
+	$(document).ready(function(){ $("#loading").html("Refreshing"); setTimeout("refreshData()", 10000); });
 	</script>
 </head>
 
 <body>
 	<div id="masthead" class="jury">
 		<div id="status">
-			<div id="status_time">
-				{{ status_time }}
-			</div>
-			{% ifequal new_clarreqs 0 %}
-			<div id="status_clarifications" class="status_no_new">
-				<a href="/jury/clarification/">NO NEW<br/>CLARIFICATIONS</a>
-			</div>
-			{% else %}
-			<div id="status_clarifications" class="status_new">
-				<a href="/jury/clarification/">{{ new_clarreqs }} NEW<br/>CLARIFICATIONS</a>
-			</div>
-			{% endifequal %}
-
-			<div id="contest_time">{{ status }}</div>
+			{% include "jury_status.html" %}
 		</div>
 		<div id="loading"></div>
 		<h1>SZP JuryTool</h1>

@@ -2,70 +2,73 @@
 
 {% block content %}
 
-<H1>Submissions</H1>
+<h1>Submissions</h1>
 <table class="content">
-  <tr>
-    <td align="center" valign="top">
-      <form enctype="multipart/form-data" action="{{request.path}}" method="post">
-	<table width="320">
-	  <tr class="content_header">
-	    <td class="content_header" colspan="2">&nbsp;Submit file</td>
-	  </tr>
-	  <tr class="content_body1">
-	    <td colspan="2">&nbsp;{{ profile.team.name }}</td>
-	  </tr>
-	  <tr class="content_body2">
-	    <td width="50%">
-	      {{ form.problem.errors }}
-	      {{ form.problem }}
-	    </td>
-	    <td width="50%">&nbsp;Problem</td>
-	  </tr>
-	  <tr class="content_body1">
-	    <td width="50%">
-	      {{ form.compiler.errors }}
-	      {{ form.compiler }}
-	    </td>
-	    <td width="50%">&nbsp;Compiler</td>
-	  </tr>
-	  <tr class="content_body2">
-	    <td>
-	      {{ form.file.errors }}
-	      {{ form.file }}
-	    </td>
-	    <td>&nbsp;File</td>
-	  </tr>
-	  <tr class="content_body1">
-	    <td colspan="2" align="center">
-	      <input type="submit" name="send" value="Send">
-	    </td>
-	  </tr>
-	</table>
-      </form>
-    </td>
-    <td align="center" valign="top">
-      <table class="index">
-	<tr class="content_header">
-	  <td>&nbsp;Submissions</td>
+	<tr>
+		<td align="center" valign="top">
+			<form enctype="multipart/form-data" action="{{request.path}}" method="post">
+				<table width="320">
+					<tr class="content_header">
+						<td class="content_header" colspan="2">&nbsp;Submit file</td>
+					</tr>
+					<tr class="content_body1">
+						<td colspan="2">
+							&nbsp;{{ profile.team.name }}
+							{{ form.non_field_errors }}
+						</td>
+					</tr>
+					<tr class="content_body2">
+						<td width="50%">
+							{{ form.problem.errors }}
+							{{ form.problem }}
+						</td>
+						<td width="50%">&nbsp;Problem</td>
+					</tr>
+					<tr class="content_body1">
+						<td width="50%">
+							{{ form.compiler.errors }}
+							{{ form.compiler }}
+						</td>
+						<td width="50%">&nbsp;Compiler</td>
+					</tr>
+					<tr class="content_body2">
+						<td>
+							{{ form.file.errors }}
+							{{ form.file }}
+						</td>
+						<td>&nbsp;File</td>
+					</tr>
+					<tr class="content_body1">
+						<td colspan="2" align="center">
+							<input type="submit" name="send" value="Send">
+						</td>
+					</tr>
+				</table>
+			</form>
+		</td>
+		<td align="center" valign="top">
+			<table class="index">
+				<tr class="content_header">
+					<td>&nbsp;Submissions</td>
+				</tr>
+				{% if results %}
+				{% for result in results %}
+				<tr class="{% cycle 'content_body1' 'content_body2'%}">
+					<td>
+						&nbsp;[{{result.time }}] {{result.problem}} ({{result.judgement}})
+					</td>
+				</tr>
+				{% endfor %}
+				{% else %}
+				<tr class="content_body1">
+					<td>
+						&nbsp;Nothing submitted yet
+					</td>
+				</tr>
+				{% endif %}
+			</table>
+		</td>
 	</tr>
-	{% if results %}
-	{% for result in results %}
-	<tr class="{% cycle 'content_body1' 'content_body2'%}">
-	  <td>
-	    &nbsp;[{{result.time }}] {{result.problem}} ({{result.judgement}})
-	  </td>
-	</tr>
-	{% endfor %}
-	{% else %}
-	<tr class="content_body1">
-	  <td>
-	    &nbsp;Nothing submitted yet
-	  </td>
-	</tr>
-	{% endif %}
-      </table>
-    </td>
-  </tr>
 </table>
 
 {% endblock %}

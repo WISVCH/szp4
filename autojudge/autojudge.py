@@ -6,6 +6,7 @@ import shutil
 import time
 from subprocess import Popen, PIPE, STDOUT
 import stat
+import socket
 
 # This will insert the parent duriectory to the path so we can import
 # settings.
@@ -77,8 +78,8 @@ def uploadresult(submission, judgement, compiler_output, submission_output=None,
 	profile.save()
 
 if __name__ == '__main__':
-	# FIXME: Get our IP address.
-	ip_address = sys.argv[1]
+	ip_address = sys.argv[1] if len(sys.argv) > 1 else socket.gethostbyname(socket.gethostname())
+	
 	try:
 		autojudge = Autojudge.objects.get(ip_address=ip_address)
 	except ObjectDoesNotExist:
@@ -149,8 +150,8 @@ if __name__ == '__main__':
 		# The maximum file size a submission can create. [64 MiB]
 		env['WATCHDOG_LIMIT_FSIZE']="67108864"
 		
-		# The maximum amount of virtual memory a submission can use. [512 MiB]
-		env['WATCHDOG_LIMIT_AS']="536870912"
+		# The maximum amount of virtual memory a submission can use. [1024 MiB]
+		env['WATCHDOG_LIMIT_AS']="1073741824"
 		
 		# The maximum amount of spawned processes. [16]
 		env['WATCHDOG_LIMIT_NPROC']="16"

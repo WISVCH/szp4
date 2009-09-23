@@ -44,6 +44,7 @@ urlpatterns += patterns('szp.views.jury',
     (r'^jury/submission/$', 'submission'),
     (r'^jury/submission/([A-Z]|all)/$', 'submission_list'),
     (r'^jury/submission/(\d+)/$', 'submission_details'),
+    (r'^jury/submission/(\d+)/download/(\w+)$', 'submission_download'),
     (r'^jury/submission/(\d+)/changeresult/$', 'submission_changeresult'),
 	(r'^jury/status/$', 'status'),
 					  

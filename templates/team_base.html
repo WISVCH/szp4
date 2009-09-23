@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 	<title>SZP TeamTool</title>
@@ -15,38 +16,17 @@
 				}
 			});
 	}
-	$(document).ready(function(){ $("#loading").html("Refreshing"); setTimeout("refreshData()", 5000); });
+	$(document).ready(function(){ $("#loading").html("Refreshing"); setTimeout("refreshData()", 10000); });
 	</script>
 </head>
 
 <body>
 	<div id="masthead">
 		<div id="status">
-		        {% if new_results %}
-			<div id="status_results" class="status_new">
-				<a href="/team/submission/">NEW<br/>RESULTS</a>
-			</div>
-			{% else %}
-			<div id="status_results" class="status_no_new">
-				<a href="/team/submission/">NO NEW<br/>RESULTS</a>
-			</div>
-			{% endif %}
-			{% ifequal new_clars 0 %}
-			<div id="status_clarifications" class="status_no_new">
-				<a href="/team/clarification/">NO NEW<br/>CLARIFICATIONS</a>
-			</div>
-			{% else %}
-			<div id="status_clarifications" class="status_new">
-				<a href="/team/clarification/">{{ new_clars }} NEW<br/>CLARIFICATIONS</a>
-			</div>
-			{% endifequal %}
-
-
-			<div id="contest_time">{{ status_time }}</div>
-			<div id="status_rank">Team rank: {{ rank }}</div>
+			{% include "team_status.html" %}
 		</div>
 		<div id="loading"></div>
-		<h1>SZP TeamTool </h1>
+		<h1>SZP TeamTool</h1>
 		<ul>
 			<li><a href="/team/">Home</a></li>
 			<li><a href="/team/score/">Scorelist</a></li>

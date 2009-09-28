@@ -1,9 +1,5 @@
-testdb
 watchdog
 testdir
-settings.py
-settings.py
-settings.py
-settings.py
-szpdb
+local.py
+szp.sqlite
 .DS_Store

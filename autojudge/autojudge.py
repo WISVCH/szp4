@@ -226,5 +226,5 @@ if __name__ == '__main__':
 			print "AUTOJUDGE ERROR: CHECKSCRIPT RETURNED UNKNOWN VALUE"
 			sys.exit(1)
 
-		print "Submission judged, sleeping for 2 seconds"
+		print "Submission judged."
 		

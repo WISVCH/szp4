@@ -1,8 +1,7 @@
 # Django settings for szp4 project.
 import os
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+TEMPLATE_DEBUG = DEBUG = False
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
@@ -10,13 +9,13 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = 'postgresql_psycopg2'    # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'ado_mssql'.
-DATABASE_NAME = 'szp'          # Or path to database file if using sqlite3.
-DATABASE_USER = 'szp'       # Not used with sqlite3.
-from database import DATABASE_PASSWORD
-#DATABASE_PASSWORD = ''         # Not used with sqlite3.
-DATABASE_HOST = ''           # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+DATABASE_ENGINE = ''
+DATABASE_NAME = ''
+DATABASE_USER = ''
+DATABASE_PASSWORD = ''
+DATABASE_HOST = ''
+DATABASE_PORT = ''
+SECRET_KEY = ''
 
 # Local time zone for this installation. Choices can be found here:
 # http://www.postgresql.org/docs/8.1/static/datetime-keywords.html#DATETIME-TIMEZONE-SET-TABLE
@@ -48,9 +47,6 @@ MEDIA_URL = ''
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/media/'
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '0^)&9&^^(_v3(92&@zk498@%5d*lacple1@-q@a(zyc&$wnd#2'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -94,3 +90,5 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 AUTH_PROFILE_MODULE = "szp.Profile"
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'szp.auth.IpBackend')
+
+execfile('local.py')

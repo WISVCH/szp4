@@ -8,6 +8,7 @@ from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
 from szp.views.general import calc_scoreboard
+from django.conf import settings
 
 def gettime(timestamp, contest):
 	if contest.status == "INITIALIZED":
@@ -30,11 +31,11 @@ def getrank(ourteam):
 	if contest.status == "INITIALIZED" or contest.status == "RUNNING":
 		for score in Score.objects.filter(correct=True, team__teamclass=ourteam.teamclass):
 			scoredict[score.team]["score"] += 1
-			scoredict[score.team]["time"] += (score.submission_count - 1)*20 + score.time
+			scoredict[score.team]["time"] += (score.submission_count - 1)*settings.SUBMITFAIL_PENALTY + score.time
 	else:
 		for score in FrozenScore.objects.filter(correct=True, team__teamclass=ourteam.teamclass):
 			scoredict[score.team]["score"] += 1
-			scoredict[score.team]["time"] += (score.submission_count - 1)*20 + score.time
+			scoredict[score.team]["time"] += (score.submission_count - 1)*settings.SUBMITFAIL_PENALTY + score.time
 
 	scorelist = []
 	for (team, score) in scoredict.items():

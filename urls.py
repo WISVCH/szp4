@@ -47,7 +47,6 @@ urlpatterns += patterns('szp.views.jury',
     (r'^jury/submission/(\d+)/download/(\w+)$', 'submission_download'),
     (r'^jury/submission/(\d+)/changeresult/$', 'submission_changeresult'),
 	(r'^jury/status/$', 'status'),
-					  
 )
 
 if settings.DEBUG:

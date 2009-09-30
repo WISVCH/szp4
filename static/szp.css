@@ -96,7 +96,7 @@ td.app, td.not_app {
   background-position: right center;
   background-repeat: no-repeat;
   text-align: center;
-  width: 70px;
+  width: 60px;
 }
 
 /*cell in scorelist representing a solved problem*/

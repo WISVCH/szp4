@@ -155,7 +155,7 @@ class Result(models.Model):
 						 ("NO_OUTPUT", "NO_OUTPUT"),
 						 ("ACCEPTED", "ACCEPTED"))
 
-	submission = models.ForeignKey(Submission)
+	submission = models.ForeignKey(Submission, unique=True)
 	judgement = models.CharField(max_length=16, choices=JUDGEMENT_CHOICES)
 	judged_by = models.ForeignKey(Autojudge)
 	judge_comment = models.TextField(null=True, blank=True)

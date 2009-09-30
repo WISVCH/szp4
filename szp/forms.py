@@ -12,6 +12,9 @@ class SubmitForm(forms.Form):
 		self.request = kwargs.pop('request', None)
 		super(SubmitForm, self).__init__(*args, **kwargs)
 	
+	# There is a nice race condition in this check:
+	# if two submissions are done close together, and the first is accepted,
+	# the second submission is still counted against the team score.
 	def clean(self):
 		cleaned_data = self.cleaned_data
 		profile = self.request.user.get_profile()

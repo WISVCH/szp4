@@ -122,8 +122,9 @@ def status(request):
 
 @login_required
 def score(request):
+	profile = request.user.get_profile()
 	return render_to_response('team_score.html',
-							  get_scoreboard(),
+							  get_scoreboard(jury=profile.is_judge),
 							  context_instance=RequestContext(request))
 
 @login_required

@@ -380,7 +380,7 @@ def submission_details(request, number):
 			verified_by = None
 		compiler_output = result.compiler_output_file.content
 
-		if result.jury_comment:
+		if result.judge_comment:
 			judge_comment = result.judge_comment
 		else:
 			judge_comment = ""
@@ -484,6 +484,7 @@ def submission_download(request, number, what):
 	elif what == 'compiler_output':
 		output = result.compiler_output_file.content
 	elif what == 'program_code':
+		what = 'program_code_' + submission.file_name
 		output = submission.file.content
 	else:
 		raise Http404

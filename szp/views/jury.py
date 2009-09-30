@@ -22,24 +22,8 @@ def home(request):
 
 @login_required
 def status(request):
-	contest = Contest.objects.get()
-	if contest.status == "INITIALIZED":
-		status_time = "WAIT"
-	elif contest.status == "STOPPED":
-		status_time = "FINISHED"
-	else:
-		timedelta = datetime.now() - contest.starttime
-		hours = timedelta.days*24+timedelta.seconds / 3600
-		minutes = timedelta.seconds % 3600 / 60
-		status_time = "%02d:%02d" % (hours, minutes)	
-
-	status = contest.status
-	new_clarreqs = Clarreq.objects.filter(dealt_with=False).count()
-
 	return render_to_response('jury_status.html',
-							  {"status": status, "status_time": status_time, "new_clarreqs": new_clarreqs},
 							  context_instance=RequestContext(request))
-
 
 @login_required
 def score(request):
@@ -52,9 +36,10 @@ def score(request):
 
 	scoreboard = calc_scoreboard(jury=True)
 
-	return render_to_response('jury_score.html', {"contest": contest, "problems":problems,
-												  "scoreboard": scoreboard, "colcount": 5+len(problems)},
-							  context_instance=RequestContext(request))
+	return render_to_response('jury_score.html',
+							 {"contest": contest, "problems":problems,
+						      "scoreboard": scoreboard, "colcount": 5+len(problems)},
+							 context_instance=RequestContext(request))
 
 @login_required
 def clarification(request):
@@ -287,7 +272,7 @@ def clarification_reply(request, which):
 		message += "> "
 		message += line
 
-	message += "\n\nPlease read the problem specifications carefully."
+	message += "\n\nPlease read the problem specification more carefully."
 
 	reply["message"] = message
 

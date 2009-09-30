@@ -1,14 +1,14 @@
 <div id="status_time">
-  {{ status_time }}
+  {{ s.status_time }}
 </div>
-{% ifequal new_clarreqs 0 %}
+{% ifequal s.new_clarreqs 0 %}
 <div id="status_clarifications" class="status_no_new">
-  <a href="/jury/clarification/">NO NEW<br/>CLARIFICATIONS</a>
+  <a href="/jury/clarification/">NO NEW<br/>CLAR. REQS.</a>
 </div>
 {% else %}
 <div id="status_clarifications" class="status_new">
-  <a href="/jury/clarification/">{{ new_clarreqs }} NEW<br/>CLARIFICATIONS</a>
+  <a href="/jury/clarification/">{{ s.new_clarreqs }} NEW<br/>CLAR. REQS.</a>
 </div>
 {% endifequal %}
 
-<div id="contest_time">{{ status }}</div>
+<div id="contest_time">{{ s.status }}</div>

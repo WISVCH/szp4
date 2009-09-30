@@ -117,41 +117,7 @@ def home(request):
 
 @login_required
 def status(request):
-	profile = request.user.get_profile()
-	contest = Contest.objects.get()
-	
-	new_clars = Clar.objects.filter(receiver=profile.team).filter(read=False).count()
-	new_results = profile.new_results
-	
-	scoredict = {}
-	
-	for team in Team.objects.all():
-		scoredict[team] = {"score": 0, "time": 0}
-		
-	if contest.status == "INITIALIZED" or contest.status == "RUNNING":
-		for score in Score.objects.filter(correct=True):
-			scoredict[score.team]["score"] += 1
-			scoredict[score.team]["time"] += score.time
-	else:
-		for score in FrozenScore.objects.filter(correct=True):
-			scoredict[score.team]["score"] += 1
-			scoredict[score.team]["time"] += score.time
-
-	rank = getrank(profile.team)
-	
-	if contest.status == "INITIALIZED":
-		status_time = "WAIT"
-	elif contest.status == "STOPPED":
-		status_time = "STOPPED"
-	else:
-		timedelta = datetime.now() - contest.starttime
-		hours = timedelta.days*24+timedelta.seconds / 3600
-		minutes = timedelta.seconds % 3600 / 60
-		status_time  = "%02d:%02d" % (hours, minutes)	
-
 	return render_to_response('team_status.html',
-							  {"new_results": new_results, "new_clars": new_clars,
-							   "status_time": status_time, "rank": rank},
 							  context_instance=RequestContext(request))
 
 @login_required

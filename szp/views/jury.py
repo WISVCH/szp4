@@ -434,6 +434,11 @@ def submission_changeresult(request, number):
 	if request.method == 'POST':
 		result = submission.result_set.get()
 		result.judgement = request.POST["judgement"]
+		
+		team = submission.team
+		team.new_results = True
+		team.save()
+		
 		result.save()
 
 		return HttpResponseRedirect('/jury/submission/%s/' % number)

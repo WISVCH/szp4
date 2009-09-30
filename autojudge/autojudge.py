@@ -8,7 +8,7 @@ from subprocess import Popen, PIPE, STDOUT
 import stat
 import socket
 
-# This will insert the parent duriectory to the path so we can import
+# This will insert the parent directory to the path so we can import
 # settings.
 sys.path.insert(0, os.path.normpath(sys.path[0]+"/.."))
 

@@ -73,9 +73,9 @@ def uploadresult(submission, judgement, compiler_output, submission_output=None,
 
 	score.save()
 
-	profile = submission.team.profile_set.get()
-	profile.new_results = True
-	profile.save()
+	team = submission.team.get()
+	team.new_results = True
+	team.save()
 
 if __name__ == '__main__':
 	ip_address = sys.argv[1] if len(sys.argv) > 1 else socket.gethostbyname(socket.gethostname())

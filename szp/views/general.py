@@ -2,12 +2,17 @@ from szp.models import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 
-def calc_scoreboard(jury=False):
+def get_scoreboard(jury=False):
 	contest = Contest.objects.get()
 	problems = Problem.objects.order_by("letter")
-
+	
+	if jury:
+		teamclasses = Teamclass.objects.order_by("rank")
+	else:
+		teamclasses = Teamclass.objects.filter(rank__gt=0).order_by("rank")
+	
 	scoreboard= []
-	for teamclass in Teamclass.objects.order_by("rank"):
+	for teamclass in teamclasses:
 		scorelist = []
 
 		for team in Team.objects.filter(teamclass=teamclass):
@@ -31,7 +36,6 @@ def calc_scoreboard(jury=False):
 			scorelist.append(row)
 
 		scorelist.sort(key=lambda s: s["score"]*1000000-s["time"], reverse=True)
-
 		scoreboard.append({"list": scorelist, "name": teamclass.name})
 
-	return scoreboard
+	return {"contest": contest, "problems": problems, "scoreboard": scoreboard}

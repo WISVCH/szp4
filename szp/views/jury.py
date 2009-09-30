@@ -7,7 +7,7 @@ from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
 from team import gettime
 from datetime import datetime
-from szp.views.general import calc_scoreboard
+from szp.views.general import get_scoreboard
 
 @login_required
 def home(request):
@@ -31,15 +31,9 @@ def score(request):
 	if not profile.is_judge:
 		return HttpResponseRedirect('/team/')
 
-	contest = Contest.objects.get()
-	problems = Problem.objects.order_by("letter")
-
-	scoreboard = calc_scoreboard(jury=True)
-
 	return render_to_response('jury_score.html',
-							 {"contest": contest, "problems":problems,
-						      "scoreboard": scoreboard, "colcount": 5+len(problems)},
-							 context_instance=RequestContext(request))
+							  get_scoreboard(jury=True),
+							  context_instance=RequestContext(request))
 
 @login_required
 def clarification(request):
@@ -366,7 +360,7 @@ def submission_details(request, number):
 			submission.save()
 		elif "save" in request.POST:
 			result = submission.result_set.get()
-			result.jury_comment = request.POST["text"]
+			result.judge_comment = request.POST["text"]
 			result.save()
 			
 	contest = Contest.objects.get()
@@ -387,7 +381,7 @@ def submission_details(request, number):
 		compiler_output = result.compiler_output_file.content
 
 		if result.jury_comment:
-			judge_comment = result.jury_comment
+			judge_comment = result.judge_comment
 		else:
 			judge_comment = ""
 

@@ -36,7 +36,7 @@ class Team(models.Model):
 	location = models.CharField(max_length=100)
 	teamclass = models.ForeignKey(Teamclass)
 	organisation = models.CharField(max_length=100)
-	ip_address = models.IPAddressField()
+	new_results = models.BooleanField(default=False)
 
 	def __unicode__(self):
 		return self.name
@@ -45,7 +45,7 @@ class Profile(models.Model):
 	user = models.ForeignKey(User, unique=True)
 	team = models.ForeignKey(Team, null=True, blank=True)
 	is_judge = models.BooleanField()
-	new_results = models.BooleanField(default=False)
+	ip_address = models.IPAddressField(blank=True)
 	
 	def __unicode__(self):
 		return self.user.username
@@ -53,8 +53,8 @@ class Profile(models.Model):
 	class Meta:
 		permissions = (
 			("team", "Team"),
-            ("jury", "Jury"),
-        )
+			("jury", "Jury"),
+		)
 
 class File(models.Model):
 	content = models.TextField()
@@ -158,8 +158,7 @@ class Result(models.Model):
 	submission = models.ForeignKey(Submission)
 	judgement = models.CharField(max_length=16, choices=JUDGEMENT_CHOICES)
 	judged_by = models.ForeignKey(Autojudge)
-	# FIXME: Change name to judge_comment
-	jury_comment = models.TextField(null=True, blank=True)
+	judge_comment = models.TextField(null=True, blank=True)
 	compiler_output_file = models.OneToOneField(File, related_name="result_compiler_output_file")
 	submission_output_file = models.OneToOneField(File, null=True, blank=True, related_name="result_submission_output_file")
 	autojudge_comment_file = models.OneToOneField(File, null=True, blank=True, related_name="result_autojudge_comment_file")

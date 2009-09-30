@@ -1,6 +1,7 @@
 import sys
 import datetime
 import string
+import socket
 from getpass import getpass
 
 import argparse
@@ -88,27 +89,25 @@ class addteam():
 		parser.set_defaults(obj=self)
 		parser.add_argument('name')
 		parser.add_argument('organisation')
-		parser.add_argument('teamclass', type=int)
+		parser.add_argument('teamclass', type=int, help='Teamclass rank')
 		parser.add_argument('location')
-		parser.add_argument('ip')
-		parser.add_argument('loginname')
-		parser.add_argument('password')
+		parser.add_argument('ip', help='IP address or resolvable hostname')
 
 	def run(self, args):
 		team = Team()
 		team.name = args.name
 		team.organisation = args.organisation
-		team.teamclass = Teamclass.objects.get(id=args.teamclass)
+		team.teamclass = Teamclass.objects.get(rank=args.teamclass)
 		team.location = args.location
-		team.ip_address = args.ip
 		team.save()
-		user = User(username=args.loginname)
-		user.set_password(args.password)
+		user = User(username=args.ip.replace('.', '_'))
+		user.set_unusable_password()
 		user.save()
 		profile = Profile()
 		profile.is_judge = False
 		profile.user = user
 		profile.team = team
+		profile.ip_address = socket.gethostbyname(args.ip)
 		profile.save()
 		
 		
@@ -170,11 +169,11 @@ class addautojudge():
 	def __init__(self, subparsers):
 		parser = subparsers.add_parser('addautojudge')
 		parser.set_defaults(obj=self)
-		parser.add_argument('ip_address', help='IP address of the autojudge')
+		parser.add_argument('ip_address', help='IP address or resolvable hostname of the autojudge')
 
 	def run(self, args):
 		autojudge = Autojudge()
-		autojudge.ip_address = args.ip_address
+		autojudge.ip_address = socket.gethostbyname(args.ip_address)
 		autojudge.save()
 
 class listautojudges():
@@ -218,23 +217,24 @@ class addjudge():
 		parser = subparsers.add_parser('addjudge')
 		parser.set_defaults(obj=self)
 		parser.add_argument('username', help='Username of judge')
-		parser.add_argument('password', nargs='?', default=None)
+		parser.add_argument('ip', help='IP address or resolvable hostname of judge')
 
 	def run(self, args):
-		if args.password:
-			password = args.password
-		else:
-			password = getpass("Password: ")
-			password_check = getpass("Password again: ")
-			if password != password_check:
-				print "Passwords don't match"
-				sys.exit(1)
+		# if args.password:
+		# 	password = args.password
+		# else:
+		# 	password = getpass("Password: ")
+		# 	password_check = getpass("Password again: ")
+		# 	if password != password_check:
+		# 		print "Passwords don't match"
+		# 		sys.exit(1)
 		user = User(username=args.username)
-		user.set_password(password)
+		user.set_unusable_password()
 		user.save()
 		profile = Profile()
 		profile.is_judge = True
 		profile.user = user
+		profile.ip_address = socket.gethostbyname(args.ip)
 		profile.save()
 
 def main():

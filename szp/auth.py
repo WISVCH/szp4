@@ -11,8 +11,7 @@ class IpBackend(ModelBackend):
 		if not ip_address:
 			return None
 		try:
-			team = Team.objects.get(ip_address=ip_address)
-			user = team.profile_set.get().user
+			user = Profile.objects.get(ip_address=ip_address).user
 			return user
 		except ObjectDoesNotExist:
 			return None

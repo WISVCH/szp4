@@ -7,7 +7,7 @@ from szp.models import *
 from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
-from szp.views.general import calc_scoreboard
+from szp.views.general import get_scoreboard
 from django.conf import settings
 
 def gettime(timestamp, contest):
@@ -122,13 +122,8 @@ def status(request):
 
 @login_required
 def score(request):
-	contest = Contest.objects.get()
-	problems = Problem.objects.order_by("letter")
-
-	scoreboard = calc_scoreboard()
-
-	return render_to_response('team_score.html', {"contest": contest, "problems":problems, "scoreboard": scoreboard,
-												  "colcount": 5+len(problems)},
+	return render_to_response('team_score.html',
+							  get_scoreboard(),
 							  context_instance=RequestContext(request))
 
 @login_required
@@ -312,8 +307,8 @@ def submission(request, problem=None):
 	else:
 		form = SubmitForm()
 
-	profile.new_results = False
-	profile.save()
+	profile.team.new_results = False
+	profile.team.save()
 
 	submissions = Submission.objects.filter(team=profile.team).order_by("-timestamp")
 

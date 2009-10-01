@@ -1,4 +1,5 @@
 import sys
+import os
 import datetime
 import string
 import socket
@@ -130,9 +131,9 @@ class addproblem():
 		problem.timelimit = args.timelimit
 		problem.name = args.name
 		problem.colour = args.colour
-		problem.in_file_name = args.infile.name
-		problem.out_file_name = args.outfile.name
-		problem.check_script_file_name = args.checkscript.name
+		problem.in_file_name = os.path.basename(args.infile.name)
+		problem.out_file_name = os.path.basename(args.outfile.name)
+		problem.check_script_file_name = os.path.basename(args.checkscript.name)
 		in_file = File(content=args.infile.read())
 		in_file.save()
 		problem.in_file = in_file

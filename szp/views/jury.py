@@ -496,6 +496,8 @@ def submission_download(request, number, what):
 	elif what == 'program_code':
 		what = 'program_code_' + submission.file_name
 		output = submission.file.content
+	elif what == 'autojudge_comment':
+		output = result.autojudge_comment_file.content
 	else:
 		raise Http404
 	

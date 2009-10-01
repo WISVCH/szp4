@@ -367,9 +367,13 @@ def submission_details(request, number):
 		
 	time = gettime(submission.timestamp, contest)
 
+	cap = 10000
+
 	program_code = submission.file.content
 	problem_input = submission.problem.in_file.content
-	expected_output = submission.problem.out_file.content
+	problem_input = problem_input[:cap] + "\n\nCAPPED" if len(problem_input) > cap else problem_input
+	expected_output = submission.problem.out_file.content[:cap]
+	expected_output = expected_output[:cap] + "\n\nCAPPED" if len(expected_output) > cap else expected_output
 	
 	try:
 		result = submission.result_set.get()
@@ -387,11 +391,13 @@ def submission_details(request, number):
 
 		if result.submission_output_file:
 			submission_output = result.submission_output_file.content
+			submission_output = submission_output[:cap] + "\n\nCAPPED" if len(submission_output) > cap else submission_output
 		else:
 			submission_output = ""
 
 		if result.check_output_file:
 			output_diff = result.check_output_file.content
+			output_diff = output_diff[:cap] + "\n\nCAPPED" if len(output_diff) > cap else output_diff
 		else:
 			output_diff = ""
 

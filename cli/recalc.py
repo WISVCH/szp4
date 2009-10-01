@@ -18,10 +18,14 @@ from szp.models import *
 
 teams = {}
 
-for result in Result.objects.order_by('timestamp'):
-	print "%s -- %s " % (result.timestamp, result);
-	
-	s = result.submission
+for s in Submission.objects.order_by('timestamp'):
+	try:
+		result = s.result_set.get()
+	except ObjectDoesNotExist:
+		print "%s -- %s " % (s, s.status)
+		print "-- No result!"
+		continue
+	print "%s -- %s " % (s, result.judgement)
 	
 	if s.team not in teams:
 		teams[s.team] = {}

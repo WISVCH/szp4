@@ -144,7 +144,7 @@ class Submission(models.Model):
 	timestamp = models.DateTimeField(auto_now_add=True)
 
 	def __unicode__(self):
-		return "%s by %s (%s)" % (self.problem.letter, self.team.name, self.timestamp.strftime("%Y-%m-%d %H:%M:%S"))
+		return "[%s] %s by %s (%s)" % (self.status, self.problem.letter, self.team.name, self.timestamp.strftime("%Y-%m-%d %H:%M:%S"))
 
 class Result(models.Model):
 	JUDGEMENT_CHOICES = (("NAUGHTY_PROGRAM", "NAUGHTY_PROGRAM"),

@@ -23,7 +23,7 @@ class Autojudge(models.Model):
 
 class Teamclass(models.Model):
 	name = models.CharField(max_length=100)
-	rank = models.IntegerField()
+	rank = models.IntegerField(unique=True)
 
 	def __unicode__(self):
 		return self.name
@@ -32,7 +32,7 @@ class Teamclass(models.Model):
 		verbose_name_plural = 'teamclasses'
 
 class Team(models.Model):
-	name = models.CharField(max_length=100)
+	name = models.CharField(max_length=100, unique=True)
 	location = models.CharField(max_length=100)
 	teamclass = models.ForeignKey(Teamclass)
 	organisation = models.CharField(max_length=100)
@@ -45,7 +45,7 @@ class Profile(models.Model):
 	user = models.ForeignKey(User, unique=True)
 	team = models.ForeignKey(Team, null=True, blank=True)
 	is_judge = models.BooleanField()
-	ip_address = models.IPAddressField(blank=True)
+	ip_address = models.IPAddressField(null=True, unique=True)
 	
 	def __unicode__(self):
 		return self.user.username

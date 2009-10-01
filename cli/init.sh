@@ -26,9 +26,9 @@ szp addteamclass 1 Contestants
 szp addteamclass 2 Business
 szp addteamclass 3 Spectators
 
-szp addteam 'Test team 1' 'TU Delft' 1 'EWI WPS' team0
-#szp addteam 'Test team 2' 'TU Delft' 1 'DW 160.2' team02
-#szp addteam 'OMG IPONIEZ' 'Appel' 2 'Cupertino' team03
+szp addteam -ip team01 'Test team 1' 'TU Delft' 1 'DW 160.1'
+szp addteam -ip team02 'Test team 2' 'TU Delft' 1 'DW 160.2'
+szp addteam -ip team03 'OMG IPONIEZ' 'Appel' 2 'Cupertino'
 
 #pushd /home/jeroen/szptest
 #szp addproblem A 30 Obfuscate Pink A.in A.out check

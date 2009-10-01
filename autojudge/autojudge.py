@@ -157,7 +157,7 @@ if __name__ == '__main__':
 		env['WATCHDOG_LIMIT_NPROC']="16"
 		
 		# FIXME: We shouldn't hardcode this
-		cmd=['/Users/mark/bzr/szp4/autojudge/watchdog',
+		cmd=['/home/szp/szp4/autojudge/watchdog',
 			 submission.compiler.execute_line.replace("${LETTER}", submission.problem.letter),
 			 str(submission.problem.timelimit)]
 
@@ -166,18 +166,25 @@ if __name__ == '__main__':
 
 		input_fd = open(in_file_name, "r")
 
-	        devnull = open("/dev/null", "w+")
+		error_filename = os.path.join(testdir, 'submission_error')
+		error = open(error_filename, "w+")
 
-		run = Popen(cmd, stdin=input_fd, stdout=output, stderr=devnull, close_fds=True, cwd=testdir, env=env)
+		run = Popen(cmd, stdin=input_fd, stdout=output, stderr=error, close_fds=True, cwd=testdir, env=env)
 		run.wait()
 
-		devnull.close()
 		output.seek(0)
 		submission_output = output.read()
 		output.close()
+
 		watchdog = open(os.path.join(testdir, "watchdog_output"), "r")
 		watchdog_output = watchdog.read()
 		watchdog.close()
+
+		watchdog_output += "\n--- stderr output below ---\n"
+
+		error.seek(0)
+		watchdog_output += error.read()
+		error.close()
 
 		# FIXME We currently don't implement backtraces of core dumps.
 

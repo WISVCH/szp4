@@ -92,7 +92,7 @@ class addteam():
 		parser.add_argument('organisation')
 		parser.add_argument('teamclass', type=int, help='Teamclass rank')
 		parser.add_argument('location')
-		parser.add_argument('ip', help='IP address or resolvable hostname')
+		parser.add_argument('-ip', help='IP address or resolvable hostname', default=None)
 
 	def run(self, args):
 		team = Team()
@@ -101,17 +101,18 @@ class addteam():
 		team.teamclass = Teamclass.objects.get(rank=args.teamclass)
 		team.location = args.location
 		team.save()
-		user = User(username=args.ip.replace('.', '_'))
-		user.set_unusable_password()
-		user.save()
-		profile = Profile()
-		profile.is_judge = False
-		profile.user = user
-		profile.team = team
-		profile.ip_address = socket.gethostbyname(args.ip)
-		profile.save()
-		
-		
+		if args.ip:
+			user = User(username=args.ip.replace('.', '_'))
+			user.set_unusable_password()
+			user.save()
+			profile = Profile()
+			profile.is_judge = False
+			profile.user = user
+			profile.team = team
+			profile.ip_address = socket.gethostbyname(args.ip)
+			profile.save()
+		else:
+			print "Team '%s' has id %d" % (team.name, team.id)
 
 class addproblem():
 	def __init__(self, subparsers):
@@ -218,9 +219,12 @@ class addjudge():
 		parser = subparsers.add_parser('addjudge')
 		parser.set_defaults(obj=self)
 		parser.add_argument('username', help='Username of judge')
-		parser.add_argument('ip', help='IP address or resolvable hostname of judge')
+		parser.add_argument('-password', help='Judge password', default=None)
+		parser.add_argument('-ip', help='IP address or resolvable hostname of judge', default=None)
+		parser.add_argument('-team', help='Team ID for judge', default=0, type=int)
 
 	def run(self, args):
+		print "u:%s,p:%s,i:%s,t:%i" % (args.username, args.password, args.ip, args.team)
 		# if args.password:
 		# 	password = args.password
 		# else:
@@ -230,12 +234,18 @@ class addjudge():
 		# 		print "Passwords don't match"
 		# 		sys.exit(1)
 		user = User(username=args.username)
-		user.set_unusable_password()
+		if args.password:
+			user.set_password(args.password)
+		else:
+			user.set_unusable_password()
 		user.save()
 		profile = Profile()
 		profile.is_judge = True
 		profile.user = user
-		profile.ip_address = socket.gethostbyname(args.ip)
+		if args.team:
+			profile.team = Team.objects.get(id=args.team)
+		if args.ip:
+			profile.ip_address = socket.gethostbyname(args.ip)
 		profile.save()
 
 def main():

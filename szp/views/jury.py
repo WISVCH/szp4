@@ -367,13 +367,14 @@ def submission_details(request, number):
 		
 	time = gettime(submission.timestamp, contest)
 
-	cap = 10000
+	def cap_output(output):
+		cap = 10000
+		cap_msg = "Notice: output capped, download file to see everything.\n\n"
+		 return cap_msg + output[:cap] if len(output) > cap else output
 
 	program_code = submission.file.content
-	problem_input = submission.problem.in_file.content
-	problem_input = problem_input[:cap] + "\n\nCAPPED" if len(problem_input) > cap else problem_input
-	expected_output = submission.problem.out_file.content[:cap]
-	expected_output = expected_output[:cap] + "\n\nCAPPED" if len(expected_output) > cap else expected_output
+	problem_input = cap_output(submission.problem.in_file.content)
+	expected_output = cap_output(submission.problem.out_file.content)
 	
 	try:
 		result = submission.result_set.get()
@@ -390,19 +391,17 @@ def submission_details(request, number):
 			judge_comment = ""
 
 		if result.submission_output_file:
-			submission_output = result.submission_output_file.content
-			submission_output = submission_output[:cap] + "\n\nCAPPED" if len(submission_output) > cap else submission_output
+			submission_output = cap_output(result.submission_output_file.content)
 		else:
 			submission_output = ""
 
 		if result.check_output_file:
-			output_diff = result.check_output_file.content
-			output_diff = output_diff[:cap] + "\n\nCAPPED" if len(output_diff) > cap else output_diff
+			output_diff = cap_output(result.check_output_file.content)
 		else:
 			output_diff = ""
 
 		if result.autojudge_comment_file:
-			autojudge_comment = result.autojudge_comment_file.content
+			autojudge_comment = cap_output(result.autojudge_comment_file.content)
 		else:
 			autojudge_comment = ""
 

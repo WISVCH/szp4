@@ -8,7 +8,7 @@ from subprocess import Popen, PIPE, STDOUT
 import stat
 import socket
 
-# This will insert the parent duriectory to the path so we can import
+# This will insert the parent directory to the path so we can import
 # settings.
 sys.path.insert(0, os.path.normpath(sys.path[0]+"/.."))
 
@@ -73,9 +73,9 @@ def uploadresult(submission, judgement, compiler_output, submission_output=None,
 
 	score.save()
 
-	profile = submission.team.profile_set.get()
-	profile.new_results = True
-	profile.save()
+	team = submission.team
+	team.new_results = True
+	team.save()
 
 if __name__ == '__main__':
 	ip_address = sys.argv[1] if len(sys.argv) > 1 else socket.gethostbyname(socket.gethostname())
@@ -130,7 +130,7 @@ if __name__ == '__main__':
 		fp.write(submission.problem.in_file.content)
 		fp.close()
 
-		print "Starting to judge submission from %s for problem %s, submitted at %s" % (submission.id, submission.problem.letter, submission.timestamp)
+		print "\nStarting to judge submission from %s for problem %s, submitted at %s" % (submission.id, submission.problem.letter, submission.timestamp)
 		
 		cmd = submission.compiler.compile_line.replace("${LETTER}", submission.problem.letter).split()
 
@@ -157,7 +157,7 @@ if __name__ == '__main__':
 		env['WATCHDOG_LIMIT_NPROC']="16"
 		
 		# FIXME: We shouldn't hardcode this
-		cmd=['/home/szp/szp4/autojudge/watchdog',
+		cmd=['/Users/mark/bzr/szp4/autojudge/watchdog',
 			 submission.compiler.execute_line.replace("${LETTER}", submission.problem.letter),
 			 str(submission.problem.timelimit)]
 
@@ -190,7 +190,7 @@ if __name__ == '__main__':
 			print "RUNTIME_EXCEEDED"
 			continue
 		elif run.returncode != 0:
-			print "AUTOJUDGE ERROR: WATCHDOG RETURNED UNKOWN VALUE: %d" % run.returncode
+			print "AUTOJUDGE ERROR: WATCHDOG RETURNED UNKNOWN VALUE: %d" % run.returncode
 			sys.exit(1)
 		
 		if len(submission_output) == 0:
@@ -225,6 +225,3 @@ if __name__ == '__main__':
 		else:
 			print "AUTOJUDGE ERROR: CHECKSCRIPT RETURNED UNKNOWN VALUE"
 			sys.exit(1)
-
-		print "Submission judged."
-		

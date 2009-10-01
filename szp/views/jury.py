@@ -7,7 +7,7 @@ from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
 from team import gettime
 from datetime import datetime
-from szp.views.general import calc_scoreboard
+from szp.views.general import get_scoreboard
 
 @login_required
 def home(request):
@@ -22,24 +22,8 @@ def home(request):
 
 @login_required
 def status(request):
-	contest = Contest.objects.get()
-	if contest.status == "INITIALIZED":
-		status_time = "WAIT"
-	elif contest.status == "STOPPED":
-		status_time = "FINISHED"
-	else:
-		timedelta = datetime.now() - contest.starttime
-		hours = timedelta.days*24+timedelta.seconds / 3600
-		minutes = timedelta.seconds % 3600 / 60
-		status_time = "%02d:%02d" % (hours, minutes)	
-
-	status = contest.status
-	new_clarreqs = Clarreq.objects.filter(dealt_with=False).count()
-
 	return render_to_response('jury_status.html',
-							  {"status": status, "status_time": status_time, "new_clarreqs": new_clarreqs},
 							  context_instance=RequestContext(request))
-
 
 @login_required
 def score(request):
@@ -47,13 +31,8 @@ def score(request):
 	if not profile.is_judge:
 		return HttpResponseRedirect('/team/')
 
-	contest = Contest.objects.get()
-	problems = Problem.objects.order_by("letter")
-
-	scoreboard = calc_scoreboard(jury=True)
-
-	return render_to_response('jury_score.html', {"contest": contest, "problems":problems,
-												  "scoreboard": scoreboard, "colcount": 5+len(problems)},
+	return render_to_response('jury_score.html',
+							  get_scoreboard(jury=True),
 							  context_instance=RequestContext(request))
 
 @login_required
@@ -287,7 +266,7 @@ def clarification_reply(request, which):
 		message += "> "
 		message += line
 
-	message += "\n\nPlease read the problem specifications carefully."
+	message += "\n\nPlease read the problem specification more carefully."
 
 	reply["message"] = message
 
@@ -381,7 +360,7 @@ def submission_details(request, number):
 			submission.save()
 		elif "save" in request.POST:
 			result = submission.result_set.get()
-			result.jury_comment = request.POST["text"]
+			result.judge_comment = request.POST["text"]
 			result.save()
 			
 	contest = Contest.objects.get()
@@ -401,8 +380,8 @@ def submission_details(request, number):
 			verified_by = None
 		compiler_output = result.compiler_output_file.content
 
-		if result.jury_comment:
-			judge_comment = result.jury_comment
+		if result.judge_comment:
+			judge_comment = result.judge_comment
 		else:
 			judge_comment = ""
 
@@ -455,6 +434,11 @@ def submission_changeresult(request, number):
 	if request.method == 'POST':
 		result = submission.result_set.get()
 		result.judgement = request.POST["judgement"]
+		
+		team = submission.team
+		team.new_results = True
+		team.save()
+		
 		result.save()
 
 		return HttpResponseRedirect('/jury/submission/%s/' % number)
@@ -505,6 +489,7 @@ def submission_download(request, number, what):
 	elif what == 'compiler_output':
 		output = result.compiler_output_file.content
 	elif what == 'program_code':
+		what = 'program_code_' + submission.file_name
 		output = submission.file.content
 	else:
 		raise Http404

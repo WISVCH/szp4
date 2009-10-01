@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="UTF-8">
 	<title>SZP TeamTool</title>
-	<link rel="stylesheet" href="/static/team.css" type="text/css">
+	<link rel="stylesheet" href="/static/szp.css" type="text/css">
 	<script type="text/javascript" src="/static/jquery.js"></script>
 	<script type="text/javascript" charset="utf-8">
 	var refreshData = function() {
@@ -12,7 +13,7 @@
 				complete: function(){ $("#loading").fadeOut("fast");},
 				success: function(status) {
 					$("#status").html(status);
-					setTimeout("refreshData()", 60000);
+					setTimeout("refreshData()", 20000);
 				}
 			});
 	}

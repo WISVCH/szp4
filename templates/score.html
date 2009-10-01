@@ -1,55 +1,48 @@
-<table class="content" align="center">
+<table class="content">
   <tr class="content_header">
-    <td align="center" colspan="9">{{ contest }}</td>
-    <table class="content">
-      <tr class="content_header">
-	<td class="nr">No.</td>
-	<td>Team</td>
-	<td>Organisation</td>
-<!--	<td>Class</td>-->
-	<td>Score</td>
-	<td>Time</td>
-	{% for problem in problems %}
-	<td>{{ problem.letter }}</td>
-	{% endfor %}
-      </tr>
-      {% for scorelist in scoreboard %}
-      <tr>
-	<td style="font-weight: bold" align="left" colspan="{{ colcount }}">{{ scorelist.name.capitalize }}</td>
-      </tr>
-      {% for score in scorelist.list %}
-      <tr class="{% cycle 'content_body1' 'content_body2' %}">
-	<td class="nr">&nbsp;&nbsp;<b>{{ forloop.counter }}</b></td>
-	<td>
-	  <b>{{ score.name }}</b></td>
-	<td>
-	  <b>{{ score.organisation }}</b></td>
-<!--	<td>
-	  <b>{{ score.class }}</b></td>-->
-	<td class="score">
-	  <b>{{ score.score }}</b></td>
-	<td class="time">
-	  <b>{{ score.time }}</b></td>
-	{% for problem in score.details %}
-	{% if problem.correct %}
-	<td class="app">
-	  <div class="app">{{problem.count}}&nbsp;({{problem.time}})</div>
-	</td>
-	{% else %}
-	<td class="not_app">
-	  <div class="not_app">
-	    {% if not problem.count %} 
-	    - 
-	    {% else %}
-	    {{ problem.count }}
-	    {% endif %}
-	  </div>
-	</td>
-	{% endif %}
-	{% endfor %}
-      </tr>
-      {% endfor %}
-      {% endfor %}
-    </table>
+    <td align="center" colspan="{{problems.count|add:5}}">{{ contest }}</td>
   </tr>
+  <tr class="content_header">
+    <td class="single">No.</td>
+    <td>Team</td>
+    <td>Organisation</td>
+    <!--	<td>Class</td>-->
+    <td class="single">Score</td>
+    <td class="single">Time</td>
+    {% for problem in problems %}
+    <td class="single">{{ problem.letter }}</td>
+    {% endfor %}
+  </tr>
+  {% for scorelist in scoreboard %}
+  <tr>
+    <td colspan="{{problems.count|add:5}}">{{ scorelist.name.capitalize }}</td>
+  </tr>
+  {% for score in scorelist.list %}
+    <tr class="{% cycle 'content_body1' 'content_body2' %}">
+      <td class="single">{{ forloop.counter }}</td>
+      <td>{{ score.name }}</b></td>
+      <td>{{ score.organisation }}</td>
+      <!--	<td><b>{{ score.class }}</td>-->
+      <td class="single">{{ score.score }}</td>
+      <td class="single">{{ score.time }}</td>
+      {% for problem in score.details %}
+        {% if problem.correct %}
+        <td class="app">{{problem.count}}&nbsp;<small>({{problem.time}})</small></td>
+        {% else %}
+        <td class="not_app">
+            {% if not problem.count %} 
+            - 
+            {% else %}
+            {{ problem.count }}
+            {% endif %}
+        </td>
+        {% endif %}
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  {% endfor %}
 </table>
+
+<script type="text/javascript">
+setTimeout("location.reload();",30000);
+</script>

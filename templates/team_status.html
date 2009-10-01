@@ -1,4 +1,4 @@
-{% if new_results %}
+{% if s.new_results %}
 <div id="status_results" class="status_new">
   <a href="/team/submission/">NEW<br/>RESULTS</a>
 </div>
@@ -7,16 +7,19 @@
   <a href="/team/submission/">NO NEW<br/>RESULTS</a>
 </div>
 {% endif %}
-{% ifequal new_clars 0 %}
+{% ifequal s.new_clars 0 %}
 <div id="status_clarifications" class="status_no_new">
   <a href="/team/clarification/">NO NEW<br/>CLARIFICATIONS</a>
 </div>
 {% else %}
 <div id="status_clarifications" class="status_new">
-  <a href="/team/clarification/">{{ new_clars }} NEW<br/>CLARIFICATIONS</a>
+  <a href="/team/clarification/">{{ s.new_clars }} NEW<br/>CLARIFICATIONS</a>
 </div>
 {% endifequal %}
 
-
-<div id="contest_time">{{ status_time }}</div>
-<div id="status_rank">Team rank: {{ rank }}</div>
+<div id="status_time_rank">
+  {{ s.status_time }}
+  {% ifnotequal s.status_time "WAIT" %}
+    <br/>Team rank: {{ s.rank }}
+  {% endifnotequal %}
+</div>

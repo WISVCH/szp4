@@ -1,3 +1,5 @@
+/* @override http://127.0.0.1:8000/static/szp.css */
+
 /*page structure team*/
 
 body 
@@ -20,7 +22,8 @@ table.main
 
 table.content 
 {
-  width:100%;
+  width: 100%;
+  font-weight: bold;
 }
 
 tr.content_header 
@@ -82,53 +85,32 @@ tr.message_body
 }
 
 /*columns in scores table*/
-td.nr
+td.single
 {
-  width:40px;
+  width: 50px;
+  text-align: center;
 }
 
-td.score
-{
-  width:40px;
+/*cell in scorelist representing a problem*/
+td.app, td.not_app {
+  background-position: right center;
+  background-repeat: no-repeat;
   text-align: center;
-  font-weight: bold;
-}
-
-td.time
-{
-  width:40px;
-  text-align: center;
-  font-size: 12px;
+  width: 60px;
 }
 
 /*cell in scorelist representing a solved problem*/
 td.app
 {
   background-color: #69b169!important;
-  background-image : url('correct.png');
-  background-position: right center;
-  background-repeat: no-repeat;
-  text-align : center;
-  font-weight: bold;
-  color : black;
-  width : 60px;
+  background-image: url('correct.png');
 }
 
 /*cell in scorelist representing a not-solved problem */
-td.not_app
-
-{ 	background-color: #ab5656!important;
+td.not_app {
+  background-color: #ab5656!important;
   background-image: url('incorrect.png');
-  background-position: right center;
-  background-repeat: no-repeat;
-  text-align : center;
-  font-weight: bold;
-  color : black;
-  min-width:25px;
-  width :60px;
-
 }
-
 
 td.title
 {
@@ -251,6 +233,7 @@ body.login
 
 #status_time {
   font-size: 22px;
+  padding-top: 5px;
 }
 
 #status_results a, #status_clarifications a {
@@ -266,16 +249,15 @@ body.login
   background: url(/static/button3.png) no-repeat center center;
 }
 
-#status_rank, #contest_time {
+#status_time_rank {
   font-size: 12px;
   font-weight: bold;
-  float: left;
-  margin-left: 0.8em;
-  margin-top: 1.1em;
+  text-align: center;
+  line-height: 1.5em;
 }
 
 #masthead.jury #contest_time {
-  padding-top: 1em;
+  padding-top: 0.8em;
   clear: both;
   float: none;
   margin: 0;

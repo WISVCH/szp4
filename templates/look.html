@@ -1,17 +1,17 @@
 <html>
 <head>
+	<meta charset="UTF-8">
 	<title>SZP LookTool</title>
-	<meta http-equiv="Refresh" content="30">
-	<link rel="stylesheet" href="/static/team.css" type="text/css">
+	<link rel="stylesheet" href="/static/szp.css" type="text/css">
 </head>
 
 <body>
 	<div id="masthead" class="looktool">
 		<div id="status">
-			<div id="status_time">{{ status_time }} </div>
-			<div id="status_time">{{ contest.status }}</div>
+			<div id="status_time">{{ s.status_time }}</div>
+			<div id="status_time">{{ s.status }}</div>
 		</div>
-		<h1>SZP LookTool </h1>
+		<h1>SZP LookTool</h1>
 	</div>
 	<div class="body">
 	  {% include "score.html" %}

@@ -369,8 +369,8 @@ def submission_details(request, number):
 
 	def cap_output(output):
 		cap = 10000
-		cap_msg = "Notice: output capped, download file to see everything.\n\n"
-		 return cap_msg + output[:cap] if len(output) > cap else output
+		cap_msg = "SZP Notice: output capped, download file to see everything.\n\n"
+		return cap_msg + output[:cap] + "[snip]" if len(output) > cap else output
 
 	program_code = submission.file.content
 	problem_input = cap_output(submission.problem.in_file.content)

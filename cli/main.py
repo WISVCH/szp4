@@ -224,7 +224,6 @@ class addjudge():
 		parser.add_argument('-team', help='Team ID for judge', default=0, type=int)
 
 	def run(self, args):
-		print "u:%s,p:%s,i:%s,t:%i" % (args.username, args.password, args.ip, args.team)
 		# if args.password:
 		# 	password = args.password
 		# else:

@@ -156,8 +156,7 @@ if __name__ == '__main__':
 		# The maximum amount of spawned processes. [16]
 		env['WATCHDOG_LIMIT_NPROC']="16"
 		
-		# FIXME: We shouldn't hardcode this
-		cmd=['/Users/mark/bzr/szp4/autojudge/watchdog',
+		cmd=[os.path.join(os.getcwd(), "watchdog"),
 			 submission.compiler.execute_line.replace("${LETTER}", submission.problem.letter),
 			 str(submission.problem.timelimit)]
 
@@ -166,7 +165,7 @@ if __name__ == '__main__':
 
 		input_fd = open(in_file_name, "r")
 
-	        devnull = open("/dev/null", "w+")
+		devnull = open("/dev/null", "w+")
 
 		run = Popen(cmd, stdin=input_fd, stdout=output, stderr=devnull, close_fds=True, cwd=testdir, env=env)
 		run.wait()

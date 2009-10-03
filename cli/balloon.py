@@ -45,7 +45,7 @@ while True:
             f = open("/tmp/balloon.ps", "w+")
             f.write(postscript)
             f.seek(0)
-            print "Balloon team: %s location: %s problem: %s colour: %s" % (b.team.name, b.team.location, str(b.problem), b.problem.colour)
+            print "\nBalloon team: %s location: %s problem: %s colour: %s" % (b.team.name, b.team.location, str(b.problem), b.problem.colour)
             ret = Popen(["/usr/bin/lpr","-o","job-sheets=none","-P","szpprinter"], stdin=f, close_fds=True)
             f.close()
             b.balloon = True

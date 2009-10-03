@@ -15,7 +15,11 @@ echo Creating superuser \'admin\':
 
 szp setcontest INITIALIZED 2009-10-03 'Delfts Kampioenschap Programmeren 2009' 'Delft'
 
-szp addautojudge aj0
+szp addautojudge aj1
+szp addautojudge aj2
+szp addautojudge aj3
+szp addautojudge aj4
+szp addautojudge aj5
 
 szp addcompiler submission.c "gcc -Wall -O2 -g -std=c99 -lm submission.c -o submission" "./submission" .c "GNU C Compiler" 4.3.2
 szp addcompiler submission.cc "g++ -Wall -O2 -g -std=c++98 -lm submission.cc -o submission" "./submission" .cc "GNU C++ Compiler" 4.3.2
@@ -23,12 +27,8 @@ szp addcompiler 'Problem${LETTER}.java' 'javac -O Problem${LETTER}.java' 'java P
 
 szp addteamclass 0 Jury
 szp addteamclass 1 Contestants
-szp addteamclass 2 Business
-szp addteamclass 3 Spectators
-
-szp addteam -ip team01 'Test team 1' 'TU Delft' 1 'DW 160.1'
-szp addteam -ip team02 'Test team 2' 'TU Delft' 1 'DW 160.2'
-szp addteam -ip team03 'OMG IPONIEZ' 'Appel' 2 'Cupertino'
+szp addteamclass 2 Spectators
+szp addteamclass 3 Boris
 
 #pushd /home/jeroen/szptest
 #szp addproblem A 30 Obfuscate Pink A.in A.out check

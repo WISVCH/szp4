@@ -30,12 +30,3 @@ szp addteamclass 1 Contestants
 szp addteamclass 2 Spectators
 szp addteamclass 3 Boris
 
-#pushd /home/jeroen/szptest
-#szp addproblem A 30 Obfuscate Pink A.in A.out check
-#szp addproblem B 30 Epluribus Blue B.in B.out check
-#szp addproblem C 30 Coneasoup Yellow C.in C.out check
-#popd
-
-#szp addjudge testjudge test
-
-#szp setcontest RUNNING

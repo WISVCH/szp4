@@ -17,7 +17,7 @@ class Contest(models.Model):
 		return "%s, %s (%s)" % (self.name, self.location, self.date)
 
 class Autojudge(models.Model):
-	ip_address = models.IPAddressField()
+	ip_address = models.IPAddressField(unique=True)
 	def __unicode__(self):
 		return "Autojudge %d (%s)" % (self.id, self.ip_address)
 

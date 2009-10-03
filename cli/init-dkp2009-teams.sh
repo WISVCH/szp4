@@ -14,6 +14,7 @@ szp addteam -ip team14 "Supremum B'vo! #2"                                      
 szp addteam -ip team15 'Team OrangeBottleCap'                                                     'TU Delft' 1 'DW 160.07'
 szp addteam -ip team17 'Team HTTP (Hardly any Time To Prepare)'                                   'TU Delft' 1 'DW 160.10'
 szp addteam -ip team18 'Atari'                                                                      'Jigsaw' 2 'DW 160.12'
+szp addteam -ip team19 'Browniean Motion'                                                         'TU Delft' 2 'DW 160.16'
 szp addteam -ip team20 'The Minors'                                                               'TU Delft' 1 'DW 160.14'
 szp addteam -ip team21 'Programmeren kun je leren'                                                'TU Delft' 2 'DW 160.18'
 szp addteam -ip team22 'De Codekloppers'                                                          'TU Delft' 1 'DW 160.20'

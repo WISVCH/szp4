@@ -22,6 +22,8 @@ f = open (sys.path[0]+"/cli/template_ballon.ps")
 postscript_template = f.read()
 f.close()
 
+print "Balloon running"
+
 while True:
     contest = Contest.objects.get()
 
@@ -31,8 +33,9 @@ while True:
     balloons = Score.objects.filter(correct=True).filter(balloon=False)
         
     if not balloons:
-        print "sleeping for 5 seconds..."
-        time.sleep(5)
+		sys.stdout.write('.')
+		sys.stdout.flush()
+		time.sleep(5)
     else:
 
         for b in balloons:

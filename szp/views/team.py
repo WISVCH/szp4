@@ -111,7 +111,7 @@ def teamlogin(request):
 @login_required
 def home(request):
 	profile = request.user.get_profile()
-	if not profile.team:
+	if profile.team is None:
 		return HttpResponseRedirect('/jury/')
 	return render_to_response('team_home.html',
 							  {"profile": profile},
@@ -120,7 +120,7 @@ def home(request):
 @login_required
 def status(request):
 	profile = request.user.get_profile()
-	if not profile.team:
+	if profile.team is None:
 		return HttpResponseRedirect('/jury/')
 	return render_to_response('team_status.html',
 							  context_instance=RequestContext(request))
@@ -128,7 +128,7 @@ def status(request):
 @login_required
 def score(request):
 	profile = request.user.get_profile()
-	if not profile.team:
+	if profile.team is None:
 		return HttpResponseRedirect('/jury/')
 	return render_to_response('team_score.html',
 							  get_scoreboard(jury=profile.is_judge),
@@ -138,7 +138,7 @@ def score(request):
 def clarification(request):
 	profile = request.user.get_profile()
 	team = profile.team
-	if not team:
+	if team is None:
 		return HttpResponseRedirect('/jury/')
 
 	if request.method == 'POST':

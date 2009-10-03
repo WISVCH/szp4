@@ -31,7 +31,7 @@ if submission.status != "NEW":
 		score.submission_count -= 1
 		score.save()
 	except:
-		print 'Could not remove score object'
+		print 'Could not remove score object; weird autojudge hang?'
 
 submission.status = "NEW"
 submission.save()

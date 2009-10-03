@@ -112,7 +112,7 @@ if __name__ == '__main__':
 		try:
 			submission = Submission.objects.filter(id=submission.id, autojudge=autojudge).get()
 		except ObjectDoesNotExist:
-			print "Can't find submission we are supposed to judge, probably a rare race condition"
+			print "\nCan't find submission we are supposed to judge, probably a rare race condition. Continuing."
 			continue
 
 		testdir = os.path.join(os.getcwd(),"testdir")
@@ -130,7 +130,7 @@ if __name__ == '__main__':
 		fp.write(submission.problem.in_file.content)
 		fp.close()
 
-		print "\nStarting to judge submission %s for problem %s, submitted at %s" % (submission.id, submission.problem.letter, submission.timestamp)
+		print "\nStarting to judge submission %s for problem (%s),  %s" % (submission.id, submission.problem.letter, submission.timestamp)
 		
 		cmd = submission.compiler.compile_line.replace("${LETTER}", submission.problem.letter).split()
 
@@ -171,6 +171,8 @@ if __name__ == '__main__':
 
 		run = Popen(cmd, stdin=input_fd, stdout=output, stderr=error, close_fds=True, cwd=testdir, env=env)
 		run.wait()
+
+		input_fd.close()
 
 		output.seek(0)
 		submission_output = output.read()
@@ -218,7 +220,7 @@ if __name__ == '__main__':
 		os.chmod(check_script_file_name, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
 
 		cmd = [check_script_file_name, output_filename, out_file_name]
-		check = Popen(cmd, stdout=PIPE, stderr=STDOUT, close_fds=True, cwd=testdir, env=env)
+		check = Popen(cmd, stdout=PIPE, stderr=PIPE, close_fds=True, cwd=testdir, env=env, shell=True)
 		check.wait()
 
 		check_output = check.stdout.read()

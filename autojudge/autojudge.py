@@ -220,10 +220,12 @@ if __name__ == '__main__':
 		os.chmod(check_script_file_name, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
 
 		cmd = [check_script_file_name, output_filename, out_file_name]
-		check = Popen(cmd, stdout=PIPE, stderr=PIPE, close_fds=True, cwd=testdir, env=env, shell=True)
+		#print 'cmd: ', cmd
+		check = Popen(cmd, stdout=PIPE, close_fds=True, cwd=testdir, env=env)
 		check.wait()
 
 		check_output = check.stdout.read()
+		print 'check_output: ', check_output
 		
 		if check.returncode == 0:
 			uploadresult(submission, "ACCEPTED", compiler_output, submission_output, watchdog_output, check_output)

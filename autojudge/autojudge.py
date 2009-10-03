@@ -7,6 +7,7 @@ import time
 from subprocess import Popen, PIPE, STDOUT
 import stat
 import socket
+import tempfile
 
 # This will insert the parent directory to the path so we can import
 # settings.
@@ -218,14 +219,15 @@ if __name__ == '__main__':
 		fp.close()
 
 		os.chmod(check_script_file_name, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
+		# We use a temporary file to avoid deadlocks when PIPE is full
+		check_output_file = tempfile.TemporaryFile()
 
 		cmd = [check_script_file_name, output_filename, out_file_name]
-		#print 'cmd: ', cmd
-		check = Popen(cmd, stdout=PIPE, close_fds=True, cwd=testdir, env=env)
+		check = Popen(cmd, stdout=check_output_file, close_fds=True, cwd=testdir, env=env)
 		check.wait()
-
-		check_output = check.stdout.read()
-		print 'check_output: ', check_output
+		check_output_file.seek(0)
+		check_output = check_output_file.read()
+		check_output_file.close()
 		
 		if check.returncode == 0:
 			uploadresult(submission, "ACCEPTED", compiler_output, submission_output, watchdog_output, check_output)

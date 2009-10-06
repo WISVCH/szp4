@@ -22,6 +22,8 @@ f = open (sys.path[0]+"/cli/template_ballon.ps")
 postscript_template = f.read()
 f.close()
 
+print "Balloon running"
+
 while True:
     contest = Contest.objects.get()
 
@@ -31,18 +33,19 @@ while True:
     balloons = Score.objects.filter(correct=True).filter(balloon=False)
         
     if not balloons:
-        print "sleeping for 5 seconds..."
-        time.sleep(5)
+		sys.stdout.write('.')
+		sys.stdout.flush()
+		time.sleep(5)
     else:
 
         for b in balloons:
             postscript = postscript_template
-            postscript = postscript.replace("TEAM", b.team.name).replace("LOCATION", b.team.location).replace("PROBLEM", str(b.problem)).replace("COLOUR", b.problem.colour)
+            postscript = postscript.replace("TEAM", b.team.name[:20]).replace("LOCATION", b.team.location).replace("PROBLEM", str(b.problem)).replace("COLOUR", b.problem.colour)
             postscript = postscript.encode("utf-8")
             f = open("/tmp/balloon.ps", "w+")
             f.write(postscript)
             f.seek(0)
-            print "Balloon team: %s location: %s problem: %s colour: %s" % (b.team.name, b.team.location, str(b.problem), b.problem.colour)
+            print "\nBalloon team: %s location: %s problem: %s colour: %s" % (b.team.name, b.team.location, str(b.problem), b.problem.colour)
             ret = Popen(["/usr/bin/lpr","-o","job-sheets=none","-P","szpprinter"], stdin=f, close_fds=True)
             f.close()
             b.balloon = True

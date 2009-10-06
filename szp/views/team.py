@@ -111,18 +111,25 @@ def teamlogin(request):
 @login_required
 def home(request):
 	profile = request.user.get_profile()
+	if profile.team is None:
+		return HttpResponseRedirect('/jury/')
 	return render_to_response('team_home.html',
 							  {"profile": profile},
 							  context_instance=RequestContext(request))
 
 @login_required
 def status(request):
+	profile = request.user.get_profile()
+	if profile.team is None:
+		return HttpResponseRedirect('/jury/')
 	return render_to_response('team_status.html',
 							  context_instance=RequestContext(request))
 
 @login_required
 def score(request):
 	profile = request.user.get_profile()
+	if profile.team is None:
+		return HttpResponseRedirect('/jury/')
 	return render_to_response('team_score.html',
 							  get_scoreboard(jury=profile.is_judge),
 							  context_instance=RequestContext(request))
@@ -131,6 +138,8 @@ def score(request):
 def clarification(request):
 	profile = request.user.get_profile()
 	team = profile.team
+	if team is None:
+		return HttpResponseRedirect('/jury/')
 
 	if request.method == 'POST':
 		# FIXME: Make a django form for this.

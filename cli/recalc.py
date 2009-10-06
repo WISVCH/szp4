@@ -37,14 +37,14 @@ for s in Submission.objects.order_by('timestamp'):
 	else:
 		print "-- Was already solved!"
 	
-	if result.judgement == "ACCEPTED":
+	if teams[s.team][s.problem]['solved'] == False and result.judgement == "ACCEPTED":
 		teams[s.team][s.problem]['solved'] = True
 		teams[s.team][s.problem]['solved_time'] = s.timestamp
 
 print "\n------------------------------ SCORES ------------------------------"
 
 for team in teams:
-	print team
+	print '\n', team
 	for problem in teams[team]:
 		solved = "V" if teams[team][problem]['solved'] else ' '
 		print "\t%s: %d %s" % (problem.letter, teams[team][problem]['count'], solved),

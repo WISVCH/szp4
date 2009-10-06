@@ -45,7 +45,7 @@ class Profile(models.Model):
 	user = models.ForeignKey(User, unique=True)
 	team = models.ForeignKey(Team, null=True, blank=True)
 	is_judge = models.BooleanField()
-	ip_address = models.IPAddressField(null=True, unique=True)
+	ip_address = models.IPAddressField(null=True, blank=True, unique=True)
 	
 	def __unicode__(self):
 		return self.user.username

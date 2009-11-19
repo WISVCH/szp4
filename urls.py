@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     # (r'^szp4/', include('szp4.foo.urls')),
 
     # Uncomment this for admin:
+    (r'^$', 'szp.views.general.index'),
     (r'^admin/(.*)', admin.site.root),
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout_then_login'),
     (r'^look/$', 'szp.views.look.score'),

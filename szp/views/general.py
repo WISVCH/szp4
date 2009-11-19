@@ -1,6 +1,10 @@
 from szp.models import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
+from django.shortcuts import render_to_response
+
+def index(request):
+	return render_to_response('index.html')
 
 def get_scoreboard(jury=False):
 	contest = Contest.objects.get()

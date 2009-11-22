@@ -25,14 +25,6 @@ if submission.status == "CHECKED" or submission.status == "VERIFIED":
 	result = submission.result_set.get()
 	result.delete()
 
-if submission.status != "NEW":
-	try:
-		score = Score.objects.get(team=submission.team, problem=submission.problem)
-		score.submission_count -= 1
-		score.save()
-	except:
-		print 'Could not remove score object; weird autojudge hang?'
-
 submission.status = "NEW"
 submission.save()
 

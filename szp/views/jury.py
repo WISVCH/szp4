@@ -1,45 +1,35 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from szp.models import *
 from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
 from team import gettime
 from datetime import datetime
-from szp.views.general import render_scoreboard
-
-# TODO: remove the silly is_judge checks into @judge_required
+from szp.views.general import render_scoreboard, check_judge
 
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def home(request):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-	
 	return render_to_response('jury_home.html',
-							  {"profile": profile},
+							  {"profile": request.user.get_profile()},
 							  context_instance=RequestContext(request))
 
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def status(request):
 	return render_to_response('jury_status.html',
 							  context_instance=RequestContext(request))
 
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def score(request):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	return render_scoreboard(request, 'jury_score.html', is_judge=True)
 
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def clarification(request):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	if request.method == 'POST':
 		if request.POST['team'] != "global":
 			teamlist = [Team.objects.get(id=request.POST['team'])]
@@ -99,11 +89,8 @@ def clarification(request):
 							  context_instance=RequestContext(request))
 
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def clarification_list(request, which):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	contest = Contest.objects.get()
 	problemlist = Problem.objects.order_by("letter")
 	teamlist = Team.objects.order_by("name")
@@ -145,11 +132,8 @@ def clarification_list(request, which):
 							  context_instance=RequestContext(request))
 		
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def clarification_show_sent(request, which):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	contest = Contest.objects.get()
 
 	clar = Sentclar.objects.get(id=which)
@@ -179,11 +163,8 @@ def clarification_show_sent(request, which):
 	
 	
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def clarification_show(request, which):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	if request.method == 'POST':
 		print request.POST
 		if request.POST['button'] == "Dealt With":
@@ -220,11 +201,8 @@ def clarification_show(request, which):
 							  context_instance=RequestContext(request))
 
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def clarification_reply(request, which):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	if request.method == 'POST':
 		clarreq = Clarreq.objects.get(id=which)
 
@@ -284,11 +262,8 @@ def clarification_reply(request, which):
 
 
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def submission(request):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	problems = Problem.objects.order_by("letter")
 	total = Submission.objects.count()
 	problemlist = []
@@ -303,11 +278,8 @@ def submission(request):
 							  context_instance=RequestContext(request))
 
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def submission_list(request, problem):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	contest = Contest.objects.get()
 
 	if problem == "all":
@@ -343,17 +315,14 @@ def submission_list(request, problem):
 							  context_instance=RequestContext(request))
 
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def submission_details(request, number):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	submission = Submission.objects.get(id=number)
 
 	if request.method == 'POST':
 		if "verify" in request.POST:
 			result = submission.result_set.get()
-			result.verified_by = profile
+			result.verified_by = request.user.get_profile()
 			submission.status = "VERIFIED"
 			result.save()
 			submission.save()
@@ -366,6 +335,7 @@ def submission_details(request, number):
 		
 	time = gettime(submission.timestamp, contest)
 
+	# TODO: this method of capping data is too slow. We should fetch data capped by the database instead.
 	def cap_output(output):
 		cap = 10000
 		cap_msg = "SZP Notice: output capped, download file to see everything.\n\n"
@@ -426,12 +396,9 @@ def submission_details(request, number):
 							   },
 							  context_instance=RequestContext(request))
 
-
+@login_required
+@user_passes_test(check_judge, login_url='/team/')
 def submission_changeresult(request, number):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	# TODO: We might want to be able to manually accept submissions
 	contest = Contest.objects.get()
 	submission = Submission.objects.get(id=number)
@@ -474,11 +441,9 @@ def submission_changeresult(request, number):
 							   },
 							  context_instance=RequestContext(request))
 
+@login_required
+@user_passes_test(check_judge, login_url='/team/')
 def submission_download(request, number, what):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	submission = Submission.objects.get(id=number)
 	result = submission.result_set.get()
 
@@ -503,4 +468,3 @@ def submission_download(request, number, what):
 	response = HttpResponse(output, mimetype='text/plain')
 	response['Content-Disposition'] = 'attachment; filename=%s_%s' % (number, what)
 	return response
-

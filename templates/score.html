@@ -19,7 +19,7 @@
   </tr>
   {% for score in scorelist.list %}
     <tr class="{% cycle 'content_body1' 'content_body2' %}">
-      <td class="single">{{ forloop.counter }}</td>
+      <td class="single">{{ score.rank }}</td>
       <td>{{ score.name }}</td>
       <td>{{ score.organisation }}</td>
       <!--	<td><b>{{ score.class }}</td>-->

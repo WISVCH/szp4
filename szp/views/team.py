@@ -7,7 +7,7 @@ from szp.models import *
 from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
-from szp.views.general import render_scoreboard
+from szp.views.general import render_scoreboard, get_scoreboard
 from django.conf import settings
 from django.core.cache import cache
 
@@ -20,43 +20,25 @@ def gettime(timestamp, contest):
 	seconds = timedelta.seconds % 60
 	return "%02d:%02d:%02d" % (hours, minutes, seconds)	
 
-# TODO: caching. This code is called on every request (status window)
+# TODO: caching. This code is called on every request (status window). Maybe write it a little cleaner as well.
 def getrank(ourteam):
-	cache_key = 'scoredict';
-	scoredict= cache.get(cache_key)
+	contest = Contest.objects.get()
 	
-	if scoredict is None:
-		contest = Contest.objects.get()
-
-		scoredict = {}
-			
-		for team in Team.objects.filter(teamclass=ourteam.teamclass):
-			scoredict[team] = {"score": 0, "time": 0}
-
-		if contest.status == "INITIALIZED" or contest.status == "RUNNING":
-			for score in Score.objects.filter(correct=True, team__teamclass=ourteam.teamclass):
-				scoredict[score.team]["score"] += 1
-				scoredict[score.team]["time"] += (score.submission_count - 1)*settings.SUBMITFAIL_PENALTY + score.time
-		else:
-			for score in FrozenScore.objects.filter(correct=True, team__teamclass=ourteam.teamclass):
-				scoredict[score.team]["score"] += 1
-				scoredict[score.team]["time"] += (score.submission_count - 1)*settings.SUBMITFAIL_PENALTY + score.time
-		
-		cache.set(cache_key, scoredict, 10)
-
-	scorelist = []
-	for (team, score) in scoredict.items():
-		scorelist.append({"team": team, "score": score["score"], "time": score["time"]})
-		if team == ourteam:
-			ourscore = score["score"]
-			ourtime = score["time"]
-
-	scorelist.sort(key=lambda s: s["score"]*1000000-s["time"], reverse=True)
-
-	for (rank, score) in enumerate(scorelist):
-		if score["time"] == ourtime and score["score"] == ourscore:
-			ourrank = rank+1
-			break
+	if contest.status == "INITIALIZED" or contest.status == "RUNNING":
+		cache_key = 'getrank-' + str(contest.resulttime) + str(ourteam.id)
+	else:
+		cache_key = 'getrank-NOINFO-' + str(ourteam.id)
+	ourrank = cache.get(cache_key)
+	
+	if ourrank is None:
+		ourrank = 0
+		for teamclass in get_scoreboard()['scoreboard']:
+			if teamclass['name'] == ourteam.teamclass.name:
+				for team in teamclass['list']:
+					if team['name']==ourteam.name:
+						ourrank = team['rank'] if team.has_key('rank') else '-'
+						cache.set(cache_key, ourrank, 10)
+						break;
 
 	return ourrank
 

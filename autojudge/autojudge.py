@@ -60,20 +60,9 @@ def uploadresult(submission, judgement, compiler_output, submission_output=None,
 	submission.status = "CHECKED"
 	submission.save()
 
-	try:
-		score = Score.objects.get(team=submission.team, problem=submission.problem)
-	except ObjectDoesNotExist:
-		score = Score(team=submission.team, problem=submission.problem, submission_count=0, correct=False)
-
 	score.submission_count += 1
 	if judgement == "ACCEPTED":
-		score.correct = True
-		contest = Contest.objects.get()
-		contest.save() # Updates 'resulttime'
-		timedelta = (submission.timestamp - contest.starttime)
-		score.time = timedelta.days*24 + timedelta.seconds/60
-
-	score.save()
+	    Contest.objects.get().save() # Updates 'resulttime'
 
 	team = submission.team
 	team.new_results = True

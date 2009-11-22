@@ -25,7 +25,7 @@ class Autojudge(models.Model):
 		return "Autojudge %d (%s)" % (self.id, self.ip_address)
 
 class Teamclass(models.Model):
-	name = models.CharField(max_length=100)
+	name = models.CharField(max_length=100,unique=True)
 	rank = models.IntegerField(unique=True)
 
 	def __unicode__(self):
@@ -114,23 +114,6 @@ class Compiler(models.Model):
 	def __unicode__(self):
 		return self.name
 
-class FrozenScore(models.Model):
-	team = models.ForeignKey(Team)
-	problem = models.ForeignKey(Problem)
-	submission_count = models.IntegerField()
-	correct = models.BooleanField()
-	time = models.IntegerField(null=True, blank=True)
-
-	def __unicode__(self):
-		if self.correct:
-			status = "OK"
-			time = self.time
-		else:
-			status = "WRONG"
-			time = 0
-
-		return "%s problem %s %s %d (%d)" % (self.team.name, self.problem.letter, status, self.submission_count, time)
-
 class Submission(models.Model):
 	STATUS_CHOICES = (("NEW", "NEW"),
 					  ("BEING_JUDGED", "BEING_JUDGED"),
@@ -171,23 +154,3 @@ class Result(models.Model):
 
 	def __unicode__(self):
 		return "%s for %s by %s" % (self.judgement, self.submission.problem.letter, self.submission.team.name)
-
-
-class Score(models.Model):
-	team = models.ForeignKey(Team)
-	problem = models.ForeignKey(Problem)
-	submission_count = models.IntegerField()
-	correct = models.BooleanField()
-	time = models.IntegerField(null=True, blank=True)
-	balloon = models.BooleanField(default=False)
-
-	def __unicode__(self):
-		if self.correct:
-			status = "OK"
-			time = self.time
-		else:
-			status = "WRONG"
-			time = 0
-
-		return "%s problem %s %s %d (%d)" % (self.team.name, self.problem.letter, status, self.submission_count, time)
-

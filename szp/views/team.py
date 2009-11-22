@@ -38,7 +38,7 @@ def getrank(ourteam):
 				for team in teamclass['list']:
 					if team['name']==ourteam.name:
 						ourrank = team['rank'] if team.has_key('rank') else '-'
-						cache.set(cache_key, ourrank, 10)
+						cache.set(cache_key, ourrank, 1800)
 						break;
 
 	return ourrank

@@ -93,7 +93,7 @@ def get_scoreboard(is_judge=False):
 			scoreboard.append({"list": scorelist, "name": teamclass.name})
 
 		response = {"contest": contest, "problems": problems, "scoreboard": scoreboard}
-		cache.set(cache_key, response, 10)
+		cache.set(cache_key, response, 1800)
 		
 	return response
 
@@ -108,7 +108,7 @@ def render_scoreboard(request, template, is_judge=False):
 	
 	if scoreboard is None:
 		scoreboard = loader.render_to_string('score.html', get_scoreboard(is_judge))
-		cache.set(cache_key, scoreboard, 10)
+		cache.set(cache_key, scoreboard, 1800)
 	
 	return render_to_response(template,
 							  {'scoreboard': scoreboard},

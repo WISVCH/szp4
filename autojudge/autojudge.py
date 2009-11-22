@@ -60,7 +60,6 @@ def uploadresult(submission, judgement, compiler_output, submission_output=None,
 	submission.status = "CHECKED"
 	submission.save()
 
-	score.submission_count += 1
 	if judgement == "ACCEPTED":
 	    Contest.objects.get().save() # Updates 'resulttime'
 

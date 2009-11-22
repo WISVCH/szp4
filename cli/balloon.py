@@ -30,6 +30,7 @@ while True:
     if contest.status != "RUNNING":
         sys.exit(1)
 
+    # FIXME: the Score-model is gone.
     balloons = Score.objects.filter(correct=True).filter(balloon=False)
         
     if not balloons:
@@ -40,7 +41,7 @@ while True:
 
         for b in balloons:
             postscript = postscript_template
-            postscript = postscript.replace("TEAM", b.team.name[:20]).replace("LOCATION", b.team.location).replace("PROBLEM", str(b.problem)).replace("COLOUR", b.problem.colour)
+            postscript = postscript.replace("TEAM", b.team.name[:25]).replace("LOCATION", b.team.location).replace("PROBLEM", str(b.problem)).replace("COLOUR", b.problem.colour)
             postscript = postscript.encode("utf-8")
             f = open("/tmp/balloon.ps", "w+")
             f.write(postscript)

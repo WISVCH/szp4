@@ -126,9 +126,7 @@ if __name__ == '__main__':
 		cmd = submission.compiler.compile_line.replace("${LETTER}", submission.problem.letter).split()
 
 		compile = Popen(cmd, stdout=PIPE, stderr=STDOUT, close_fds=True, cwd=testdir)
-		compile.wait()
-
-		compiler_output = compile.stdout.read()
+		compiler_output = compile.communicate()[0]
 
 		if compile.returncode != 0:
 			uploadresult(submission, "COMPILER_ERROR", compiler_output)
@@ -152,32 +150,19 @@ if __name__ == '__main__':
 			 submission.compiler.execute_line.replace("${LETTER}", submission.problem.letter),
 			 str(submission.problem.timelimit)]
 
-		output_filename = os.path.join(testdir, 'submission_output')
-		output = open(output_filename, "w+")
-
 		input_fd = open(in_file_name, "r")
 
-		error_filename = os.path.join(testdir, 'submission_error')
-		error = open(error_filename, "w+")
-
-		run = Popen(cmd, stdin=input_fd, stdout=output, stderr=error, close_fds=True, cwd=testdir, env=env)
-		run.wait()
+		run = Popen(cmd, stdin=input_fd, stdout=PIPE, stderr=PIPE, close_fds=True, cwd=testdir, env=env)
+		(submission_output, error) = run.communicate()
 
 		input_fd.close()
-
-		output.seek(0)
-		submission_output = output.read()
-		output.close()
 
 		watchdog = open(os.path.join(testdir, "watchdog_output"), "r")
 		watchdog_output = watchdog.read()
 		watchdog.close()
 
 		watchdog_output += "\n--- stderr output below ---\n"
-
-		error.seek(0)
-		watchdog_output += error.read()
-		error.close()
+		watchdog_output += error
 
 		# FIXME We currently don't implement backtraces of core dumps.
 
@@ -209,15 +194,10 @@ if __name__ == '__main__':
 		fp.close()
 
 		os.chmod(check_script_file_name, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
-		# We use a temporary file to avoid deadlocks when PIPE is full
-		check_output_file = tempfile.TemporaryFile()
-
+		
 		cmd = [check_script_file_name, output_filename, out_file_name]
-		check = Popen(cmd, stdout=check_output_file, close_fds=True, cwd=testdir, env=env)
-		check.wait()
-		check_output_file.seek(0)
-		check_output = check_output_file.read()
-		check_output_file.close()
+		check = Popen(cmd, stdout=PIPE, stderr=PIPE, close_fds=True, cwd=testdir, env=env)
+		check_output = check.communicate()[0]
 		
 		if check.returncode == 0:
 			uploadresult(submission, "ACCEPTED", compiler_output, submission_output, watchdog_output, check_output)

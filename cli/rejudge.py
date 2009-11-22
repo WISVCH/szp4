@@ -21,11 +21,12 @@ number = sys.argv[1]
 submission = Submission.objects.get(id=number)
 submission.autojudge = None
 
-if submission.status == "CHECKED" or submission.status == "VERIFIED":
+try:
 	submission.result.delete()
+except:
+	print 'No result object.'
 
 submission.status = "NEW"
 submission.save()
 
 print "Rejudging submission %s for problem %s." % (number, submission.problem.letter)
-print "Please run recalc.py if judgement is changed (e.g. solution is accepted while it was not previously)."

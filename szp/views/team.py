@@ -10,6 +10,7 @@ from datetime import datetime
 from szp.views.general import render_scoreboard, get_scoreboard
 from django.conf import settings
 from django.core.cache import cache
+from django.utils.hashcompat import md5_constructor
 
 def gettime(timestamp, contest):
 	if contest.status == "INITIALIZED":
@@ -25,9 +26,9 @@ def getrank(ourteam):
 	contest = Contest.objects.get()
 	
 	if contest.status == "INITIALIZED" or contest.status == "RUNNING":
-		cache_key = 'getrank-' + str(contest.resulttime) + str(ourteam.id)
+		cache_key = 'getrank-%s-%d', md5_constructor(str(contest.resulttime)).hexdigest(), ourteam.id
 	else:
-		cache_key = 'getrank-NOINFO-' + str(ourteam.id)
+		cache_key = 'getrank-NOINFO-%d', ourteam.id
 	ourrank = cache.get(cache_key)
 	
 	if ourrank is None:

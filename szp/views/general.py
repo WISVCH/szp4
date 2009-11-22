@@ -5,9 +5,7 @@ from django.conf import settings
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template import loader
-from django.utils.http import urlquote
-
-from time import mktime
+from django.utils.hashcompat import md5_constructor
 
 def index(request):
 	return render_to_response('index.html')
@@ -20,7 +18,7 @@ def get_scoreboard(is_judge=False):
 	contest = Contest.objects.get()
 	
 	if is_judge or contest.status == "INITIALIZED" or contest.status == "RUNNING":
-		cache_key = 'get_scoreboard-' + ('jury-' if is_judge else 'team-') + str(contest.resulttime)
+		cache_key = 'get_scoreboard-' + ('jury-' if is_judge else 'team-') + md5_constructor(str(contest.resulttime)).hexdigest()
 	else:
 		cache_key = 'get_scoreboard-NOINFO'
 	response = cache.get(cache_key)
@@ -103,7 +101,7 @@ def render_scoreboard(request, template, is_judge=False):
 	contest = Contest.objects.get()
 	
 	if is_judge or contest.status == "INITIALIZED" or contest.status == "RUNNING":
-		cache_key = 'render_scoreboard-' + ('jury-' if is_judge else 'team-') + str(contest.resulttime)
+		cache_key = 'render_scoreboard-' + ('jury-' if is_judge else 'team-') + md5_constructor(str(contest.resulttime)).hexdigest()
 	else:
 		cache_key = 'render_scoreboard-NOINFO'
 	scoreboard = cache.get(cache_key)

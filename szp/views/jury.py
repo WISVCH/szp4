@@ -7,7 +7,9 @@ from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
 from team import gettime
 from datetime import datetime
-from szp.views.general import get_scoreboard
+from szp.views.general import render_scoreboard
+
+# TODO: remove the silly is_judge checks into @judge_required
 
 @login_required
 def home(request):
@@ -15,7 +17,6 @@ def home(request):
 	if not profile.is_judge:
 		return HttpResponseRedirect('/team/')
 	
-
 	return render_to_response('jury_home.html',
 							  {"profile": profile},
 							  context_instance=RequestContext(request))
@@ -31,9 +32,7 @@ def score(request):
 	if not profile.is_judge:
 		return HttpResponseRedirect('/team/')
 
-	return render_to_response('jury_score.html',
-							  get_scoreboard(jury=True),
-							  context_instance=RequestContext(request))
+	return render_scoreboard(request, 'jury_score.html', is_judge=True)
 
 @login_required
 def clarification(request):

@@ -69,6 +69,7 @@ def uploadresult(submission, judgement, compiler_output, submission_output=None,
 	if judgement == "ACCEPTED":
 		score.correct = True
 		contest = Contest.objects.get()
+		contest.save() # Updates 'resulttime'
 		timedelta = (submission.timestamp - contest.starttime)
 		score.time = timedelta.days*24 + timedelta.seconds/60
 

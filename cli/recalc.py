@@ -17,6 +17,7 @@ from django.contrib.auth.models import User, Permission
 from szp.models import *
 
 teams = {}
+contest = Contest.objects.get()
 
 for s in Submission.objects.order_by('timestamp'):
 	try:
@@ -58,8 +59,7 @@ for team in teams:
 		score.submission_count = teams[team][problem]['count']
 		if teams[team][problem]['solved']:
 			score.correct = True
-			contest = Contest.objects.get()
 			timedelta = (teams[team][problem]['solved_time'] - contest.starttime)
 			score.time = timedelta.days*24 + timedelta.seconds/60
-		
+			
 		score.save()

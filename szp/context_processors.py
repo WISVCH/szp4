@@ -3,6 +3,7 @@ from datetime import datetime
 from django.core.exceptions import ObjectDoesNotExist
 from szp.views.team import getrank
 
+# TODO: cache
 def statuswindow(request):
 	status = {}
 	
@@ -33,5 +34,5 @@ def statuswindow(request):
 
 	status["status"] = contest.status
 
-	return {'s': status }
+	return {'s': status, 'c': contest }
 

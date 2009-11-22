@@ -7,8 +7,9 @@ from szp.models import *
 from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
-from szp.views.general import get_scoreboard
+from szp.views.general import render_scoreboard
 from django.conf import settings
+from django.core.cache import cache
 
 def gettime(timestamp, contest):
 	if contest.status == "INITIALIZED":
@@ -19,23 +20,29 @@ def gettime(timestamp, contest):
 	seconds = timedelta.seconds % 60
 	return "%02d:%02d:%02d" % (hours, minutes, seconds)	
 
-
+# TODO: caching. This code is called on every request (status window)
 def getrank(ourteam):
-	contest = Contest.objects.get()
+	cache_key = 'scoredict';
+	scoredict= cache.get(cache_key)
+	
+	if scoredict is None:
+		contest = Contest.objects.get()
 
-	scoredict = {}
+		scoredict = {}
 			
-	for team in Team.objects.filter(teamclass=ourteam.teamclass):
-		scoredict[team] = {"score": 0, "time": 0}
+		for team in Team.objects.filter(teamclass=ourteam.teamclass):
+			scoredict[team] = {"score": 0, "time": 0}
 
-	if contest.status == "INITIALIZED" or contest.status == "RUNNING":
-		for score in Score.objects.filter(correct=True, team__teamclass=ourteam.teamclass):
-			scoredict[score.team]["score"] += 1
-			scoredict[score.team]["time"] += (score.submission_count - 1)*settings.SUBMITFAIL_PENALTY + score.time
-	else:
-		for score in FrozenScore.objects.filter(correct=True, team__teamclass=ourteam.teamclass):
-			scoredict[score.team]["score"] += 1
-			scoredict[score.team]["time"] += (score.submission_count - 1)*settings.SUBMITFAIL_PENALTY + score.time
+		if contest.status == "INITIALIZED" or contest.status == "RUNNING":
+			for score in Score.objects.filter(correct=True, team__teamclass=ourteam.teamclass):
+				scoredict[score.team]["score"] += 1
+				scoredict[score.team]["time"] += (score.submission_count - 1)*settings.SUBMITFAIL_PENALTY + score.time
+		else:
+			for score in FrozenScore.objects.filter(correct=True, team__teamclass=ourteam.teamclass):
+				scoredict[score.team]["score"] += 1
+				scoredict[score.team]["time"] += (score.submission_count - 1)*settings.SUBMITFAIL_PENALTY + score.time
+		
+		cache.set(cache_key, scoredict, 10)
 
 	scorelist = []
 	for (team, score) in scoredict.items():
@@ -96,17 +103,17 @@ def submitscript(request):
 	else:
 		return HttpResponseRedirect('/look/')
 
-def teamlogin(request):
-	ip_address = request.META['REMOTE_ADDR']
-	user = authenticate(ip_address=ip_address)
-	if user is not None:
-		if user.is_active:
-			login(request, user)
-			return HttpResponseRedirect('/team/')
-		else:
-			return HttpResponseRedirect('/look/')
-
-	return HttpResponseRedirect('/jury/login/')
+# def teamlogin(request):
+# 	ip_address = request.META['REMOTE_ADDR']
+# 	user = authenticate(ip_address=ip_address)
+# 	if user is not None:
+# 		if user.is_active:
+# 			login(request, user)
+# 			return HttpResponseRedirect('/team/')
+# 		else:
+# 			return HttpResponseRedirect('/look/')
+# 
+# 	return HttpResponseRedirect('/jury/login/')
 
 @login_required
 def home(request):
@@ -130,9 +137,8 @@ def score(request):
 	profile = request.user.get_profile()
 	if profile.team is None:
 		return HttpResponseRedirect('/jury/')
-	return render_to_response('team_score.html',
-							  get_scoreboard(jury=profile.is_judge),
-							  context_instance=RequestContext(request))
+	
+	return render_scoreboard(request, 'team_score.html', profile.is_judge)
 
 @login_required
 def clarification(request):

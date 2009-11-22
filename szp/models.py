@@ -7,11 +7,14 @@ class Contest(models.Model):
 					  ("NOINFO", "NOINFO"),
 					  ("STOPPED", "STOPPED"))
 	starttime = models.DateTimeField(blank=True, null=True)
+	freezetime = models.DateTimeField(blank=True, null=True)
 	endtime = models.DateTimeField(blank=True, null=True)
 	status = models.CharField(max_length=11, choices=STATUS_CHOICES)
 	name = models.CharField(max_length=150)
 	date = models.DateField()
 	location = models.CharField(max_length=50)
+	
+	resulttime = models.DateTimeField(auto_now=True)
 
 	def __unicode__(self):
 		return "%s, %s (%s)" % (self.name, self.location, self.date)

@@ -77,7 +77,15 @@ tr.content_body2
 {
   font-size :14px;
   background-color: #F0FFFF;
-}        
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+tr.clickable:hover {
+  background-color: #bec7f9;
+}
 
 tr.message_body
 {
@@ -145,9 +153,8 @@ a.menu
   color: white;
 }
 
-table.index 
-{
-  width: 400px;
+table.index {
+  width: 100%;
 }
 
 td.index

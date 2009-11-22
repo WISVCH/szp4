@@ -3,9 +3,9 @@
 {% block content %}
 <h1>Submissions</h1> 
 
-<table class="index">
+<table class="index" width="100%">
   <tr class="content_header">
-    <td width="100%" align="middle">{{ title }}</td>
+    <td align="middle">{{ title }}</td>
   </tr>
 </table>
 <table class="index">
@@ -13,16 +13,15 @@
     <td class="index">time</td>
     <td class="index">subm.</td>
     <td class="index">team</td>
-    <td class="index">prob</td>
+    <td class="index">prob.</td>
     <td class="index">filename</td>
     <td class="index">compiler</td>
     <td class="index">result</td>
     <td class="index">verified by</td>
-    <td class="index">details</td>
   </tr>
 
   {% for submission in submissionlist %}
-  <tr class="{% cycle 'content_body1' 'content_body2' %}">
+  <tr class="clickable {% cycle 'content_body1' 'content_body2' %}" onclick="location.href='/jury/submission/{{submission.id}}/'">
     <td class="index">{{submission.time}}</td>
     <td class="index">
       <a href="/jury/submission/{{submission.id}}/">{{submission.id}}</a>
@@ -37,22 +36,17 @@
     <td class="index">{{submission.compiler}}</td>
     <td class="index">{{submission.judgement}}</td>
     <td class="index">{{submission.verified_by}}</td>
-    <td class="index">
-      <a href="/jury/submission/{{submission.id}}/">[details]</a>
-    </td>
   </tr>
   {% endfor %}
 </table>
 <table class="index">
   <tr class="content_header">
-    <td width="25%">
-    </td>
+    <td width="25%"></td>
     <td align="center">
       <a class="back_to_groups" href="/jury/submission">Back to Groups</a>
     </td>
-    <td width="25%">
-    </td>
-</table>
+    <td width="25%"></td>
+  </table>
 </table>
 
 <script type="text/javascript">

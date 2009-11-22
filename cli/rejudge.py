@@ -22,8 +22,7 @@ submission = Submission.objects.get(id=number)
 submission.autojudge = None
 
 if submission.status == "CHECKED" or submission.status == "VERIFIED":
-	result = submission.result_set.get()
-	result.delete()
+	submission.result.delete()
 
 submission.status = "NEW"
 submission.save()

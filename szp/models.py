@@ -45,7 +45,7 @@ class Team(models.Model):
 		return self.name
 
 class Profile(models.Model):
-	user = models.ForeignKey(User, unique=True)
+	user = models.OneToOneField(User, primary_key=True)
 	team = models.ForeignKey(Team, null=True, blank=True)
 	is_judge = models.BooleanField()
 	ip_address = models.IPAddressField(null=True, blank=True, unique=True)
@@ -141,7 +141,7 @@ class Result(models.Model):
 						 ("NO_OUTPUT", "NO_OUTPUT"),
 						 ("ACCEPTED", "ACCEPTED"))
 
-	submission = models.ForeignKey(Submission, unique=True)
+	submission = models.OneToOneField(Submission, primary_key=True)
 	judgement = models.CharField(max_length=16, choices=JUDGEMENT_CHOICES)
 	judged_by = models.ForeignKey(Autojudge)
 	judge_comment = models.TextField(null=True, blank=True)
@@ -149,7 +149,7 @@ class Result(models.Model):
 	submission_output_file = models.OneToOneField(File, null=True, blank=True, related_name="result_submission_output_file")
 	autojudge_comment_file = models.OneToOneField(File, null=True, blank=True, related_name="result_autojudge_comment_file")
 	check_output_file = models.OneToOneField(File, null=True, blank=True, related_name="result_check_output_file")
-	verified_by = models.ForeignKey(Profile, null=True, blank=True)
+	verified_by = models.ForeignKey(User, null=True, blank=True)
 	timestamp = models.DateTimeField(auto_now_add=True)
 
 	def __unicode__(self):

@@ -32,7 +32,8 @@ def get_scoreboard(is_judge=False):
 		if is_judge or contest.status == "INITIALIZED" or contest.status == "RUNNING":
 			results = Result.objects.select_related("submission").order_by('timestamp')
 		else:
-			results = Result.objects.filter(submission__timestamp__lt=contest.freezetime).select_related("submission").order_by('timestamp')
+			results = Result.objects.filter(submission__timestamp__lt=contest.freezetime)\
+				.select_related("submission").order_by('timestamp')
 
 		for result in results:
 			t = result.submission.team_id

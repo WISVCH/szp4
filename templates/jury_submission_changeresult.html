@@ -5,14 +5,14 @@
 
 <p>Are you sure you want to change the result?</p>
 
-<p><strong>Note: </strong> if you manually accept or reject a solution, run <em>recalc.py</em> to regenerate the scoreboard. Also, teams will be notified there are "NEW RESULTS".</p>
+<p>Teams will be notified there are "NEW RESULTS".</p>
 
 <table class="index">
   <tr class="content_header">
     <td class="index">time</td>
     <td class="index">subm.</td>
     <td class="index">team</td>
-    <td class="index">prob</td>
+    <td class="index">prob.</td>
     <td class="index">time limit</td>
     <td class="index">filename</td>
     <td class="index">compiler</td>
@@ -37,26 +37,25 @@
     <td class="index">{{submission.status}}</td>
     <form method="post">
       <td class="index">
-	<select name="judgement">
-	{% for j in judgementlist %}
-	<option value="{{j.name}}"{% if j.selected %} selected{% endif %}>{{j.name}}</option>
-	{% endfor %}
-	</select>
+        <select name="judgement">
+          {% for j in judgementlist %}
+          <option value="{{j.name}}"{% if j.selected %} selected{% endif %}>{{j.name}}</option>
+          {% endfor %}
+        </select>
       </td>
       <td class="index">
-	{% if verified_by %}
-	{{verified_by}}
-	{% else %}
-	Nobody
-	{% endif %}
+        {% if verified_by %}
+        {{verified_by}}
+        {% else %}
+        Nobody
+        {% endif %}
       </td>
 
       <td class="index">
-	<input type="submit" value="Change" name="change">
+        <input type="submit" value="Change" name="change">
       </td>
     </form>
   </tr>
 </table>
-
 
 {% endblock %}

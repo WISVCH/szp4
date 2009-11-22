@@ -13,8 +13,8 @@ class SubmitForm(forms.Form):
 		super(SubmitForm, self).__init__(*args, **kwargs)
 	
 	# There is a nice race condition in this check:
-	# if two submissions are done close together, and the first is accepted,
-	# the second submission is still counted against the team score.
+	# if two submissions are done close together, this code
+	# doesn't yet know the if the submission has been accepted.
 	def clean(self):
 		cleaned_data = self.cleaned_data
 		profile = self.request.user.get_profile()
@@ -28,7 +28,7 @@ class SubmitForm(forms.Form):
 
 			for s in submissions:
 				try:
-					if s.result_set.get().judgement == "ACCEPTED":
+					if s.result.judgement == "ACCEPTED":
 						raise forms.ValidationError("A submission has already been accepted for this problem.")
 				except ObjectDoesNotExist:
 					pass

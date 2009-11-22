@@ -314,7 +314,7 @@ def submission(request, problem=None):
 
 	for s in submissions:
 		try:
-			judgement = s.result_set.get().judgement
+			judgement = s.result.judgement
 		except ObjectDoesNotExist:
 			judgement = "Pending..."
 			

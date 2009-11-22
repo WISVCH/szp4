@@ -265,39 +265,49 @@ def clarification_reply(request, which):
 @user_passes_test(check_judge, login_url='/team/')
 def submission(request):
 	problems = Problem.objects.order_by("letter")
-	total = Submission.objects.count()
 	problemlist = []
-
+	count = Submission.objects.count()
+	unverified = Submission.objects.filter(result__verified_by=None).count()
+	row = {'letter': 'all', 'name': 'All Problems', 'count': count, 'unverified': unverified}
+	problemlist.append(row)
+	
 	for p in problems:
 		count = Submission.objects.filter(problem=p).count()
-		row = {'letter': p.letter, 'name': p.name, 'count': count}
+		unverified = Submission.objects.filter(problem=p, result__verified_by=None).count()
+		row = {'letter': p.letter, 'name': p.name, 'count': count, 'unverified': unverified}
 		problemlist.append(row)
 	
 	return render_to_response('jury_submission.html',
-							  {'total': total, 'problemlist': problemlist},
+							  {'problemlist': problemlist},
 							  context_instance=RequestContext(request))
 
 @login_required
 @user_passes_test(check_judge, login_url='/team/')
 def submission_list(request, problem):
 	contest = Contest.objects.get()
-
+	
+	# Django has no select_related support for reverse relationships
+	# (e.g. right outer join); we can't fetch the results just yet.
+	# http://code.djangoproject.com/ticket/7270
+	# TODO: Maybe look for another fix. It's at 499 queries for DKP2009.
 	if problem == "all":
 		title = "List of all submissions"
-		submissions = Submission.objects.order_by("-timestamp")
+		submissions = Submission.objects.order_by("-timestamp")\
+			.select_related("problem","team","compiler")
 	else:
 		title = "List of submissions for problem "+problem
-		submissions = Submission.objects.filter(problem__letter=problem).order_by("-timestamp")
+		submissions = Submission.objects.order_by("-timestamp")\
+			.select_related("problem","team","compiler").filter(problem__letter=problem)
 
 	submissionlist = []
 	for s in submissions:
 		row = {}
 		
 		try:
-			result = s.result_set.get()
+			result = s.result
 			row['judgement'] = result.judgement
 			if result.verified_by:
-				row['verified_by'] = result.verified_by.user.username
+				row['verified_by'] = result.verified_by.username
 			else:
 				row['verified_by'] = ""
 		except ObjectDoesNotExist:
@@ -321,13 +331,13 @@ def submission_details(request, number):
 
 	if request.method == 'POST':
 		if "verify" in request.POST:
-			result = submission.result_set.get()
-			result.verified_by = request.user.get_profile()
+			result = submission.result
+			result.verified_by = request.user
 			submission.status = "VERIFIED"
 			result.save()
 			submission.save()
 		elif "save" in request.POST:
-			result = submission.result_set.get()
+			result = submission.result
 			result.judge_comment = request.POST["text"]
 			result.save()
 			
@@ -346,10 +356,10 @@ def submission_details(request, number):
 	expected_output = cap_output(submission.problem.out_file.content)
 	
 	try:
-		result = submission.result_set.get()
+		result = submission.result
 		judgement = result.judgement
 		if result.verified_by:
-			verified_by = result.verified_by.user.username
+			verified_by = result.verified_by.username
 		else:
 			verified_by = None
 		compiler_output = result.compiler_output_file.content
@@ -399,11 +409,10 @@ def submission_details(request, number):
 @login_required
 @user_passes_test(check_judge, login_url='/team/')
 def submission_changeresult(request, number):
-	# TODO: We might want to be able to manually accept submissions
 	contest = Contest.objects.get()
 	submission = Submission.objects.get(id=number)
 	if request.method == 'POST':
-		result = submission.result_set.get()
+		result = submission.result
 		result.judgement = request.POST["judgement"]
 		
 		team = submission.team
@@ -411,16 +420,18 @@ def submission_changeresult(request, number):
 		team.save()
 		
 		result.save()
+		
+		Contest.objects.get().save() # Updates 'resulttime'
 
 		return HttpResponseRedirect('/jury/submission/%s/' % number)
 
 	time = gettime(submission.timestamp, contest)
 
 	try:
-		result = submission.result_set.get()
+		result = submission.result
 		judgement = result.judgement
 		if result.verified_by:
-			verified_by = result.verified_by.user.username
+			verified_by = result.verified_by.username
 		else:
 			verified_by = None
 	except ObjectDoesNotExist:
@@ -445,7 +456,7 @@ def submission_changeresult(request, number):
 @user_passes_test(check_judge, login_url='/team/')
 def submission_download(request, number, what):
 	submission = Submission.objects.get(id=number)
-	result = submission.result_set.get()
+	result = submission.result
 
 	if what == 'problem_input':
 		output = submission.problem.in_file.content

@@ -4,56 +4,56 @@
 <H1>Clarification</H1>
 <table class="content">
   <tr>
-    <td align="center" valign="top">
+    <td align="center" valign="top" width="60%">
       <table width="320">
-	<tr class="content_header">
-	  <td class="content_header" colspan="2"> Sent: Clarification</td>
-	</tr>
-	<tr class="content_body1">
-	  <td width="50%">&nbsp;{{sentclar.problem}}</td>
-	  <td width="50%">&nbsp;{{sentclar.to}}</td>
-	</tr>
-	<tr class="content_body1">
-	  <td colspan="2">&nbsp;{{sentclar.subject}}</td>
-	</tr>
-	<tr class="message_body">
-	  <td colspan="2">{{sentclar.message|linebreaks }}</td>
-	</tr>
-	<form action="/jury/clarification/" method="get">
-	  <tr class="content_body1">
-	    <td colspan="2" align="center">
-	      <input type="submit" name="new" value="New Message">
-	    </td>
-	  </tr>
-	</form>
+        <tr class="content_header">
+          <td class="content_header" colspan="2"> Sent: Clarification</td>
+        </tr>
+        <tr class="content_body1">
+          <td width="50%">&nbsp;{{sentclar.problem}}</td>
+          <td width="50%">&nbsp;{{sentclar.to}}</td>
+        </tr>
+        <tr class="content_body1">
+          <td colspan="2">&nbsp;{{sentclar.subject}}</td>
+        </tr>
+        <tr class="message_body">
+          <td colspan="2">{{sentclar.message|linebreaks }}</td>
+        </tr>
+        <form action="/jury/clarification/" method="get">
+          <tr class="content_body1">
+            <td colspan="2" align="center">
+              <input type="submit" name="new" value="New Message">
+            </td>
+          </tr>
+        </form>
       </table>
-
     </td>
-    <td align="center" valign="top">
+    <td align="center" valign="top" width="40%">
       <table class="clarindex">
-	<tr class="content_header">
-	  <td colspan="3">&nbsp;Index of: Sent Clarifications</td>
-	</tr>
-	{% for clar in clarlist %}
-	<tr class="{% cycle 'content_body1' 'content_body2' %}">
-	  <td colspan="3">
-	      <a class="index" href="/jury/clarification/{{clar.url}}/">&nbsp;[{{clar.time}}]
-	      {{ clar.subject }} 
-	      </a>
-	  </td>
-	</tr>
-	{% endfor %}
-	<tr class="content_header">
-	  <td width="25%">
-	  </td>
-	  <td align="middle">
-	    <a class="back_to_groups" href="/jury/clarification/" style=":hover (  text-decoration: underline; color: white; }">Back to Groups</a>
-	  </td>
-	  <td width="25%">
-	  </td>
-	</tr>
+        <tr class="content_header">
+          <td colspan="3">&nbsp;Index of: Sent Clarifications</td>
+        </tr>
+        {% for clar in clarlist %}
+        <tr class="{% cycle 'content_body1' 'content_body2' %}">
+          <td colspan="3">
+            <a class="index" href="/jury/clarification/{{clar.url}}/">&nbsp;[{{clar.time}}]
+              {{ clar.subject }} 
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+        <tr class="content_header">
+          <td width="25%">
+          </td>
+          <td align="middle">
+            <a class="back_to_groups" href="/jury/clarification/" style=":hover (  text-decoration: underline; color: white; }">Back to Groups</a>
+          </td>
+          <td width="25%">
+          </td>
+        </tr>
       </table>
     </td>
+  </tr>
 </table>
 
 {% endblock %}

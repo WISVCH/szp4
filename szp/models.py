@@ -69,8 +69,6 @@ class Problem(models.Model):
 	letter = models.CharField(max_length=1, unique=True)
 	name = models.CharField(max_length=100)
 	colour = models.CharField(max_length=20)
-	in_file_name = models.CharField(max_length=20)
-	out_file_name = models.CharField(max_length=20)
 	in_file = models.OneToOneField(File, related_name="problem_in_file")
 	out_file = models.OneToOneField(File, related_name="problem_out_file")
 	timelimit = models.IntegerField()

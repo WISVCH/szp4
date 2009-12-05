@@ -7,7 +7,7 @@ import time
 from subprocess import Popen, PIPE, STDOUT
 import stat
 import socket
-import tempfile
+import random
 
 # This will insert the parent directory to the path so we can import
 # settings.
@@ -98,7 +98,7 @@ if __name__ == '__main__':
 		# from the database. In the case another autojudge got this
 		# submission at the same time, autojudge would be set to
 		# the other autojudge and we won't judge it.
-		time.sleep(0.1)
+		time.sleep(random.random())
 		try:
 			submission = Submission.objects.filter(id=submission.id, autojudge=autojudge).get()
 		except ObjectDoesNotExist:
@@ -115,12 +115,17 @@ if __name__ == '__main__':
 		fp.write(submission.file.content.encode("utf-8"))
 		fp.close()
 
-		in_file_name = os.path.join(testdir, submission.problem.in_file_name)
+		in_file_name = os.path.join(testdir, submission.problem.letter.upper() + '.in')
+		fp = open(in_file_name, "w")
+		fp.write(submission.problem.in_file.content)
+		fp.close()
+		
+		in_file_name = os.path.join(testdir, submission.problem.letter.lower() + '.in')
 		fp = open(in_file_name, "w")
 		fp.write(submission.problem.in_file.content)
 		fp.close()
 
-		print "\nStarting to judge submission %s for problem (%s),  %s" % (submission.id, submission.problem.letter, submission.timestamp)
+		print "\nStarting to judge submission %s for problem (%s), %s" % (submission.id, submission.problem.letter, submission.timestamp)
 		
 		cmd = submission.compiler.compile_line.replace("${LETTER}", submission.problem.letter).split()
 
@@ -149,18 +154,25 @@ if __name__ == '__main__':
 			 submission.compiler.execute_line.replace("${LETTER}", submission.problem.letter),
 			 str(submission.problem.timelimit)]
 
+		output_filename = os.path.join(testdir, 'submission_output')
+		output = open(output_filename, "w+")
+			
 		input_fd = open(in_file_name, "r")
 
-		run = Popen(cmd, stdin=input_fd, stdout=PIPE, stderr=PIPE, close_fds=True, cwd=testdir, env=env)
-		(submission_output, error) = run.communicate()
-
+		run = Popen(cmd, stdin=input_fd, stdout=output, stderr=PIPE, close_fds=True, cwd=testdir, env=env)
+		error = run.communicate()[1]
+		
 		input_fd.close()
+		
+		output.seek(0)
+		submission_output = output.read()
+		output.close()
 
 		watchdog = open(os.path.join(testdir, "watchdog_output"), "r")
 		watchdog_output = watchdog.read()
 		watchdog.close()
 
-		watchdog_output += "\n--- stderr output below ---\n"
+		watchdog_output += "\n--- submission stderr output below ---\n"
 		watchdog_output += error
 
 		# FIXME We currently don't implement backtraces of core dumps.
@@ -175,6 +187,7 @@ if __name__ == '__main__':
 			continue
 		elif run.returncode != 0:
 			print "AUTOJUDGE ERROR: WATCHDOG RETURNED UNKNOWN VALUE: %d" % run.returncode
+			print watchdog_output
 			sys.exit(1)
 		
 		if len(submission_output) == 0:
@@ -182,7 +195,7 @@ if __name__ == '__main__':
 			print "NO_OUTPUT"
 			continue
 
-		out_file_name = os.path.join(testdir, submission.problem.out_file_name)
+		out_file_name = os.path.join(testdir, 'expected_output')
 		fp = open(out_file_name, "w")
 		fp.write(submission.problem.out_file.content)
 		fp.close()
@@ -205,5 +218,5 @@ if __name__ == '__main__':
 			uploadresult(submission, "WRONG_OUTPUT", compiler_output, submission_output, watchdog_output, check_output)
 			print "WRONG_OUTPUT"
 		else:
-			print "AUTOJUDGE ERROR: CHECKSCRIPT RETURNED UNKNOWN VALUE"
+			print "AUTOJUDGE ERROR: CHECKSCRIPT RETURNED UNKNOWN VALUE: %d" % check.returncode
 			sys.exit(1)

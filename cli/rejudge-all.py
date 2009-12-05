@@ -19,11 +19,6 @@ from szp.models import *
 for submission in Submission.objects.all():
 	print "Rejudging submission %s for problem %s." % (submission.id, submission.problem.letter)
 	submission.autojudge = None
-
-	try:
-		submission.result.delete()
-	except:
-		print "\tNo result object."
-
+	submission.result = None
 	submission.status = "NEW"
 	submission.save()

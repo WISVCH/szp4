@@ -317,7 +317,7 @@ def submission(request, problem=None):
 	for s in submissions:
 		try:
 			judgement = s.result.judgement
-		except ObjectDoesNotExist:
+		except AttributeError:
 			judgement = "Pending..."
 			
 		r = {'time': gettime(s.timestamp, contest), 'problem': s.problem, 'judgement': judgement}

@@ -89,6 +89,7 @@ class addteam():
 		parser.add_argument('teamclass', type=int, help='Teamclass rank')
 		parser.add_argument('location')
 		parser.add_argument('-ip', help='IP address or resolvable hostname', default=None)
+		parser.add_argument('-password', help='User password', default=None)
 
 	def run(self, args):
 		team = Team()
@@ -97,15 +98,21 @@ class addteam():
 		team.teamclass = Teamclass.objects.get(rank=args.teamclass)
 		team.location = args.location
 		team.save()
-		if args.ip:
-			user = User(username=args.ip.replace('.', '_'))
-			user.set_unusable_password()
+		if args.ip or args.password:
+			if args.password:
+				user = User(username=args.ip.replace('.', '_'))
+				user.set_password(args.password)
+			else:
+				user = User(username=team.name.replace(' ', '_'))
+				user.set_unusable_password()
 			user.save()
+			
 			profile = Profile()
 			profile.is_judge = False
 			profile.user = user
 			profile.team = team
-			profile.ip_address = socket.gethostbyname(args.ip)
+			if args.ip:
+				profile.ip_address = socket.gethostbyname(args.ip)
 			profile.save()
 		else:
 			print "Team '%s' has id %d" % (team.name, team.id)
@@ -220,14 +227,6 @@ class addjudge():
 		parser.add_argument('-team', help='Team ID for judge', default=0, type=int)
 
 	def run(self, args):
-		# if args.password:
-		# 	password = args.password
-		# else:
-		# 	password = getpass("Password: ")
-		# 	password_check = getpass("Password again: ")
-		# 	if password != password_check:
-		# 		print "Passwords don't match"
-		# 		sys.exit(1)
 		user = User(username=args.username)
 		if args.password:
 			user.set_password(args.password)

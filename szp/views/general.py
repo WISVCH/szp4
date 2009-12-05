@@ -14,7 +14,7 @@ def check_judge(user):
 	profile = user.get_profile()
 	return profile.is_judge
 
-def get_scoreboard(is_judge=False):	
+def get_scoreboard(is_judge=False):
 	contest = Contest.objects.get()
 	
 	if is_judge or contest.status == "INITIALIZED" or contest.status == "RUNNING":

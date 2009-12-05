@@ -22,15 +22,12 @@ class SubmitForm(forms.Form):
 		
 		if contest.status != "RUNNING" and contest.status != "NOINFO":
 			raise forms.ValidationError("Contest is not running.")
-		elif cleaned_data['problem']:
+		elif cleaned_data['problem'] and not profile.is_judge:
 			problem = cleaned_data['problem']
 			submissions = Submission.objects.filter(team=profile.team, problem=problem).order_by("-timestamp")
 
 			for s in submissions:
-				try:
-					if s.result.judgement == "ACCEPTED":
-						raise forms.ValidationError("A submission has already been accepted for this problem.")
-				except ObjectDoesNotExist:
-					pass
+				if s.result and s.result.judgement == "ACCEPTED":
+					raise forms.ValidationError("A submission has already been accepted for this problem.")
 		
 		return cleaned_data

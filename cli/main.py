@@ -100,10 +100,10 @@ class addteam():
 		team.save()
 		if args.ip or args.password:
 			if args.password:
-				user = User(username=args.ip.replace('.', '_'))
+				user = User(username=team.name.replace(' ', '_'))
 				user.set_password(args.password)
 			else:
-				user = User(username=team.name.replace(' ', '_'))
+				user = User(username=args.ip.replace('.', '_'))
 				user.set_unusable_password()
 			user.save()
 			

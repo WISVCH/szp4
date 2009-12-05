@@ -28,3 +28,5 @@ for file in os.listdir(dir):
 	
 	db_file = File(id=int(file), content=file_contents)
 	db_file.save()
+	
+	# TODO: ALTER SEQUENCE "public"."szp_file_id_seq" RESTART X

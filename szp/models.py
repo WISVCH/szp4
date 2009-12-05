@@ -130,9 +130,11 @@ class Result(models.Model):
 	check_output_file = models.OneToOneField(File, null=True, blank=True, related_name="result_check_output_file")
 	verified_by = models.ForeignKey(User, null=True, blank=True)
 	timestamp = models.DateTimeField(auto_now_add=True)
+	# It'd be more sensible to have the a relation to Submission here, but
+	# Django's select_related() doesn't follow reverse relationships.
 
 	def __unicode__(self):
-		return "%s for %s by %s" % (self.judgement, self.submission.problem.letter, self.submission.team.name)
+		return "%s at %s" % (self.judgement, self.timestamp)
 
 class Submission(models.Model):
 	STATUS_CHOICES = (("NEW", "NEW"),

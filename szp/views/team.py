@@ -31,6 +31,7 @@ def getrank(ourteam):
 		cache_key = 'getrank-NOINFO-%d', ourteam.id
 	ourrank = cache.get(cache_key)
 	
+	# TODO: also cache other team's ranks, and maybe do this in get_scoreboard already
 	if ourrank is None:
 		ourrank = 0
 		for teamclass in get_scoreboard()['scoreboard']:

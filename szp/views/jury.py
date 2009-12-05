@@ -323,7 +323,10 @@ def submission_list(request, problem):
 @login_required
 @user_passes_test(check_judge, login_url='/team/')
 def submission_details(request, number):
-	submission = Submission.objects.get(id=number)
+	submission = Submission.objects\
+	.select_related('result','result__submission_output_file','result__check_output_file',
+	'result__autojudge_comment_file','result__compiler_output_file','problem__in_file','problem__out_file',
+	'file','problem','team','compiler').get(id=number)
 
 	if request.method == 'POST':
 		if "verify" in request.POST:
@@ -354,10 +357,12 @@ def submission_details(request, number):
 	try:
 		result = submission.result
 		judgement = result.judgement
+		
 		if result.verified_by:
 			verified_by = result.verified_by.username
 		else:
 			verified_by = None
+		
 		compiler_output = result.compiler_output_file.content
 
 		if result.judge_comment:
@@ -381,7 +386,7 @@ def submission_details(request, number):
 			autojudge_comment = ""
 
 		has_result = True
-	except ObjectDoesNotExist:
+	except AttributeError:
 		judgement = "Pending..."
 		verified_by = None
 		compiler_output = ""

@@ -112,24 +112,6 @@ class Compiler(models.Model):
 	def __unicode__(self):
 		return self.name
 
-class Submission(models.Model):
-	STATUS_CHOICES = (("NEW", "NEW"),
-					  ("BEING_JUDGED", "BEING_JUDGED"),
-					  ("CHECKED", "CHECKED"),
-					  ("VERIFIED", "VERIFIED"))
-	problem = models.ForeignKey(Problem)
-	compiler = models.ForeignKey(Compiler)
-	file = models.OneToOneField(File)
-	file_name = models.CharField(max_length=200)
-	team = models.ForeignKey(Team)
-	status = models.CharField(max_length=12, choices=STATUS_CHOICES)
-	autojudge= models.ForeignKey(Autojudge, null=True, blank=True)
-	last_status_change = models.DateTimeField(auto_now=True)
-	timestamp = models.DateTimeField(auto_now_add=True)
-
-	def __unicode__(self):
-		return "[%s] %s by %s (%s)" % (self.status, self.problem.letter, self.team.name, self.timestamp.strftime("%Y-%m-%d %H:%M:%S"))
-
 class Result(models.Model):
 	JUDGEMENT_CHOICES = (("NAUGHTY_PROGRAM", "NAUGHTY_PROGRAM"),
 						 ("COMPILER_ERROR", "COMPILER_ERROR"),
@@ -138,8 +120,7 @@ class Result(models.Model):
 						 ("WRONG_OUTPUT", "WRONG_OUTPUT"),
 						 ("NO_OUTPUT", "NO_OUTPUT"),
 						 ("ACCEPTED", "ACCEPTED"))
-
-	submission = models.OneToOneField(Submission, primary_key=True)
+	
 	judgement = models.CharField(max_length=16, choices=JUDGEMENT_CHOICES)
 	judged_by = models.ForeignKey(Autojudge)
 	judge_comment = models.TextField(null=True, blank=True)
@@ -152,3 +133,22 @@ class Result(models.Model):
 
 	def __unicode__(self):
 		return "%s for %s by %s" % (self.judgement, self.submission.problem.letter, self.submission.team.name)
+
+class Submission(models.Model):
+	STATUS_CHOICES = (("NEW", "NEW"),
+					  ("BEING_JUDGED", "BEING_JUDGED"),
+					  ("CHECKED", "CHECKED"),
+					  ("VERIFIED", "VERIFIED"))
+	problem = models.ForeignKey(Problem)
+	compiler = models.ForeignKey(Compiler)
+	file = models.OneToOneField(File)
+	file_name = models.CharField(max_length=200)
+	team = models.ForeignKey(Team)
+	status = models.CharField(max_length=12, choices=STATUS_CHOICES)
+	autojudge = models.ForeignKey(Autojudge, null=True, blank=True)
+	last_status_change = models.DateTimeField(auto_now=True)
+	timestamp = models.DateTimeField(auto_now_add=True)
+	result = models.OneToOneField(Result, null=True, blank=True)
+
+	def __unicode__(self):
+		return "[%s] %s by %s (%s)" % (self.status, self.problem.letter, self.team.name, self.timestamp.strftime("%Y-%m-%d %H:%M:%S"))

@@ -25,7 +25,6 @@ autojudge = None
 
 def uploadresult(submission, judgement, compiler_output, submission_output=None, autojudge_comment=None, check_output=None):
 	result = Result()
-	result.submission = submission
 	result.judgement = judgement
 	result.judged_by = autojudge
 
@@ -58,10 +57,10 @@ def uploadresult(submission, judgement, compiler_output, submission_output=None,
 
 	result.save()
 	submission.status = "CHECKED"
+	submission.result = result
 	submission.save()
 
-	if judgement == "ACCEPTED":
-	    Contest.objects.get().save() # Updates 'resulttime'
+	Contest.objects.get().save() # Updates 'resulttime'
 
 	team = submission.team
 	team.new_results = True

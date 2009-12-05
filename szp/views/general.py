@@ -27,17 +27,17 @@ def get_scoreboard(is_judge=False):
 		teams = {}
 		problems = Problem.objects.order_by("letter")
 	
+		# Django makes this a LEFT OUTER JOIN, while it could just be a INNER JOIN.
 		if is_judge or contest.status == "INITIALIZED" or contest.status == "RUNNING":
-			results = Result.objects.select_related("submission").order_by('timestamp')
+			submissions = Submission.objects.filter(result__isnull=False)\
+				.select_related('result').order_by('result__timestamp')
 		else:
-			results = Result.objects.filter(submission__timestamp__lt=contest.freezetime)\
-				.select_related("submission").order_by('timestamp')
+			submissions = Submission.objects.filter(result__isnull=False, timestamp__lt=contest.freezetime)\
+				.select_related('result').order_by('result__timestamp')
 
-		for result in results:
-			t = result.submission.team_id
-			p = result.submission.problem_id
-		
-			# print "%s -- %s " % (result.judgement, result.submission)
+		for submission in submissions:
+			t = submission.team_id
+			p = submission.problem_id
 		
 			if t not in teams:
 				teams[t] = {}
@@ -49,9 +49,9 @@ def get_scoreboard(is_judge=False):
 			# else: # Caution: results in extra queries to fetch teamname
 				# print "Already solved: %d \t %s" % (result.id, result)
 
-			if teams[t][p]['solved'] == False and result.judgement == "ACCEPTED":
+			if teams[t][p]['solved'] == False and submission.result.judgement == "ACCEPTED":
 				teams[t][p]['solved'] = True
-				teams[t][p]['solved_time'] = result.submission.timestamp
+				teams[t][p]['solved_time'] = submission.timestamp
 	
 		if is_judge:
 			teamclasses = Teamclass.objects.order_by("rank")

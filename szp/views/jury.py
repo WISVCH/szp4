@@ -286,18 +286,14 @@ def submission(request):
 def submission_list(request, problem):
 	contest = Contest.objects.get()
 	
-	# Django has no select_related support for reverse relationships
-	# (e.g. right outer join); we can't fetch the results just yet.
-	# http://code.djangoproject.com/ticket/7270
-	# TODO: Maybe look for another fix. It's at 499 queries for DKP2009.
 	if problem == "all":
 		title = "List of all submissions"
 		submissions = Submission.objects.order_by("-timestamp")\
-			.select_related("problem","team","compiler")
+			.select_related("problem","team","compiler","result")
 	else:
 		title = "List of submissions for problem "+problem
 		submissions = Submission.objects.order_by("-timestamp")\
-			.select_related("problem","team","compiler").filter(problem__letter=problem)
+			.select_related("problem","team","compiler","result").filter(problem__letter=problem)
 
 	submissionlist = []
 	for s in submissions:
@@ -310,7 +306,7 @@ def submission_list(request, problem):
 				row['verified_by'] = result.verified_by.username
 			else:
 				row['verified_by'] = ""
-		except ObjectDoesNotExist:
+		except AttributeError:
 			row['judgement'] = "Pending..."
 			row['verified_by'] = ""
 

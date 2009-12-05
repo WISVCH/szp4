@@ -20,12 +20,7 @@ number = sys.argv[1]
 
 submission = Submission.objects.get(id=number)
 submission.autojudge = None
-
-try:
-	submission.result.delete()
-except:
-	print 'No result object.'
-
+submission.result = None
 submission.status = "NEW"
 submission.save()
 

@@ -457,17 +457,18 @@ def submission_changeresult(request, number):
 @user_passes_test(check_judge, login_url='/team/')
 def submission_download(request, number, what):
 	submission = Submission.objects.get(id=number)
+	result = submission.result
 	
 	if what == 'problem_input':
 		output = submission.problem.in_file.content
 	elif what == 'output_diff' and result.check_output_file:
-		output = submission.result.check_output_file.content
+		output = result.check_output_file.content
 	elif what == 'expected_output':
 		output = submission.problem.out_file.content
 	elif what == 'submission_output' and result.submission_output_file:
-		output = submission.result.submission_output_file.content
+		output = result.submission_output_file.content
 	elif what == 'compiler_output':
-		output = submission.result.compiler_output_file.content
+		output = result.compiler_output_file.content
 	elif what == 'program_code':
 		what = 'program_code_' + submission.file_name
 		output = submission.file.content

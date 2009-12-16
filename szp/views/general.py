@@ -3,8 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
 from django.conf import settings
 from django.shortcuts import render_to_response
-from django.template import RequestContext
-from django.template import loader
+from django.template import RequestContext, loader
 from django.utils.hashcompat import md5_constructor
 
 def index(request):

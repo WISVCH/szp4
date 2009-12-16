@@ -5,7 +5,7 @@
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted under the terms of the 3-clause BSD
 # license. No warranty expressed or implied.
-# For details, see the accompanying file LICENSE.txt.
+# For details, see <http://www.opensource.org/licenses/bsd-license.php>.
 
 """Command-line parsing library
 

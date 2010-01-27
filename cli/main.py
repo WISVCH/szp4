@@ -1,6 +1,6 @@
 # main.py
 # Copyright (C) 2008-2009 Jeroen Dekkers <jeroen@dekkers.cx>
-# Copyright (C) 2008-2009 Mark Janssen <mark@ch.tudelft.nl>
+# Copyright (C) 2008-2010 Mark Janssen <mark@ch.tudelft.nl>
 #
 # This file is part of SZP.
 # 

@@ -286,13 +286,15 @@ def submission(request):
 	problems = Problem.objects.order_by("letter")
 	problemlist = []
 	count = Submission.objects.count()
-	unverified = Submission.objects.filter(result__verified_by=None).count()
+	# Django does a join with auth_user here if we use
+	# result__verified_by__isnull=True or result__verified_by=None -- wtf?
+	unverified = count - Submission.objects.filter(result__verified_by__isnull=False).count()
 	row = {'letter': 'all', 'name': 'All Problems', 'count': count, 'unverified': unverified}
 	problemlist.append(row)
 	
 	for p in problems:
 		count = Submission.objects.filter(problem=p).count()
-		unverified = Submission.objects.filter(problem=p, result__verified_by=None).count()
+		unverified = count - Submission.objects.filter(problem=p, result__verified_by__isnull=False).count()
 		row = {'letter': p.letter, 'name': p.name, 'count': count, 'unverified': unverified}
 		problemlist.append(row)
 	

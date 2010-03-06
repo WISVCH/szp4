@@ -21,6 +21,7 @@
 import os
 import sys
 import time
+import pickle
 
 # This will insert the parent directory to the path so we can import
 # the settings.
@@ -32,7 +33,7 @@ import settings
 setup_environ(settings)
 
 from django.core.exceptions import ObjectDoesNotExist
-from szp.models import Score, Contest
+from szp.models import Contest, Submission, Result
 
 from subprocess import Popen, PIPE, STDOUT
 
@@ -40,32 +41,54 @@ f = open (sys.path[0]+"/cli/template_ballon.ps")
 postscript_template = f.read()
 f.close()
 
-print "Balloon running"
+try:
+	f = open(sys.path[0]+"/cli/balloon-pickle")
+	balloons = pickle.load(f)
+	f.close()
+	print "Some pickled balloons found."
+except IOError:
+	balloons = {}
+	print "No picked balloons found."
 
 while True:
 	contest = Contest.objects.get()
 
 	if contest.status != "RUNNING":
+		print "\n\nContest is not running, exiting."
 		sys.exit(1)
 
-		# FIXME: the Score-model is gone.
-		balloons = Score.objects.filter(correct=True).filter(balloon=False)
+	submissions = Submission.objects.filter(result__judgement__exact="ACCEPTED", team__teamclass__rank__gt=0)
+	
+	for b in submissions:
+		t = b.team_id
+		p = b.problem_id
+		
+		if t not in balloons:
+			balloons[t] = []
+			
+		if p not in balloons[t]:
+			print "\nBalloon for team '%s' (%s), problem %s, colour %s" % (b.team.name, b.team.location, str(b.problem.letter), b.problem.colour)
+			
+			teamname = b.team.name
+			print len(teamname)
+			teamname = teamname[:39] + '...' if len(teamname) > 42 else teamname
+			
+			postscript = postscript_template
+			postscript = postscript.replace("TEAM", teamname).replace("LOCATION", b.team.location)\
+									.replace("PROBLEM", str(b.problem)).replace("COLOUR", b.problem.colour)
+			postscript = postscript.encode("utf-8")
+			f = open("/tmp/balloon.ps", "w+")
+			f.write(postscript)
+			f.seek(0)
+			ret = Popen(["/usr/bin/lpr","-o","job-sheets=none","-P","szpprinter"], stdin=f, close_fds=True)
+			f.close()
+			
+			balloons[t].append(p)
+			
+			f = open(sys.path[0]+"/cli/balloon-pickle", "w")
+			pickle.dump(balloons, f)
+			f.close()
 
-		if not balloons:
-			sys.stdout.write('.')
-			sys.stdout.flush()
-			time.sleep(5)
-		else:
-
-			for b in balloons:
-				postscript = postscript_template
-				postscript = postscript.replace("TEAM", b.team.name[:25]).replace("LOCATION", b.team.location).replace("PROBLEM", str(b.problem)).replace("COLOUR", b.problem.colour)
-				postscript = postscript.encode("utf-8")
-				f = open("/tmp/balloon.ps", "w+")
-				f.write(postscript)
-				f.seek(0)
-				print "\nBalloon team: %s location: %s problem: %s colour: %s" % (b.team.name, b.team.location, str(b.problem), b.problem.colour)
-				ret = Popen(["/usr/bin/lpr","-o","job-sheets=none","-P","szpprinter"], stdin=f, close_fds=True)
-				f.close()
-				b.balloon = True
-				b.save()
+	sys.stdout.write('.')
+	sys.stdout.flush()
+	time.sleep(5)

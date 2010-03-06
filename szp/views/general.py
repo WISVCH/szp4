@@ -28,6 +28,7 @@ from django.utils.hashcompat import md5_constructor
 def index(request):
 	return render_to_response('index.html')
 
+# TODO: Re-use the contest object which is used elsewhere in handling this request.
 def cache_data(name, is_judge=False):
 	contest = Contest.objects.get()
 	if is_judge or contest.status == "INITIALIZED" or contest.status == "RUNNING":

@@ -381,7 +381,11 @@ def submission_details(request, number):
 			verified_by = result.verified_by.username
 		else:
 			verified_by = None
-		
+			
+		if result.judge_comment:
+			judge_comment = result.judge_comment
+		else:
+			judge_comment = ""
 		compiler_output = result.compiler_output_file.content
 
 		if result.judge_comment:
@@ -433,13 +437,23 @@ def submission_changeresult(request, number):
 	submission = Submission.objects.get(id=number)
 	if request.method == 'POST':
 		result = submission.result
-		result.judgement = request.POST["judgement"]
+		if submission.result is None:
+			result = Result()
+			comment = File(content="Manual judgement made by " + request.user.username)
+			comment.save()
+			result.compiler_output_file = comment
 		
+		result.judgement = request.POST["judgement"]
+		result.save()
+		
+		if submission.result is None:
+			submission.status = "CHECKED"
+			submission.result = result
+			submission.save()
+			
 		team = submission.team
 		team.new_results = True
 		team.save()
-		
-		result.save()
 		
 		Contest.objects.get().save() # Updates 'resulttime'
 
@@ -454,7 +468,7 @@ def submission_changeresult(request, number):
 			verified_by = result.verified_by.username
 		else:
 			verified_by = None
-	except ObjectDoesNotExist:
+	except (ObjectDoesNotExist, AttributeError):
 		judgement = "Pending..."
 		verified_by = None
 
@@ -468,8 +482,7 @@ def submission_changeresult(request, number):
 	return render_to_response('jury_submission_changeresult.html',
 							  {'time': time, 'submission': submission,
 							   'judgement': judgement, 'verified_by': verified_by,
-							   'judgementlist': judgementlist,
-							   },
+							   'judgementlist': judgementlist},
 							  context_instance=RequestContext(request))
 
 @login_required

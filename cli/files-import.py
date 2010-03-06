@@ -15,8 +15,10 @@ setup_environ(settings)
 
 from django.core.exceptions import ObjectDoesNotExist
 from szp.models import *
+from django.db import connection, transaction
 
 dir = os.path.join(os.getcwd(),"szp-files")
+max_file_id = 0
 
 for file in os.listdir(dir):
 	print "Importing file %s" % file
@@ -26,7 +28,12 @@ for file in os.listdir(dir):
 	file_contents = fp.read()
 	fp.close()
 	
-	db_file = File(id=int(file), content=file_contents)
-	db_file.save()
+	file_id = int(file)
+	max_file_id = file_id if file_id > max_file_id else max_file_id
 	
-	# TODO: ALTER SEQUENCE "public"."szp_file_id_seq" RESTART X
+	db_file = File(id=file_id, content=file_contents)
+	db_file.save()
+
+cursor = connection.cursor()
+cursor.execute("ALTER SEQUENCE public.szp_file_id_seq RESTART WITH %s", [max_file_id+1])
+transaction.commit_unless_managed()

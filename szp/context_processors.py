@@ -37,7 +37,7 @@ def statuswindow(request):
 		else:
 			status["new_clars"] = Clar.objects.filter(receiver=profile.team).filter(read=False).count()
 			status["new_results"] = profile.team.new_results
-			status["rank"] = getrank(profile.team)
+			status["rank"] = getrank(profile.team, profile.is_judge)
 				
 	except (ObjectDoesNotExist, AttributeError):
 		pass

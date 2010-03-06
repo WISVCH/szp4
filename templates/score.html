@@ -15,7 +15,7 @@
   </tr>
   {% for scorelist in scoreboard %}
   <tr>
-    <td colspan="{{problems.count|add:5}}">{{ scorelist.name.capitalize }}</td>
+    <td colspan="{{problems.count|add:5}}">{{ scorelist.name }}</td>
   </tr>
   {% for score in scorelist.list %}
     <tr class="{% cycle 'content_body1' 'content_body2' %}">

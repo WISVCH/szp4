@@ -28,6 +28,13 @@ from django.utils.hashcompat import md5_constructor
 def index(request):
 	return render_to_response('index.html')
 
+def create_cache_key(name, is_judge=False):
+	contest = Contest.objects.get()
+	if is_judge or contest.status == "INITIALIZED" or contest.status == "RUNNING":
+		cache_key = name + '-' + ('jury-' if is_judge else 'team-') + md5_constructor(str(contest.resulttime)).hexdigest()
+	else:
+		cache_key = name + '-NOINFO'
+
 def check_judge(user):
 	profile = user.get_profile()
 	return profile.is_judge
@@ -35,93 +42,85 @@ def check_judge(user):
 def get_scoreboard(is_judge=False):
 	contest = Contest.objects.get()
 	
+	teams = {}
+	ranks = {}
+	problems = Problem.objects.order_by("letter")
+
+	# Django makes this a LEFT OUTER JOIN, while it could just be a INNER JOIN.
 	if is_judge or contest.status == "INITIALIZED" or contest.status == "RUNNING":
-		cache_key = 'get_scoreboard-' + ('jury-' if is_judge else 'team-') + md5_constructor(str(contest.resulttime)).hexdigest()
+		submissions = Submission.objects.filter(result__isnull=False)\
+			.select_related('result').order_by('result__timestamp')
 	else:
-		cache_key = 'get_scoreboard-NOINFO'
-	response = cache.get(cache_key)
-	
-	if response is None:
-		teams = {}
-		problems = Problem.objects.order_by("letter")
-	
-		# Django makes this a LEFT OUTER JOIN, while it could just be a INNER JOIN.
-		if is_judge or contest.status == "INITIALIZED" or contest.status == "RUNNING":
-			submissions = Submission.objects.filter(result__isnull=False)\
-				.select_related('result').order_by('result__timestamp')
-		else:
-			submissions = Submission.objects.filter(result__isnull=False, timestamp__lt=contest.freezetime)\
-				.select_related('result').order_by('result__timestamp')
+		submissions = Submission.objects.filter(result__isnull=False, timestamp__lt=contest.freezetime)\
+			.select_related('result').order_by('result__timestamp')
 
-		for submission in submissions:
-			t = submission.team_id
-			p = submission.problem_id
+	for submission in submissions:
+		t = submission.team_id
+		p = submission.problem_id
 		
-			if t not in teams:
-				teams[t] = {}
-		
-			if p not in teams[t]:
-				teams[t][p] = {'count': 1, 'solved': False}
-			elif not teams[t][p]['solved']:
-				teams[t][p]['count'] += 1
-			# else: # Caution: results in extra queries to fetch teamname
-				# print "Already solved: %d \t %s" % (result.id, result)
-
-			if teams[t][p]['solved'] == False and submission.result.judgement == "ACCEPTED":
-				teams[t][p]['solved'] = True
-				teams[t][p]['solved_time'] = submission.timestamp
+		if t not in teams:
+			teams[t] = {}
 	
-		if is_judge:
-			teamclasses = Teamclass.objects.order_by("rank")
-		else:
-			teamclasses = Teamclass.objects.filter(rank__gt=0).order_by("rank")
+		if p not in teams[t]:
+			teams[t][p] = {'count': 1, 'solved': False}
+		elif not teams[t][p]['solved']:
+			teams[t][p]['count'] += 1
+		# else: # Caution: results in extra queries to fetch teamname
+			# print "Already solved: %d \t %s" % (result.id, result)
 
-		scoreboard = []
-		for teamclass in teamclasses:
-			scorelist = []
+		if teams[t][p]['solved'] == False and submission.result.judgement == "ACCEPTED":
+			teams[t][p]['solved'] = True
+			teams[t][p]['solved_time'] = submission.timestamp
 
-			for team in Team.objects.filter(teamclass=teamclass).order_by("name"):
-				t = team.id
-				row = {"name": team.name, "organisation": team.organisation, "score": 0, "time": 0, "details": []}
-				for problem in problems:
-					p = problem.id
-					try:
-						score_dict = {'correct': teams[t][p]['solved'], 'count': teams[t][p]['count']}
-						if teams[t][p]['solved']:
-							timedelta = (teams[t][p]['solved_time'] - contest.starttime)
-							score_dict["time"] = timedelta.days*24 + timedelta.seconds/60
-							row["time"] += (teams[t][p]['count'] - 1)*settings.SUBMITFAIL_PENALTY + score_dict["time"]
-							row["score"] += 1
-					except KeyError:
-						score_dict = {'correct': False, 'count': 0}
-				
-					row["details"].append(score_dict)
+	if is_judge:
+		teamclasses = Teamclass.objects.order_by("rank")
+	else:
+		teamclasses = Teamclass.objects.filter(rank__gt=0).order_by("rank")
+
+	scoreboard = []
+	for teamclass in teamclasses:
+		scorelist = []
+
+		for team in Team.objects.filter(teamclass=teamclass).order_by("name"):
+			t = team.id
+			row = {"id": team.id, "name": team.name, "organisation": team.organisation, "score": 0, "time": 0, "details": []}
+			for problem in problems:
+				p = problem.id
+				try:
+					score_dict = {'correct': teams[t][p]['solved'], 'count': teams[t][p]['count']}
+					if teams[t][p]['solved']:
+						timedelta = (teams[t][p]['solved_time'] - contest.starttime)
+						score_dict["time"] = timedelta.days*24 + timedelta.seconds/60
+						row["time"] += (teams[t][p]['count'] - 1)*settings.SUBMITFAIL_PENALTY + score_dict["time"]
+						row["score"] += 1
+				except KeyError:
+					score_dict = {'correct': False, 'count': 0}
 			
-				row["sort"] = row["score"]*1000000-row["time"];
-				scorelist.append(row)
-			
-			scorelist.sort(key=lambda t: t["sort"], reverse=True)
-			i = 1; previous = 0
-			for t in scorelist:
-				if t["sort"] < previous:
-					i += 1
-				if t["sort"] > 0:
-					t["rank"] = i
-				previous = t["sort"]
-			scoreboard.append({"list": scorelist, "name": teamclass.name})
+				row["details"].append(score_dict)
+		
+			row["sort"] = row["score"]*1000000-row["time"];
+			scorelist.append(row)
+		
+		scorelist.sort(key=lambda t: t["sort"], reverse=True)
+		i = 1; previous = 0
+		for t in scorelist:
+			if t["sort"] < previous:
+				i += 1
+			if t["sort"] > 0:
+				t["rank"] = i
+				ranks[t["id"]] = i
+			previous = t["sort"]
+		scoreboard.append({"list": scorelist, "name": teamclass.name})
 
-		response = {"contest": contest, "problems": problems, "scoreboard": scoreboard}
-		cache.set(cache_key, response, 1800)
+	response = {"contest": contest, "problems": problems, "scoreboard": scoreboard, "ranks": ranks}
+	cache.set(create_cache_key("ranks", is_judge), ranks, 1800)
 		
 	return response
 
 def render_scoreboard(request, template, is_judge=False):
 	contest = Contest.objects.get()
 	
-	if is_judge or contest.status == "INITIALIZED" or contest.status == "RUNNING":
-		cache_key = 'render_scoreboard-' + ('jury-' if is_judge else 'team-') + md5_constructor(str(contest.resulttime)).hexdigest()
-	else:
-		cache_key = 'render_scoreboard-NOINFO'
+	cache_key = create_cache_key("render_scoreboard", is_judge)
 	scoreboard = cache.get(cache_key)
 	
 	if scoreboard is None:

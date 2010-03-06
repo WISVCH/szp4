@@ -141,7 +141,7 @@ class Result(models.Model):
 						 ("ACCEPTED", "ACCEPTED"))
 	
 	judgement = models.CharField(max_length=16, choices=JUDGEMENT_CHOICES)
-	judged_by = models.ForeignKey(Autojudge)
+	judged_by = models.ForeignKey(Autojudge, null=True, blank=True)
 	judge_comment = models.TextField(null=True, blank=True)
 	compiler_output_file = models.OneToOneField(File, related_name="result_compiler_output_file")
 	submission_output_file = models.OneToOneField(File, null=True, blank=True, related_name="result_submission_output_file")

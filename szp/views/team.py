@@ -26,7 +26,7 @@ from szp.models import *
 from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
-from szp.views.general import render_scoreboard, get_scoreboard
+from szp.views.general import render_scoreboard, get_scoreboard, create_cache_key
 from django.conf import settings
 from django.core.cache import cache
 from django.utils.hashcompat import md5_constructor
@@ -40,28 +40,13 @@ def gettime(timestamp, contest):
 	seconds = timedelta.seconds % 60
 	return "%02d:%02d:%02d" % (hours, minutes, seconds)	
 
-# TODO: caching. This code is called on every request (status window). Maybe write it a little cleaner as well.
-def getrank(ourteam):
-	contest = Contest.objects.get()
+def getrank(team, is_judge):
+	ranks = cache.get(create_cache_key("ranks", is_judge))
+	if ranks is None:
+		# The ultimate performance killer without memcached!
+		ranks = get_scoreboard(is_judge)["ranks"]
 	
-	if contest.status == "INITIALIZED" or contest.status == "RUNNING":
-		cache_key = 'getrank-%s-%d', md5_constructor(str(contest.resulttime)).hexdigest(), ourteam.id
-	else:
-		cache_key = 'getrank-NOINFO-%d', ourteam.id
-	ourrank = cache.get(cache_key)
-	
-	# TODO: also cache other team's ranks, and maybe do this in get_scoreboard already
-	if ourrank is None:
-		ourrank = 0
-		for teamclass in get_scoreboard()['scoreboard']:
-			if teamclass['name'] == ourteam.teamclass.name:
-				for team in teamclass['list']:
-					if team['name']==ourteam.name:
-						ourrank = team['rank'] if team.has_key('rank') else '-'
-						cache.set(cache_key, ourrank, 1800)
-						break;
-
-	return ourrank
+	return ranks[team.id]
 
 def infoscript(request):
 	problems = Problem.objects.order_by('letter')

@@ -433,6 +433,7 @@ def submission_details(request, number):
 @login_required
 @user_passes_test(check_judge, login_url='/team/')
 def submission_changeresult(request, number):
+	# FIXME: Make a django form for this.
 	contest = Contest.objects.get()
 	submission = Submission.objects.get(id=number)
 	if request.method == 'POST':

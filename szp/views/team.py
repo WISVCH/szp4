@@ -38,12 +38,12 @@ def gettime(timestamp, contest):
 	hours = timedelta.days*24+timedelta.seconds / 3600
 	minutes = timedelta.seconds % 3600 / 60
 	seconds = timedelta.seconds % 60
-	return "%02d:%02d:%02d" % (hours, minutes, seconds)	
+	return "%02d:%02d:%02d" % (hours, minutes, seconds)
 
 def getrank(team, is_judge):
 	ranks = cache.get(create_cache_key("ranks", is_judge))
 	if ranks is None:
-		# The ultimate performance killer without memcached!
+		# The ultimate performance killer without caching!
 		ranks = get_scoreboard(is_judge)["ranks"]
 	
 	return ranks[team.id]

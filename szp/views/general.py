@@ -109,24 +109,25 @@ def get_scoreboard(is_judge=False):
 			if t["sort"] > 0:
 				t["rank"] = i
 				ranks[t["id"]] = i
+			else:
+				ranks[t["id"]] = '-'
 			previous = t["sort"]
 		scoreboard.append({"list": scorelist, "name": teamclass.name})
 
-	response = {"contest": contest, "problems": problems, "scoreboard": scoreboard, "ranks": ranks}
+	render = loader.render_to_string('score.html', {"contest": contest, "problems": problems, "scoreboard": scoreboard})
+	
+	cache.set(create_cache_key("render_scoreboard", is_judge), ranks, 1800)
 	cache.set(create_cache_key("ranks", is_judge), ranks, 1800)
 		
-	return response
+	return {"render": render, "ranks": ranks}
 
 def render_scoreboard(request, template, is_judge=False):
 	contest = Contest.objects.get()
+	render = cache.get(create_cache_key("render_scoreboard", is_judge))
 	
-	cache_key = create_cache_key("render_scoreboard", is_judge)
-	scoreboard = cache.get(cache_key)
-	
-	if scoreboard is None:
-		scoreboard = loader.render_to_string('score.html', get_scoreboard(is_judge))
-		cache.set(cache_key, scoreboard, 1800)
+	if render is None:
+		render = get_scoreboard(is_judge)["render"]
 	
 	return render_to_response(template,
-							  {'scoreboard': scoreboard},
+							  {'scoreboard': render},
 							  context_instance=RequestContext(request))

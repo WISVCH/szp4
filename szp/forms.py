@@ -36,12 +36,16 @@ class SubmitForm(forms.Form):
 	# doesn't yet know the if the submission has been accepted.
 	def clean(self):
 		cleaned_data = self.cleaned_data
+		
 		profile = self.request.user.get_profile()
+		if profile.is_judge:
+			return cleaned_data
+		
 		contest = Contest.objects.get()
 		
 		if contest.status != "RUNNING" and contest.status != "NOINFO":
 			raise forms.ValidationError("Contest is not running.")
-		elif cleaned_data['problem'] and not profile.is_judge:
+		elif cleaned_data['problem']:
 			problem = cleaned_data['problem']
 			submissions = Submission.objects.filter(team=profile.team, problem=problem).order_by("-timestamp")
 

@@ -23,7 +23,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from szp.views.team import getrank
 
 # TODO: cache
-# TODO: don't calculate rank in e.g. looktool
+# TODO: don't calculate rank in e.g. looktool <-- why
 def statuswindow(request):
 	status = {}
 	
@@ -38,6 +38,7 @@ def statuswindow(request):
 			status["new_clars"] = Clar.objects.filter(receiver=profile.team).filter(read=False).count()
 			status["new_results"] = profile.team.new_results
 			status["rank"] = getrank(profile.team, profile.is_judge)
+			status["team_id"] = profile.team.id
 				
 	except (ObjectDoesNotExist, AttributeError):
 		pass

@@ -439,28 +439,36 @@ def submission_changeresult(request, number):
 	contest = Contest.objects.get()
 	submission = Submission.objects.get(id=number)
 	if request.method == 'POST':
-		result = submission.result
-		if submission.result is None:
-			result = Result()
-			comment = File(content="Manual judgement made by " + request.user.username)
-			comment.save()
-			result.compiler_output_file = comment
+		if "change" in request.POST:
+			result = submission.result
+			if submission.result is None:
+				result = Result()
+				comment = File(content="Manual judgement made by " + request.user.username)
+				comment.save()
+				result.compiler_output_file = comment
 		
-		result.judgement = request.POST["judgement"]
-		result.save()
+			result.judgement = request.POST["judgement"]
+			result.save()
 		
-		if submission.result is None:
-			submission.status = "CHECKED"
-			submission.result = result
-			submission.save()
+			if submission.result is None:
+				submission.status = "CHECKED"
+				submission.result = result
+				submission.save()
 			
-		team = submission.team
-		team.new_results = True
-		team.save()
+			team = submission.team
+			team.new_results = True
+			team.save()
 		
-		Contest.objects.get().save() # Updates 'resulttime'
+			Contest.objects.get().save() # Updates 'resulttime'
+		elif "rejudge" in request.POST:
+			submission.autojudge = None
+			submission.result = None
+			submission.status = "NEW"
+			submission.save()
 
 		return HttpResponseRedirect('/jury/submission/%s/' % number)
+		
+
 
 	time = gettime(submission.timestamp, contest)
 

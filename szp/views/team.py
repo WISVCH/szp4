@@ -26,7 +26,7 @@ from szp.models import *
 from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
-from szp.views.general import render_scoreboard, get_scoreboard, create_cache_key
+from szp.views.general import render_scoreboard, get_scoreboard, cache_data
 from django.conf import settings
 from django.core.cache import cache
 from django.utils.hashcompat import md5_constructor
@@ -41,7 +41,7 @@ def gettime(timestamp, contest):
 	return "%02d:%02d:%02d" % (hours, minutes, seconds)
 
 def getrank(team, is_judge):
-	ranks = cache.get(create_cache_key("ranks", is_judge))
+	ranks = cache.get(cache_data("ranks", is_judge)[0])
 	if ranks is None:
 		# The ultimate performance killer without caching!
 		ranks = get_scoreboard(is_judge)["ranks"]

@@ -28,12 +28,15 @@ from django.utils.hashcompat import md5_constructor
 def index(request):
 	return render_to_response('index.html')
 
-def create_cache_key(name, is_judge=False):
+def cache_data(name, is_judge=False):
 	contest = Contest.objects.get()
 	if is_judge or contest.status == "INITIALIZED" or contest.status == "RUNNING":
-		cache_key = name + '-' + ('jury-' if is_judge else 'team-') + md5_constructor(str(contest.resulttime)).hexdigest()
+		key = name + '-' + ('jury-' if is_judge else 'team-') + md5_constructor(str(contest.resulttime)).hexdigest()
+		timeout = 1800
 	else:
-		cache_key = name + '-NOINFO'
+		key = name + '-NOINFO'
+		timeout = 7200
+	return key, timeout
 
 def check_judge(user):
 	profile = user.get_profile()
@@ -116,15 +119,16 @@ def get_scoreboard(is_judge=False):
 
 	render = loader.render_to_string('score.html', {"contest": contest, "problems": problems, "scoreboard": scoreboard})
 	
-	cache.set(create_cache_key("render_scoreboard", is_judge), ranks, 1800)
-	cache.set(create_cache_key("ranks", is_judge), ranks, 1800)
+	key, timeout = cache_data("render_scoreboard", is_judge)
+	cache.set(key, render, timeout)
+	
+	key, timeout = cache_data("ranks", is_judge)
+	cache.set(key, ranks, timeout)
 		
 	return {"render": render, "ranks": ranks}
 
 def render_scoreboard(request, template, is_judge=False):
-	contest = Contest.objects.get()
-	render = cache.get(create_cache_key("render_scoreboard", is_judge))
-	
+	render = cache.get(cache_data("render_scoreboard", is_judge)[0])
 	if render is None:
 		render = get_scoreboard(is_judge)["render"]
 	

@@ -22,8 +22,6 @@ from datetime import datetime
 from django.core.exceptions import ObjectDoesNotExist
 from szp.views.team import getrank
 
-# TODO: cache
-# TODO: don't calculate rank in e.g. looktool <-- why
 def statuswindow(request):
 	status = {}
 	

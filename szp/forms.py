@@ -47,10 +47,9 @@ class SubmitForm(forms.Form):
 			raise forms.ValidationError("Contest is not running.")
 		elif cleaned_data['problem']:
 			problem = cleaned_data['problem']
-			submissions = Submission.objects.filter(team=profile.team, problem=problem).order_by("-timestamp")
+			submissions = Submission.objects.filter(team=profile.team, problem=problem, result__judgement__exact="ACCEPTED").count()
 
-			for s in submissions:
-				if s.result and s.result.judgement == "ACCEPTED":
-					raise forms.ValidationError("A submission has already been accepted for this problem.")
+			if submissions:
+				raise forms.ValidationError("A submission for this problem was already accepted.")
 		
 		return cleaned_data

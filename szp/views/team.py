@@ -59,21 +59,31 @@ def submitscript(request):
 	ip_address = request.META['REMOTE_ADDR']
 	user = authenticate(ip_address=ip_address)
 	if user is not None and user.is_active:
+		response = HttpResponse()
+		
 		if not 'problem' in request.POST or not 'compiler' in request.POST or not 'submission' in request.POST or not 'filename' in request.POST:
-			return render_to_response('submitscript', {"message": "Missing POST variables"})
+			response.write("Missing POST variables")
+			return response
 		try:
 			problem = Problem.objects.get(letter=request.POST['problem'])
 		except:
-			return render_to_response('submitscript', {"message": "ERROR: Invalid problem"})
+			response.write("ERROR: Invalid problem")
+			return response
 		
 		try:
 			compiler = Compiler.objects.get(id=request.POST['compiler'])
 		except:
-			return render_to_response('submitscript', {"message": "ERROR: Invalid compiler"})
-
+			response.write("ERROR: Invalid compiler")
+			return response
+		
+		profile = user.get_profile()
+		
+		if not profile.is_judge and Submission.objects.filter(team=profile.team, problem=problem, result__judgement__exact="ACCEPTED").count():
+			response.write("ERROR: A submission for this problem was already accepted.")
+			return response
+		
 		submission = Submission()
 		submission.status = "NEW"
-		profile = user.get_profile()
 		submission.team = profile.team
 
 		submission.problem = problem
@@ -87,7 +97,8 @@ def submitscript(request):
  		submission.file = file
  		submission.save()
 
-		return render_to_response('submitscript', {"message": "Submission successful"})
+		response.write("Submission successful")
+		return response
 	else:
 		return HttpResponseRedirect('/look/')
 

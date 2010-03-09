@@ -1,6 +1,11 @@
 <table class="content">
   <tr class="content_header">
-    <td align="center" colspan="{{problems.count|add:5}}">{{ contest }}</td>
+    <td align="center" colspan="{{problems.count|add:5}}">
+      {{ contest }}
+      {% if is_judge %}
+        (logged in as judge)
+      {% endif %}
+    </td>
   </tr>
   <tr class="content_header">
     <td class="single">No.</td>

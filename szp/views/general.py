@@ -118,7 +118,7 @@ def get_scoreboard(is_judge=False):
 			previous = t["sort"]
 		scoreboard.append({"list": scorelist, "name": teamclass.name})
 
-	render = loader.render_to_string('score.html', {"contest": contest, "problems": problems, "scoreboard": scoreboard})
+	render = loader.render_to_string('score.html', {"contest": contest, "problems": problems, "scoreboard": scoreboard, "is_judge": is_judge})
 	
 	key, timeout = cache_data("render_scoreboard", is_judge)
 	cache.set(key, render, timeout)

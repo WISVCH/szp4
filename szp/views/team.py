@@ -1,3 +1,22 @@
+# teams.py
+# Copyright (C) 2008-2009 Jeroen Dekkers <jeroen@dekkers.cx>
+# Copyright (C) 2008-2010 Mark Janssen <mark@ch.tudelft.nl>
+#
+# This file is part of SZP.
+# 
+# SZP is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# SZP is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with SZP.  If not, see <http://www.gnu.org/licenses/>.
+
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
@@ -7,8 +26,10 @@ from szp.models import *
 from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
-from szp.views.general import get_scoreboard
+from szp.views.general import render_scoreboard, get_scoreboard, cache_data
 from django.conf import settings
+from django.core.cache import cache
+from django.utils.hashcompat import md5_constructor
 
 def gettime(timestamp, contest):
 	if contest.status == "INITIALIZED":
@@ -17,41 +38,15 @@ def gettime(timestamp, contest):
 	hours = timedelta.days*24+timedelta.seconds / 3600
 	minutes = timedelta.seconds % 3600 / 60
 	seconds = timedelta.seconds % 60
-	return "%02d:%02d:%02d" % (hours, minutes, seconds)	
+	return "%02d:%02d:%02d" % (hours, minutes, seconds)
 
-
-def getrank(ourteam):
-	contest = Contest.objects.get()
-
-	scoredict = {}
-			
-	for team in Team.objects.filter(teamclass=ourteam.teamclass):
-		scoredict[team] = {"score": 0, "time": 0}
-
-	if contest.status == "INITIALIZED" or contest.status == "RUNNING":
-		for score in Score.objects.filter(correct=True, team__teamclass=ourteam.teamclass):
-			scoredict[score.team]["score"] += 1
-			scoredict[score.team]["time"] += (score.submission_count - 1)*settings.SUBMITFAIL_PENALTY + score.time
-	else:
-		for score in FrozenScore.objects.filter(correct=True, team__teamclass=ourteam.teamclass):
-			scoredict[score.team]["score"] += 1
-			scoredict[score.team]["time"] += (score.submission_count - 1)*settings.SUBMITFAIL_PENALTY + score.time
-
-	scorelist = []
-	for (team, score) in scoredict.items():
-		scorelist.append({"team": team, "score": score["score"], "time": score["time"]})
-		if team == ourteam:
-			ourscore = score["score"]
-			ourtime = score["time"]
-
-	scorelist.sort(key=lambda s: s["score"]*1000000-s["time"], reverse=True)
-
-	for (rank, score) in enumerate(scorelist):
-		if score["time"] == ourtime and score["score"] == ourscore:
-			ourrank = rank+1
-			break
-
-	return ourrank
+def getrank(team, is_judge):
+	ranks = cache.get(cache_data("ranks", is_judge)[0])
+	if ranks is None:
+		# The ultimate performance killer without caching!
+		ranks = get_scoreboard(is_judge)["ranks"]
+	
+	return ranks[team.id]
 
 def infoscript(request):
 	problems = Problem.objects.order_by('letter')
@@ -64,21 +59,31 @@ def submitscript(request):
 	ip_address = request.META['REMOTE_ADDR']
 	user = authenticate(ip_address=ip_address)
 	if user is not None and user.is_active:
+		response = HttpResponse()
+		
 		if not 'problem' in request.POST or not 'compiler' in request.POST or not 'submission' in request.POST or not 'filename' in request.POST:
-			return render_to_response('submitscript', {"message": "Missing POST variables"})
+			response.write("Missing POST variables")
+			return response
 		try:
 			problem = Problem.objects.get(letter=request.POST['problem'])
 		except:
-			return render_to_response('submitscript', {"message": "ERROR: Invalid problem"})
+			response.write("ERROR: Invalid problem")
+			return response
 		
 		try:
 			compiler = Compiler.objects.get(id=request.POST['compiler'])
 		except:
-			return render_to_response('submitscript', {"message": "ERROR: Invalid compiler"})
-
+			response.write("ERROR: Invalid compiler")
+			return response
+		
+		profile = user.get_profile()
+		
+		if not profile.is_judge and Submission.objects.filter(team=profile.team, problem=problem, result__judgement__exact="ACCEPTED").count():
+			response.write("ERROR: A submission for this problem was already accepted.")
+			return response
+		
 		submission = Submission()
 		submission.status = "NEW"
-		profile = user.get_profile()
 		submission.team = profile.team
 
 		submission.problem = problem
@@ -92,45 +97,54 @@ def submitscript(request):
  		submission.file = file
  		submission.save()
 
-		return render_to_response('submitscript', {"message": "Submission successful"})
+		response.write("Submission successful")
+		return response
 	else:
 		return HttpResponseRedirect('/look/')
 
-def teamlogin(request):
-	ip_address = request.META['REMOTE_ADDR']
-	user = authenticate(ip_address=ip_address)
-	if user is not None:
-		if user.is_active:
-			login(request, user)
-			return HttpResponseRedirect('/team/')
-		else:
-			return HttpResponseRedirect('/look/')
-
-	return HttpResponseRedirect('/jury/login/')
+# def teamlogin(request):
+# 	ip_address = request.META['REMOTE_ADDR']
+# 	user = authenticate(ip_address=ip_address)
+# 	if user is not None:
+# 		if user.is_active:
+# 			login(request, user)
+# 			return HttpResponseRedirect('/team/')
+# 		else:
+# 			return HttpResponseRedirect('/look/')
+# 
+# 	return HttpResponseRedirect('/jury/login/')
 
 @login_required
 def home(request):
 	profile = request.user.get_profile()
+	if profile.team is None:
+		return HttpResponseRedirect('/jury/')
 	return render_to_response('team_home.html',
 							  {"profile": profile},
 							  context_instance=RequestContext(request))
 
 @login_required
 def status(request):
+	profile = request.user.get_profile()
+	if profile.team is None:
+		return HttpResponseRedirect('/jury/')
 	return render_to_response('team_status.html',
 							  context_instance=RequestContext(request))
 
 @login_required
 def score(request):
 	profile = request.user.get_profile()
-	return render_to_response('team_score.html',
-							  get_scoreboard(jury=profile.is_judge),
-							  context_instance=RequestContext(request))
+	if profile.team is None:
+		return HttpResponseRedirect('/jury/')
+	
+	return render_scoreboard(request, 'team_score.html', profile.is_judge)
 
 @login_required
 def clarification(request):
 	profile = request.user.get_profile()
 	team = profile.team
+	if team is None:
+		return HttpResponseRedirect('/jury/')
 
 	if request.method == 'POST':
 		# FIXME: Make a django form for this.
@@ -317,8 +331,8 @@ def submission(request, problem=None):
 
 	for s in submissions:
 		try:
-			judgement = s.result_set.get().judgement
-		except ObjectDoesNotExist:
+			judgement = s.result.judgement
+		except AttributeError:
 			judgement = "Pending..."
 			
 		r = {'time': gettime(s.timestamp, contest), 'problem': s.problem, 'judgement': judgement}

@@ -22,11 +22,11 @@ import settings
 setup_environ(settings)
 
 from django.core.exceptions import ObjectDoesNotExist
-from szp.models import Team
+from szp.models import Team, Profile
 
 try:
-	team = Team.objects.get(ip_address=hostname)
+	team = Profile.objects.get(ip_address=hostname).team
 
-	print "%s \\(%s\\)" % (team.name, team.location),
+	print "%s \\(%s\\)" % (team.name[:25], team.location),
 except ObjectDoesNotExist:
 	print "UNKNOWN"

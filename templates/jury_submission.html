@@ -7,17 +7,18 @@
   <tr class="content_header">
     <td>&nbsp;Index</td>
   </tr>
-  <tr class="content_body1">
-    <td>
-      <a class="index" href="/jury/submission/all/">&nbsp;All Submissions - ({{ total }})
-      </a>
-    </td>
-  </tr>
   {% for problem in problemlist %}
   <tr class="{% cycle 'content_body2' 'content_body1' %}">
     <td>
-      <a class="index" href="/jury/submission/{{problem.letter}}/">
-	&nbsp;{{problem.letter}}: {{problem.name}} - ({{problem.count}}) 
+      <a class="index" href="/jury/submission/{{problem.letter}}/">&nbsp;
+        {% ifnotequal problem.letter 'all' %}
+        {{problem.letter}}:
+        {% endifnotequal %}
+        
+        {{problem.name}} – {{problem.count}}
+        {% ifnotequal problem.unverified 0 %}
+        <b>({{problem.unverified}} unverified)</b>
+        {% endifnotequal %}
       </a>
     </td>
   </tr>

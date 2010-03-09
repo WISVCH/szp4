@@ -1,5 +1,24 @@
 #!/usr/bin/python
 
+# autojudge.py
+# Copyright (C) 2008-2009 Jeroen Dekkers <jeroen@dekkers.cx>
+# Copyright (C) 2008-2010 Mark Janssen <mark@ch.tudelft.nl>
+#
+# This file is part of SZP.
+# 
+# SZP is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# SZP is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with SZP.  If not, see <http://www.gnu.org/licenses/>.
+
 import os
 import sys
 import shutil
@@ -7,6 +26,7 @@ import time
 from subprocess import Popen, PIPE, STDOUT
 import stat
 import socket
+import random
 
 # This will insert the parent directory to the path so we can import
 # settings.
@@ -24,7 +44,6 @@ autojudge = None
 
 def uploadresult(submission, judgement, compiler_output, submission_output=None, autojudge_comment=None, check_output=None):
 	result = Result()
-	result.submission = submission
 	result.judgement = judgement
 	result.judged_by = autojudge
 
@@ -57,21 +76,10 @@ def uploadresult(submission, judgement, compiler_output, submission_output=None,
 
 	result.save()
 	submission.status = "CHECKED"
+	submission.result = result
 	submission.save()
 
-	try:
-		score = Score.objects.get(team=submission.team, problem=submission.problem)
-	except ObjectDoesNotExist:
-		score = Score(team=submission.team, problem=submission.problem, submission_count=0, correct=False)
-
-	score.submission_count += 1
-	if judgement == "ACCEPTED":
-		score.correct = True
-		contest = Contest.objects.get()
-		timedelta = (submission.timestamp - contest.starttime)
-		score.time = timedelta.days*24 + timedelta.seconds/60
-
-	score.save()
+	Contest.objects.get().save() # Updates 'resulttime'
 
 	team = submission.team
 	team.new_results = True
@@ -108,11 +116,11 @@ if __name__ == '__main__':
 		# from the database. In the case another autojudge got this
 		# submission at the same time, autojudge would be set to
 		# the other autojudge and we won't judge it.
-		time.sleep(0.1)
+		time.sleep(random.random())
 		try:
 			submission = Submission.objects.filter(id=submission.id, autojudge=autojudge).get()
 		except ObjectDoesNotExist:
-			print "Can't find submission we are supposed to judge, probably a rare race condition"
+			print "\nCan't find submission we are supposed to judge, probably a rare race condition. Continuing."
 			continue
 
 		testdir = os.path.join(os.getcwd(),"testdir")
@@ -125,19 +133,22 @@ if __name__ == '__main__':
 		fp.write(submission.file.content.encode("utf-8"))
 		fp.close()
 
-		in_file_name = os.path.join(testdir, submission.problem.in_file_name)
+		in_file_name = os.path.join(testdir, submission.problem.letter.upper() + '.in')
+		fp = open(in_file_name, "w")
+		fp.write(submission.problem.in_file.content)
+		fp.close()
+		
+		in_file_name = os.path.join(testdir, submission.problem.letter.lower() + '.in')
 		fp = open(in_file_name, "w")
 		fp.write(submission.problem.in_file.content)
 		fp.close()
 
-		print "\nStarting to judge submission from %s for problem %s, submitted at %s" % (submission.id, submission.problem.letter, submission.timestamp)
+		print "\nStarting to judge submission %s for problem (%s), %s" % (submission.id, submission.problem.letter, submission.timestamp)
 		
 		cmd = submission.compiler.compile_line.replace("${LETTER}", submission.problem.letter).split()
 
 		compile = Popen(cmd, stdout=PIPE, stderr=STDOUT, close_fds=True, cwd=testdir)
-		compile.wait()
-
-		compiler_output = compile.stdout.read()
+		compiler_output = compile.communicate()[0]
 
 		if compile.returncode != 0:
 			uploadresult(submission, "COMPILER_ERROR", compiler_output)
@@ -162,21 +173,24 @@ if __name__ == '__main__':
 
 		output_filename = os.path.join(testdir, 'submission_output')
 		output = open(output_filename, "w+")
-
+			
 		input_fd = open(in_file_name, "r")
 
-		devnull = open("/dev/null", "w+")
-
-		run = Popen(cmd, stdin=input_fd, stdout=output, stderr=devnull, close_fds=True, cwd=testdir, env=env)
-		run.wait()
-
-		devnull.close()
+		run = Popen(cmd, stdin=input_fd, stdout=output, stderr=PIPE, close_fds=True, cwd=testdir, env=env)
+		error = run.communicate()[1]
+		
+		input_fd.close()
+		
 		output.seek(0)
 		submission_output = output.read()
 		output.close()
+
 		watchdog = open(os.path.join(testdir, "watchdog_output"), "r")
 		watchdog_output = watchdog.read()
 		watchdog.close()
+
+		watchdog_output += "\n--- submission stderr output below ---\n"
+		watchdog_output += error
 
 		# FIXME We currently don't implement backtraces of core dumps.
 
@@ -190,6 +204,7 @@ if __name__ == '__main__':
 			continue
 		elif run.returncode != 0:
 			print "AUTOJUDGE ERROR: WATCHDOG RETURNED UNKNOWN VALUE: %d" % run.returncode
+			print watchdog_output
 			sys.exit(1)
 		
 		if len(submission_output) == 0:
@@ -197,7 +212,7 @@ if __name__ == '__main__':
 			print "NO_OUTPUT"
 			continue
 
-		out_file_name = os.path.join(testdir, submission.problem.out_file_name)
+		out_file_name = os.path.join(testdir, 'expected_output')
 		fp = open(out_file_name, "w")
 		fp.write(submission.problem.out_file.content)
 		fp.close()
@@ -208,12 +223,10 @@ if __name__ == '__main__':
 		fp.close()
 
 		os.chmod(check_script_file_name, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
-
+		
 		cmd = [check_script_file_name, output_filename, out_file_name]
-		check = Popen(cmd, stdout=PIPE, stderr=STDOUT, close_fds=True, cwd=testdir, env=env)
-		check.wait()
-
-		check_output = check.stdout.read()
+		check = Popen(cmd, stdout=PIPE, stderr=PIPE, close_fds=True, cwd=testdir, env=env)
+		check_output = check.communicate()[0]
 		
 		if check.returncode == 0:
 			uploadresult(submission, "ACCEPTED", compiler_output, submission_output, watchdog_output, check_output)
@@ -222,5 +235,5 @@ if __name__ == '__main__':
 			uploadresult(submission, "WRONG_OUTPUT", compiler_output, submission_output, watchdog_output, check_output)
 			print "WRONG_OUTPUT"
 		else:
-			print "AUTOJUDGE ERROR: CHECKSCRIPT RETURNED UNKNOWN VALUE"
+			print "AUTOJUDGE ERROR: CHECKSCRIPT RETURNED UNKNOWN VALUE: %d" % check.returncode
 			sys.exit(1)

@@ -2,6 +2,14 @@
 
 {% block content %}
 
-{% include "score.html" %}
+{% if s.team_id %}
+<style type="text/css" media="screen">
+  .score_team_{{ s.team_id }} {
+    background-color: #899af8 !important;
+  }
+</style>
+{% endif %}
+
+{{ scoreboard|safe }}
 
 {% endblock %}

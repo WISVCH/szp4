@@ -1,3 +1,22 @@
+# models.py
+# Copyright (C) 2008-2009 Jeroen Dekkers <jeroen@dekkers.cx>
+# Copyright (C) 2008-2010 Mark Janssen <mark@ch.tudelft.nl>
+#
+# This file is part of SZP.
+# 
+# SZP is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# SZP is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with SZP.  If not, see <http://www.gnu.org/licenses/>.
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -7,23 +26,26 @@ class Contest(models.Model):
 					  ("NOINFO", "NOINFO"),
 					  ("STOPPED", "STOPPED"))
 	starttime = models.DateTimeField(blank=True, null=True)
+	freezetime = models.DateTimeField(blank=True, null=True)
 	endtime = models.DateTimeField(blank=True, null=True)
 	status = models.CharField(max_length=11, choices=STATUS_CHOICES)
 	name = models.CharField(max_length=150)
 	date = models.DateField()
 	location = models.CharField(max_length=50)
+	
+	resulttime = models.DateTimeField(auto_now=True)
 
 	def __unicode__(self):
 		return "%s, %s (%s)" % (self.name, self.location, self.date)
 
 class Autojudge(models.Model):
-	ip_address = models.IPAddressField()
+	ip_address = models.IPAddressField(unique=True)
 	def __unicode__(self):
 		return "Autojudge %d (%s)" % (self.id, self.ip_address)
 
 class Teamclass(models.Model):
-	name = models.CharField(max_length=100)
-	rank = models.IntegerField()
+	name = models.CharField(max_length=100,unique=True)
+	rank = models.IntegerField(unique=True)
 
 	def __unicode__(self):
 		return self.name
@@ -32,7 +54,7 @@ class Teamclass(models.Model):
 		verbose_name_plural = 'teamclasses'
 
 class Team(models.Model):
-	name = models.CharField(max_length=100)
+	name = models.CharField(max_length=100, unique=True)
 	location = models.CharField(max_length=100)
 	teamclass = models.ForeignKey(Teamclass)
 	organisation = models.CharField(max_length=100)
@@ -42,10 +64,10 @@ class Team(models.Model):
 		return self.name
 
 class Profile(models.Model):
-	user = models.ForeignKey(User, unique=True)
+	user = models.OneToOneField(User, primary_key=True)
 	team = models.ForeignKey(Team, null=True, blank=True)
 	is_judge = models.BooleanField()
-	ip_address = models.IPAddressField(blank=True)
+	ip_address = models.IPAddressField(null=True, blank=True, unique=True)
 	
 	def __unicode__(self):
 		return self.user.username
@@ -66,8 +88,6 @@ class Problem(models.Model):
 	letter = models.CharField(max_length=1, unique=True)
 	name = models.CharField(max_length=100)
 	colour = models.CharField(max_length=20)
-	in_file_name = models.CharField(max_length=20)
-	out_file_name = models.CharField(max_length=20)
 	in_file = models.OneToOneField(File, related_name="problem_in_file")
 	out_file = models.OneToOneField(File, related_name="problem_out_file")
 	timelimit = models.IntegerField()
@@ -111,22 +131,29 @@ class Compiler(models.Model):
 	def __unicode__(self):
 		return self.name
 
-class FrozenScore(models.Model):
-	team = models.ForeignKey(Team)
-	problem = models.ForeignKey(Problem)
-	submission_count = models.IntegerField()
-	correct = models.BooleanField()
-	time = models.IntegerField(null=True, blank=True)
+class Result(models.Model):
+	JUDGEMENT_CHOICES = (("NAUGHTY_PROGRAM", "NAUGHTY_PROGRAM"),
+						 ("COMPILER_ERROR", "COMPILER_ERROR"),
+						 ("RUNTIME_ERROR", "RUNTIME_ERROR"),
+						 ("RUNTIME_EXCEEDED", "RUNTIME_EXCEEDED"),
+						 ("WRONG_OUTPUT", "WRONG_OUTPUT"),
+						 ("NO_OUTPUT", "NO_OUTPUT"),
+						 ("ACCEPTED", "ACCEPTED"))
+	
+	judgement = models.CharField(max_length=16, choices=JUDGEMENT_CHOICES)
+	judged_by = models.ForeignKey(Autojudge, null=True, blank=True)
+	judge_comment = models.TextField(null=True, blank=True)
+	compiler_output_file = models.OneToOneField(File, related_name="result_compiler_output_file")
+	submission_output_file = models.OneToOneField(File, null=True, blank=True, related_name="result_submission_output_file")
+	autojudge_comment_file = models.OneToOneField(File, null=True, blank=True, related_name="result_autojudge_comment_file")
+	check_output_file = models.OneToOneField(File, null=True, blank=True, related_name="result_check_output_file")
+	verified_by = models.ForeignKey(User, null=True, blank=True)
+	timestamp = models.DateTimeField(auto_now_add=True)
+	# It'd be more sensible to have the a relation to Submission here, but
+	# Django's select_related() doesn't follow reverse relationships.
 
 	def __unicode__(self):
-		if self.correct:
-			status = "OK"
-			time = self.time
-		else:
-			status = "WRONG"
-			time = 0
-
-		return "%s problem %s %s %d (%d)" % (self.team.name, self.problem.letter, status, self.submission_count, time)
+		return "%s at %s" % (self.judgement, self.timestamp)
 
 class Submission(models.Model):
 	STATUS_CHOICES = (("NEW", "NEW"),
@@ -139,52 +166,10 @@ class Submission(models.Model):
 	file_name = models.CharField(max_length=200)
 	team = models.ForeignKey(Team)
 	status = models.CharField(max_length=12, choices=STATUS_CHOICES)
-	autojudge= models.ForeignKey(Autojudge, null=True, blank=True)
+	autojudge = models.ForeignKey(Autojudge, null=True, blank=True)
 	last_status_change = models.DateTimeField(auto_now=True)
 	timestamp = models.DateTimeField(auto_now_add=True)
+	result = models.OneToOneField(Result, null=True, blank=True)
 
 	def __unicode__(self):
-		return "%s by %s (%s)" % (self.problem.letter, self.team.name, self.timestamp.strftime("%Y-%m-%d %H:%M:%S"))
-
-class Result(models.Model):
-	JUDGEMENT_CHOICES = (("NAUGHTY_PROGRAM", "NAUGHTY_PROGRAM"),
-						 ("COMPILER_ERROR", "COMPILER_ERROR"),
-						 ("RUNTIME_ERROR", "RUNTIME_ERROR"),
-						 ("RUNTIME_EXCEEDED", "RUNTIME_EXCEEDED"),
-						 ("WRONG_OUTPUT", "WRONG_OUTPUT"),
-						 ("NO_OUTPUT", "NO_OUTPUT"),
-						 ("ACCEPTED", "ACCEPTED"))
-
-	submission = models.ForeignKey(Submission, unique=True)
-	judgement = models.CharField(max_length=16, choices=JUDGEMENT_CHOICES)
-	judged_by = models.ForeignKey(Autojudge)
-	judge_comment = models.TextField(null=True, blank=True)
-	compiler_output_file = models.OneToOneField(File, related_name="result_compiler_output_file")
-	submission_output_file = models.OneToOneField(File, null=True, blank=True, related_name="result_submission_output_file")
-	autojudge_comment_file = models.OneToOneField(File, null=True, blank=True, related_name="result_autojudge_comment_file")
-	check_output_file = models.OneToOneField(File, null=True, blank=True, related_name="result_check_output_file")
-	verified_by = models.ForeignKey(Profile, null=True, blank=True)
-	timestamp = models.DateTimeField(auto_now_add=True)
-
-	def __unicode__(self):
-		return "%s for %s by %s" % (self.judgement, self.submission.problem.letter, self.submission.team.name)
-
-
-class Score(models.Model):
-	team = models.ForeignKey(Team)
-	problem = models.ForeignKey(Problem)
-	submission_count = models.IntegerField()
-	correct = models.BooleanField()
-	time = models.IntegerField(null=True, blank=True)
-	balloon = models.BooleanField(default=False)
-
-	def __unicode__(self):
-		if self.correct:
-			status = "OK"
-			time = self.time
-		else:
-			status = "WRONG"
-			time = 0
-
-		return "%s problem %s %s %d (%d)" % (self.team.name, self.problem.letter, status, self.submission_count, time)
-
+		return "[%s] %s by %s (%s)" % (self.status, self.problem.letter, self.team.name, self.timestamp.strftime("%Y-%m-%d %H:%M:%S"))

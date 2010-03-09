@@ -15,17 +15,17 @@
   </tr>
   {% for scorelist in scoreboard %}
   <tr>
-    <td colspan="{{problems.count|add:5}}">{{ scorelist.name.capitalize }}</td>
+    <td colspan="{{problems.count|add:5}}">{{ scorelist.name }}</td>
   </tr>
-  {% for score in scorelist.list %}
-    <tr class="{% cycle 'content_body1' 'content_body2' %}">
-      <td class="single">{{ forloop.counter }}</td>
-      <td>{{ score.name }}</b></td>
-      <td>{{ score.organisation }}</td>
-      <!--	<td><b>{{ score.class }}</td>-->
-      <td class="single">{{ score.score }}</td>
-      <td class="single">{{ score.time }}</td>
-      {% for problem in score.details %}
+  {% for team in scorelist.list %}
+    <tr class="{% cycle 'content_body1' 'content_body2' %} score_team_{{ team.id }}">
+      <td class="single">{{ team.rank }}</td>
+      <td>{{ team.name }}</td>
+      <td>{{ team.organisation }}</td>
+      <!--	<td><b>{{ team.class }}</td>-->
+      <td class="single">{{ team.score }}</td>
+      <td class="single">{{ team.time }}</td>
+      {% for problem in team.details %}
         {% if problem.correct %}
         <td class="app">{{problem.count}}&nbsp;<small>({{problem.time}})</small></td>
         {% else %}

@@ -1,46 +1,54 @@
+# jury.py
+# Copyright (C) 2008-2009 Jeroen Dekkers <jeroen@dekkers.cx>
+# Copyright (C) 2008-2010 Mark Janssen <mark@ch.tudelft.nl>
+#
+# This file is part of SZP.
+# 
+# SZP is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# SZP is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with SZP.  If not, see <http://www.gnu.org/licenses/>.
+
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponse
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from szp.models import *
 from szp.forms import *
 from django.core.exceptions import ObjectDoesNotExist
 from team import gettime
 from datetime import datetime
-from szp.views.general import get_scoreboard
+from szp.views.general import render_scoreboard, check_judge
 
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def home(request):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-	
-
 	return render_to_response('jury_home.html',
-							  {"profile": profile},
+							  {"profile": request.user.get_profile()},
 							  context_instance=RequestContext(request))
 
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def status(request):
 	return render_to_response('jury_status.html',
 							  context_instance=RequestContext(request))
 
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def score(request):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
-	return render_to_response('jury_score.html',
-							  get_scoreboard(jury=True),
-							  context_instance=RequestContext(request))
+	return render_scoreboard(request, 'jury_score.html', is_judge=True)
 
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def clarification(request):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	if request.method == 'POST':
 		if request.POST['team'] != "global":
 			teamlist = [Team.objects.get(id=request.POST['team'])]
@@ -100,11 +108,8 @@ def clarification(request):
 							  context_instance=RequestContext(request))
 
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def clarification_list(request, which):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	contest = Contest.objects.get()
 	problemlist = Problem.objects.order_by("letter")
 	teamlist = Team.objects.order_by("name")
@@ -146,11 +151,8 @@ def clarification_list(request, which):
 							  context_instance=RequestContext(request))
 		
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def clarification_show_sent(request, which):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	contest = Contest.objects.get()
 
 	clar = Sentclar.objects.get(id=which)
@@ -180,11 +182,8 @@ def clarification_show_sent(request, which):
 	
 	
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def clarification_show(request, which):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	if request.method == 'POST':
 		print request.POST
 		if request.POST['button'] == "Dealt With":
@@ -221,11 +220,8 @@ def clarification_show(request, which):
 							  context_instance=RequestContext(request))
 
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def clarification_reply(request, which):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	if request.method == 'POST':
 		clarreq = Clarreq.objects.get(id=which)
 
@@ -285,51 +281,53 @@ def clarification_reply(request, which):
 
 
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def submission(request):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	problems = Problem.objects.order_by("letter")
-	total = Submission.objects.count()
 	problemlist = []
-
+	count = Submission.objects.count()
+	# Django does a join with auth_user here if we use
+	# result__verified_by__isnull=True or result__verified_by=None -- wtf?
+	unverified = count - Submission.objects.filter(result__verified_by__isnull=False).count()
+	row = {'letter': 'all', 'name': 'All Problems', 'count': count, 'unverified': unverified}
+	problemlist.append(row)
+	
 	for p in problems:
 		count = Submission.objects.filter(problem=p).count()
-		row = {'letter': p.letter, 'name': p.name, 'count': count}
+		unverified = count - Submission.objects.filter(problem=p, result__verified_by__isnull=False).count()
+		row = {'letter': p.letter, 'name': p.name, 'count': count, 'unverified': unverified}
 		problemlist.append(row)
 	
 	return render_to_response('jury_submission.html',
-							  {'total': total, 'problemlist': problemlist},
+							  {'problemlist': problemlist},
 							  context_instance=RequestContext(request))
 
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def submission_list(request, problem):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	contest = Contest.objects.get()
-
+	
 	if problem == "all":
 		title = "List of all submissions"
-		submissions = Submission.objects.order_by("-timestamp")
+		submissions = Submission.objects.order_by("-timestamp")\
+			.select_related("problem","team","compiler","result")
 	else:
 		title = "List of submissions for problem "+problem
-		submissions = Submission.objects.filter(problem__letter=problem).order_by("-timestamp")
+		submissions = Submission.objects.order_by("-timestamp")\
+			.select_related("problem","team","compiler","result").filter(problem__letter=problem)
 
 	submissionlist = []
 	for s in submissions:
 		row = {}
 		
 		try:
-			result = s.result_set.get()
+			result = s.result
 			row['judgement'] = result.judgement
 			if result.verified_by:
-				row['verified_by'] = result.verified_by.user.username
+				row['verified_by'] = result.verified_by.username
 			else:
 				row['verified_by'] = ""
-		except ObjectDoesNotExist:
+		except AttributeError:
 			row['judgement'] = "Pending..."
 			row['verified_by'] = ""
 
@@ -344,22 +342,22 @@ def submission_list(request, problem):
 							  context_instance=RequestContext(request))
 
 @login_required
+@user_passes_test(check_judge, login_url='/team/')
 def submission_details(request, number):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
-	submission = Submission.objects.get(id=number)
+	submission = Submission.objects\
+	.select_related('result','result__submission_output_file','result__check_output_file',
+	'result__autojudge_comment_file','result__compiler_output_file','problem__in_file','problem__out_file',
+	'file','problem','team','compiler').get(id=number)
 
 	if request.method == 'POST':
 		if "verify" in request.POST:
-			result = submission.result_set.get()
-			result.verified_by = profile
+			result = submission.result
+			result.verified_by = request.user
 			submission.status = "VERIFIED"
 			result.save()
 			submission.save()
 		elif "save" in request.POST:
-			result = submission.result_set.get()
+			result = submission.result
 			result.judge_comment = request.POST["text"]
 			result.save()
 			
@@ -367,21 +365,29 @@ def submission_details(request, number):
 		
 	time = gettime(submission.timestamp, contest)
 
-	cap = 10000
+	# TODO: this method of capping data is too slow. We should fetch data capped by the database instead.
+	def cap_output(output):
+		cap = 10000
+		cap_msg = "SZP Notice: output capped, download file to see everything.\n\n"
+		return cap_msg + output[:cap] + "[snip]" if len(output) > cap else output
 
 	program_code = submission.file.content
-	problem_input = submission.problem.in_file.content
-	problem_input = problem_input[:cap] + "\n\nCAPPED" if len(problem_input) > cap else problem_input
-	expected_output = submission.problem.out_file.content[:cap]
-	expected_output = expected_output[:cap] + "\n\nCAPPED" if len(expected_output) > cap else expected_output
+	problem_input = cap_output(submission.problem.in_file.content)
+	expected_output = cap_output(submission.problem.out_file.content)
 	
 	try:
-		result = submission.result_set.get()
+		result = submission.result
 		judgement = result.judgement
+		
 		if result.verified_by:
-			verified_by = result.verified_by.user.username
+			verified_by = result.verified_by.username
 		else:
 			verified_by = None
+			
+		if result.judge_comment:
+			judge_comment = result.judge_comment
+		else:
+			judge_comment = ""
 		compiler_output = result.compiler_output_file.content
 
 		if result.judge_comment:
@@ -390,24 +396,22 @@ def submission_details(request, number):
 			judge_comment = ""
 
 		if result.submission_output_file:
-			submission_output = result.submission_output_file.content
-			submission_output = submission_output[:cap] + "\n\nCAPPED" if len(submission_output) > cap else submission_output
+			submission_output = cap_output(result.submission_output_file.content)
 		else:
 			submission_output = ""
 
 		if result.check_output_file:
-			output_diff = result.check_output_file.content
-			output_diff = output_diff[:cap] + "\n\nCAPPED" if len(output_diff) > cap else output_diff
+			output_diff = cap_output(result.check_output_file.content)
 		else:
 			output_diff = ""
 
 		if result.autojudge_comment_file:
-			autojudge_comment = result.autojudge_comment_file.content
+			autojudge_comment = cap_output(result.autojudge_comment_file.content)
 		else:
 			autojudge_comment = ""
 
 		has_result = True
-	except ObjectDoesNotExist:
+	except AttributeError:
 		judgement = "Pending..."
 		verified_by = None
 		compiler_output = ""
@@ -428,37 +432,54 @@ def submission_details(request, number):
 							   },
 							  context_instance=RequestContext(request))
 
-
+@login_required
+@user_passes_test(check_judge, login_url='/team/')
 def submission_changeresult(request, number):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
-	# TODO: We might want to be able to manually accept submissions
+	# FIXME: Make a django form for this.
 	contest = Contest.objects.get()
 	submission = Submission.objects.get(id=number)
 	if request.method == 'POST':
-		result = submission.result_set.get()
-		result.judgement = request.POST["judgement"]
+		if "change" in request.POST:
+			result = submission.result
+			if submission.result is None:
+				result = Result()
+				comment = File(content="Manual judgement made by " + request.user.username)
+				comment.save()
+				result.compiler_output_file = comment
 		
-		team = submission.team
-		team.new_results = True
-		team.save()
+			result.judgement = request.POST["judgement"]
+			result.save()
 		
-		result.save()
+			if submission.result is None:
+				submission.status = "CHECKED"
+				submission.result = result
+				submission.save()
+			
+			team = submission.team
+			team.new_results = True
+			team.save()
+		
+			Contest.objects.get().save() # Updates 'resulttime'
+		elif "rejudge" in request.POST:
+			submission.autojudge = None
+			submission.result = None
+			submission.status = "NEW"
+			submission.save()
 
 		return HttpResponseRedirect('/jury/submission/%s/' % number)
+		
+
 
 	time = gettime(submission.timestamp, contest)
 
 	try:
-		result = submission.result_set.get()
+		result = submission.result
 		judgement = result.judgement
 		if result.verified_by:
-			verified_by = result.verified_by.user.username
+			verified_by = result.verified_by.username
 		else:
 			verified_by = None
-	except ObjectDoesNotExist:
+	except (ObjectDoesNotExist, AttributeError):
 		judgement = "Pending..."
 		verified_by = None
 
@@ -472,18 +493,15 @@ def submission_changeresult(request, number):
 	return render_to_response('jury_submission_changeresult.html',
 							  {'time': time, 'submission': submission,
 							   'judgement': judgement, 'verified_by': verified_by,
-							   'judgementlist': judgementlist,
-							   },
+							   'judgementlist': judgementlist},
 							  context_instance=RequestContext(request))
 
+@login_required
+@user_passes_test(check_judge, login_url='/team/')
 def submission_download(request, number, what):
-	profile = request.user.get_profile()
-	if not profile.is_judge:
-		return HttpResponseRedirect('/team/')
-
 	submission = Submission.objects.get(id=number)
-	result = submission.result_set.get()
-
+	result = submission.result
+	
 	if what == 'problem_input':
 		output = submission.problem.in_file.content
 	elif what == 'output_diff' and result.check_output_file:
@@ -497,10 +515,11 @@ def submission_download(request, number, what):
 	elif what == 'program_code':
 		what = 'program_code_' + submission.file_name
 		output = submission.file.content
+	elif what == 'autojudge_comment':
+		output = result.autojudge_comment_file.content
 	else:
 		raise Http404
 	
 	response = HttpResponse(output, mimetype='text/plain')
 	response['Content-Disposition'] = 'attachment; filename=%s_%s' % (number, what)
 	return response
-

@@ -1,3 +1,22 @@
+# main.py
+# Copyright (C) 2008-2009 Jeroen Dekkers <jeroen@dekkers.cx>
+# Copyright (C) 2008-2010 Mark Janssen <mark@ch.tudelft.nl>
+#
+# This file is part of SZP.
+# 
+# SZP is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# SZP is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with SZP.  If not, see <http://www.gnu.org/licenses/>.
+
 import sys
 import os
 import datetime
@@ -54,12 +73,8 @@ class setcontest():
 			if contest.get_status_display() != "RUNNING":
 				print "We first need to be in RUNNING state before going to NOINFO"
 				sys.exit(1)
-
-			from django.db import connection
-			cursor = connection.cursor()
-			cursor.execute("INSERT INTO szp_frozenscore (id, team_id, problem_id, submission_count, correct, time) "+
-						   "SELECT id, team_id, problem_id, submission_count, correct, time FROM szp_score")
-			cursor.close()
+			
+			contest.freezetime = datetime.datetime.now()
 			
 		contest.status = args.status
 		if args.date:
@@ -92,7 +107,8 @@ class addteam():
 		parser.add_argument('organisation')
 		parser.add_argument('teamclass', type=int, help='Teamclass rank')
 		parser.add_argument('location')
-		parser.add_argument('ip', help='IP address or resolvable hostname')
+		parser.add_argument('-ip', help='IP address or resolvable hostname', default=None)
+		parser.add_argument('-password', help='User password', default=None)
 
 	def run(self, args):
 		team = Team()
@@ -101,17 +117,24 @@ class addteam():
 		team.teamclass = Teamclass.objects.get(rank=args.teamclass)
 		team.location = args.location
 		team.save()
-		user = User(username=args.ip.replace('.', '_'))
-		user.set_unusable_password()
-		user.save()
-		profile = Profile()
-		profile.is_judge = False
-		profile.user = user
-		profile.team = team
-		profile.ip_address = socket.gethostbyname(args.ip)
-		profile.save()
-		
-		
+		if args.ip or args.password:
+			if args.password:
+				user = User(username=team.name.replace(' ', '_'))
+				user.set_password(args.password)
+			else:
+				user = User(username=args.ip.replace('.', '_'))
+				user.set_unusable_password()
+			user.save()
+			
+			profile = Profile()
+			profile.is_judge = False
+			profile.user = user
+			profile.team = team
+			if args.ip:
+				profile.ip_address = socket.gethostbyname(args.ip)
+			profile.save()
+		else:
+			print "Team '%s' has id %d" % (team.name, team.id)
 
 class addproblem():
 	def __init__(self, subparsers):
@@ -218,24 +241,24 @@ class addjudge():
 		parser = subparsers.add_parser('addjudge')
 		parser.set_defaults(obj=self)
 		parser.add_argument('username', help='Username of judge')
-		parser.add_argument('ip', help='IP address or resolvable hostname of judge')
+		parser.add_argument('-password', help='Judge password', default=None)
+		parser.add_argument('-ip', help='IP address or resolvable hostname of judge', default=None)
+		parser.add_argument('-team', help='Team ID for judge', default=0, type=int)
 
 	def run(self, args):
-		# if args.password:
-		# 	password = args.password
-		# else:
-		# 	password = getpass("Password: ")
-		# 	password_check = getpass("Password again: ")
-		# 	if password != password_check:
-		# 		print "Passwords don't match"
-		# 		sys.exit(1)
 		user = User(username=args.username)
-		user.set_unusable_password()
+		if args.password:
+			user.set_password(args.password)
+		else:
+			user.set_unusable_password()
 		user.save()
 		profile = Profile()
 		profile.is_judge = True
 		profile.user = user
-		profile.ip_address = socket.gethostbyname(args.ip)
+		if args.team:
+			profile.team = Team.objects.get(id=args.team)
+		if args.ip:
+			profile.ip_address = socket.gethostbyname(args.ip)
 		profile.save()
 
 def main():

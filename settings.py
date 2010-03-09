@@ -62,7 +62,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.doc.XViewMiddleware',
 )
 
-ROOT_URLCONF = 'szp4.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -76,8 +76,8 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-	'django.contrib.admin',
-    'szp4.szp',
+    'django.contrib.admin',
+    'szp',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -85,7 +85,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 #    'django.core.context_processors.debug',
 #    'django.core.context_processors.i18n',
     'django.core.context_processors.request',
-	'szp.context_processors.statuswindow',
+    'szp.context_processors.statuswindow',
 )
 
 AUTH_PROFILE_MODULE = "szp.Profile"

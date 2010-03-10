@@ -117,6 +117,7 @@ class addteam():
 		team.teamclass = Teamclass.objects.get(rank=args.teamclass)
 		team.location = args.location
 		team.save()
+		Contest.objects.get().save() # Updates 'resulttime'
 		if args.ip or args.password:
 			if args.password:
 				user = User(username=team.name.replace(' ', '_'))

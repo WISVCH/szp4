@@ -46,7 +46,10 @@ def getrank(team, is_judge):
 		# The ultimate performance killer without caching!
 		ranks = get_scoreboard(is_judge)["ranks"]
 	
-	return ranks[team.id]
+	try:
+		return ranks[team.id]
+	except KeyError:
+		return '?'
 
 def infoscript(request):
 	problems = Problem.objects.order_by('letter')

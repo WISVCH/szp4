@@ -6,6 +6,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{listings}
+\usepackage{courier}
 % \pagestyle{empty}
 
 \catcode`\|\active
@@ -101,27 +102,26 @@ You can use multiple classes in your program, but you'll need to define them all
 
 For reading input files you can use the |Scanner| class. You can write output with |System.out.print| or |System.out.println|.
 
-\lstset{language=java,showstringspaces=false,basicstyle=\normalsize}
-\begin{lstlisting}
+\begin{lstlisting}[language=java,basicstyle=\small\ttfamily,tabsize=4,breaklines=true,showstringspaces=false]
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class ProblemX {
-  public static void main(String[] args) throws FileNotFoundException {
-    Scanner sc = new Scanner(new File("X.in"));
+	public static void main(String[] args) throws FileNotFoundException {
+		Scanner sc = new Scanner(new File("X.in"));
+		
+		int cases = sc.nextInt();
+		while (cases-- > 0) {
+			solve(sc);
+		}
+	}
 
-    int cases = sc.nextInt();
-    while (cases-- > 0) {
-      solve(sc);
-    }
-  }
-
-  private static void solve(Scanner s) {
-    int a = s.nextInt();
-    String b = s.next();
-    System.out.println("Hello there, " + a + " and " + b);
-  }
+	private static void solve(Scanner s) {
+		int a = s.nextInt();
+		String b = s.next();
+		System.out.println("Hello there, " + a + " and " + b);
+	}
 }
 \end{lstlisting}
 

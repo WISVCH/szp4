@@ -92,7 +92,7 @@ def get_scoreboard(is_judge=False):
 				p = problem.id
 				try:
 					score_dict = {'correct': teams[t][p]['solved'], 'count': teams[t][p]['count']}
-					if teams[t][p]['solved']:
+					if teams[t][p]['solved'] and contest.starttime:
 						timedelta = (teams[t][p]['solved_time'] - contest.starttime)
 						score_dict["time"] = timedelta.days*24 + timedelta.seconds/60
 						row["time"] += (teams[t][p]['count'] - 1)*settings.SUBMITFAIL_PENALTY + score_dict["time"]

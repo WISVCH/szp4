@@ -93,6 +93,12 @@ if __name__ == '__main__':
 	except ObjectDoesNotExist:
 		print "No autojudge found with IP address %s, exiting" % ip_address
 		sys.exit(1)
+	
+	watchdog_path = os.path.join(os.getcwd(), "watchdog")
+	if not os.path.exists(watchdog_path):
+		print "Watchdog not found at %s, exiting" % watchdog_path
+		sys.exit(2)
+	
 	print "We are", autojudge
 	while True:
 		try:
@@ -105,7 +111,6 @@ if __name__ == '__main__':
 			sys.stdout.flush()
 			time.sleep(5)
 			continue
-			
 
 		submission.status = "BEING_JUDGED"
 		submission.autojudge = autojudge
@@ -167,7 +172,7 @@ if __name__ == '__main__':
 		# The maximum amount of spawned processes. [16]
 		env['WATCHDOG_LIMIT_NPROC']="16"
 		
-		cmd=[os.path.join(os.getcwd(), "watchdog"),
+		cmd=[watchdog_path,
 			 submission.compiler.execute_line.replace("${LETTER}", submission.problem.letter),
 			 str(submission.problem.timelimit)]
 
@@ -205,7 +210,7 @@ if __name__ == '__main__':
 		elif run.returncode != 0:
 			print "AUTOJUDGE ERROR: WATCHDOG RETURNED UNKNOWN VALUE: %d" % run.returncode
 			print watchdog_output
-			sys.exit(1)
+			sys.exit(3)
 		
 		if len(submission_output) == 0:
 			uploadresult(submission, "NO_OUTPUT", compiler_output, submission_output, watchdog_output)
@@ -236,4 +241,4 @@ if __name__ == '__main__':
 			print "WRONG_OUTPUT"
 		else:
 			print "AUTOJUDGE ERROR: CHECKSCRIPT RETURNED UNKNOWN VALUE: %d" % check.returncode
-			sys.exit(1)
+			sys.exit(4)

@@ -296,7 +296,7 @@ def submission(request, problem=None):
 	if request.method == 'POST':		
 		form = SubmitForm(request.POST, request.FILES, request=request)
 		if form.is_valid():
-			# TODO: Maybe check whether extension is correct.
+			# TODO: Check whether extension is correct.
 			submission = Submission()
 			submission.status = "NEW"
 			submission.team = profile.team

@@ -362,7 +362,7 @@ def submission_details(request, number):
 			result.save()
 			
 	contest = Contest.objects.get()
-		
+	
 	time = gettime(submission.timestamp, contest)
 
 	# TODO: this method of capping data is too slow. We should fetch data capped by the database instead.

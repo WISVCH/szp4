@@ -82,6 +82,7 @@ def submitscript(request):
 		profile = user.get_profile()
 		
 		if not profile.is_judge:
+			contest = Contest.objects.get()
 			if contest.status != "RUNNING" and contest.status != "NOINFO":
 				response.write("ERROR: Contest is not running.")
 				return response

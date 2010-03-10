@@ -81,9 +81,13 @@ def submitscript(request):
 		
 		profile = user.get_profile()
 		
-		if not profile.is_judge and Submission.objects.filter(team=profile.team, problem=problem, result__judgement__exact="ACCEPTED").count():
-			response.write("ERROR: A submission for this problem was already accepted.")
-			return response
+		if not profile.is_judge:
+			if contest.status != "RUNNING" and contest.status != "NOINFO":
+				response.write("ERROR: Contest is not running.")
+				return response
+			if Submission.objects.filter(team=profile.team, problem=problem, result__judgement__exact="ACCEPTED").count():
+				response.write("ERROR: A submission for this problem was already accepted.")
+				return response
 		
 		submission = Submission()
 		submission.status = "NEW"
@@ -93,7 +97,6 @@ def submitscript(request):
  		submission.compiler = compiler
 
  		submission.file_name = request.POST['filename']
- 		# FIXME: Check upload size
  		file = File()
  		file.content = request.POST['submission']
  		file.save()
@@ -308,7 +311,6 @@ def submission(request, problem=None):
 			submission.compiler = form.cleaned_data['compiler']
 
 			submission.file_name = request.FILES['file'].name
-			# TODO: Check upload size
 			file = File()
 			content = request.FILES['file'].read()
 			try:

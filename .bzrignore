@@ -3,3 +3,7 @@ testdir
 local.py
 szp.sqlite
 .DS_Store
+doc/*.pdf
+*.log
+*.synctex.gz
+*.aux

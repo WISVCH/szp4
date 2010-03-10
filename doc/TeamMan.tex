@@ -1,4 +1,4 @@
-% Copyright 2006, 2008, 2009 W.I.S.V. Christiaan Huygens
+% Copyright 2006, 2008, 2009, 2010 W.I.S.V. Christiaan Huygens
 
 \documentclass[a4paper]{artikel3}
 
@@ -13,23 +13,28 @@
 \newcommand{\key}[1]{\textbf{#1}}
 \newcommand{\strong}[1]{\textbf{#1}}
 \newcommand{\syntax}[1]{\textbf{Syntax}\\\cmd{#1}}
-\newenvironment{citemize}
-  {\begin{list}{$\bullet$}{\topsep 0cm \itemsep 0cm}}
-  {\end{list}}
 
-\parskip 0.2cm
-\parindent 0cm
+% \parskip 0.2cm
+% \parindent 0cm
 
 \title{ Sub Zero Programming 4.0 \\ Team Manual }
+
+\newenvironment{ddlist}[1]%
+  {\begin{list}{}{\settowidth{\labelwidth}{\textbf{#1}}
+   \setlength{\leftmargin}{\labelwidth}
+   \addtolength{\leftmargin}{\labelsep}
+   \renewcommand{\makelabel}[1]{\textbf{\hfill##1}}}}%
+  {\end{list}}
+
+\usepackage[small,compact]{titlesec}
 
 \begin{document}
 
 \begin{titlepage}
 \begin{center}
 
-\vspace{2cm}
 {\Huge Sub Zero Programming} \\
-\vspace{1cm}
+
 {\Huge Team Manual} \\
 %\vspace{2cm}
 %{\Large July 2004} \\
@@ -43,8 +48,6 @@
 % \tableofcontents
 
 \bigskip
-
-\vspace{-0.8cm}
 \section{Introduction}
 
 TeamTool is your interface with the jury during the contest. It allows you
@@ -52,7 +55,6 @@ to submit solutions and send messages to the jury. It consists of two parts:
 \cmd{submit}, a command line tool to submit solutions and TeamTool, a web
 interface to get contest information and communicate with the jury.
 
-\vspace{-0.8cm}
 \section{\cmd{submit}}
 
 \label{sec:submit}
@@ -81,16 +83,15 @@ submitting a wrong file. If you choose to continue the submission, the
 system will handle your submission normally.
 
 \strong{Notes}
-\begin{citemize}
+\begin{itemize}
 \item Make sure to submit only the source code of your program; executable
 files cannot be submitted. The jury will compile your source code to
 generate an executable program.
 
 \item It is not possible to use multiple source files in one submission; you
 must put all the source code for your program in a single file.
-\end{citemize}
+\end{itemize}
 
-\vspace{-0.8cm}
 \section{TeamTool}
 
 TeamTool is the web interface for all communication with the jury. After
@@ -98,87 +99,65 @@ login, there will be several buttons to indicate the main parts. Also, in
 the upper right corner of the system you'll see a small status frame. The
 main parts are:
 
-\begin{citemize}
+\begin{itemize}
 \item[Home:] a small introduction to the system;
-
 \item[Scorelist:] to see the current contest standings;
-
 \item[Clarifications:] to receive clarifications and send clarification
 requests and;
-
 \item[Submissions:] to track the status of your submissions;
-\end{citemize}
+\end{itemize}
 
-In the following subsections, we will describe the login process, the status
-frame and three of the four main parts. Home is not discussed, as this only
-contains a small introduction to TeamTool and no dynamic parts.
+In the following subsections, we will describe the status
+frame and three of the four main parts.
 
-\vspace{-0.3cm}
-\subsection{Login}
-\vspace{-0.2cm}
-
-Your login with your username and password that's provided by the
-organisation.
-
-\vspace{-0.3cm}
 \subsection{Status frame}
-\vspace{-0.2cm}
 
 In the top right corner, the status frame will keep you informed about new
 information. It is refreshed automatically and contains four items:
 
-\begin{citemize}
-\item The light ``NEW CLARIFICATIONS'' warns you when you receive
+\begin{itemize}
+\item The ``NEW CLARIFICATIONS'' light warns you when you receive
 clarifications from the jury, if it is yellow you should go to
 ``Clarifications'' to read them.
 
-\item The light ``NEW RESULTS'' warns you when you have received a new result
+\item The ``NEW RESULTS'' light warns you when you have received a new result
 for a submission. You can check the submission status by going to
 ``Submissions''
 
 \item The clock shows the time since the start of the contest. If there is
 no clock, but the word ``WAIT'' it means the contest has not started yet. If
-the word ``STOP'' appears, the contest has ended. If there's no clock, you
-cannot submit files. You can send clarification requests, if you need to.
+the word ``STOPPED'' appears, the contest has ended. If there's no clock, you
+cannot submit files. You can send clarification requests if you need to.
 
 \item Finally it shows your team rank. Once the scorelist is no longer
-updated (usually in the last hour) your rank is no longer updated as well.
+updated (usually in the last hour) your rank is no longer updated either.
 The rank considers equal scores and equal time the same rank, so the rank
-may be higher than your place in the scorelist. In fact, everyone is first
-at the start of the contest.
+may be higher than your place in the scorelist.
 
-\end{citemize}
+\end{itemize}
 
-\vspace{-0.3cm}
 \subsection{Scorelist}
-\vspace{-0.2cm}
 
 The scorelist displays the standings of the contest. It is in general
 updated until one hour before the end of the contest and as soon as any
-submission is accepted. You might have to refresh this page to see the
-actual score.
+submission is accepted. It is refreshed automatically.
 
 Standings are decided by:
 
-\begin{citemize}
+\begin{itemize}
 \item the total number of problems solved (more is better) and;
 \item the total time used for the solved problems (less is better).
-\end{citemize}
+\end{itemize}
 
 The time is calculated by the time between the contest start and the time of
 submission. Every wrong submission gives you 20 penalty minutes, but they
 only count if you eventually solve the problem.
 
-\vspace{-0.3cm}
 \subsection{Clarifications}
-\vspace{-0.2cm}
 
 In the clarifications part, you can send clarification requests or read
 clarifications from the jury. A clarification or clarification request can
 refer to a specific problem, but this is not required.
-
-The subject can be up to 40 characters, the body doesn't have a low
-limit on the number of characters.
 
 On the right of this page is the index of messages. You can read your own
 messages sent to the jury, read all clarifications, or just those that refer
@@ -189,39 +168,33 @@ the message instead of the send message window and you can read the message.
 It is advised to read clarifications from the jury when they arrive, they
 might contain information you need to solve a problem.
 
-If there are unread messages you will be notified by the yellow ``NEW
-CLARIFICATIONS'' field in the top right corner. This is refreshed every
-thirty seconds.
+If there are unread messages you will be notified by the red ``NEW
+CLARIFICATIONS'' light in the top right corner. This is refreshed automatically.
 
-\vspace{-0.3cm}
 \subsection{Submissions}
-\vspace{-0.2cm}
 
 The submissions part enables you to submit solutions and see the results of
 your submissions. You are advised not to use TeamTool's submission ability,
 if possible. \cmd{submit} (see section~\ref{sec:submit}) is the recommended
 way, since it has a few more checks to prevent accidentally submitting the
-wrong file.
-
-If you do submit using the teamtool, make sure to fill in the right problem
-and compiler. Also, \emph{do not refresh the page after you submitted}, this
-will result in submitting the file again.
+wrong file. If you do submit using the teamtool, \emph{make sure to fill in
+the right problem and compiler}.
 
 The right side of the window shows the statuses of your own submissions. You
 can select to see all submissions or only those of a specified problem. The
 status can be:
 
-\begin{citemize}
-\item[Pending...:] waiting for a result;
-\item[ACCEPTED:] your submission was accepted as being correct;
-\item[COMPILER\_ERROR:] the system was not able to compile the file;
-\item[RUNTIME\_ERROR:] execution of your submission resulted in a run-time
+\begin{ddlist}{XRUNTIMEXEXCEEDED}
+\item[Pending...] waiting for a result;
+\item[ACCEPTED] your submission was accepted as being correct;
+\item[COMPILER\_ERROR] the system was not able to compile the file;
+\item[RUNTIME\_ERROR] execution of your submission resulted in a run-time
 error;
-\item[RUNTIME\_EXCEEDED:] the program did not terminate within the set
+\item[RUNTIME\_EXCEEDED] the program did not terminate within the set
 timelimit for this problem;
-\item[WRONG\_OUTPUT:] the program did not give the correct output or;
-\item[NO\_OUTPUT:] the program did not produce any output at all.
-\end{citemize}
+\item[WRONG\_OUTPUT] the program did not give the correct output or;
+\item[NO\_OUTPUT] the program did not produce any output at all.
+\end{ddlist}
 
 \strong{Note} You can get RUNTIME\_ERROR in several situations. Your program
 may have crashed, it may not have returned a zero exit status or it may have

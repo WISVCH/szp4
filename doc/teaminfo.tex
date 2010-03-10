@@ -2,8 +2,7 @@
 
 \documentclass[a4paper]{artikel3}
 \usepackage{fullpage}
-\usepackage[dutch]{babel}
-\usepackage{pslatex}
+% \usepackage{pslatex}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{listings}
@@ -11,16 +10,16 @@
 
 \catcode`\|\active
 \def|#1|{\textsf{\textbf{#1}}}
-\renewcommand{\rmdefault}{bch}
 
 \hyphenpenalty=10000
 
+\usepackage[small,compact]{titlesec}
+\parskip 0.7mm
 \begin{document}
 
 \section*{Guidelines for submitting solutions}
 
-Submitted programs will be automatically compiled and checked on the judges'
-computers. This will always be done on GNU/Linux. This document will describe to you how your program should read its input and how it should write its output. We will also tell you about the compiler and language constructs you're allowed to use. Please follow the guidelines carefully, since small mistakes will mean that your solution will be rejected.
+Submitted programs will be automatically compiled and checked on the jury computers. This will always be done on GNU/Linux. This document will describe to you how your program should read its input and how it should write its output. We will also tell you about the compiler and language constructs you're allowed to use. Please follow the guidelines carefully, since small mistakes will mean that your solution will be rejected.
 
 We've created a Makefile so you can compile your programs using the same settings as the jury. You'll only need to type |make| to compile programs. The only requirement is that the source files have the correct extension: |.c| for C, |.cc| for C++ and |.java| for Java.
 
@@ -42,19 +41,15 @@ above rules. The judges can disqualify your team if it disregards the rules.
 If your program uses more than 512 MiB of memory, or writes more than 64 MiB
 output, the result will be a \emph{runtime error}.
 
-\vspace{-0.8cm}
 \section*{Input and output}
 
-The name of the input file is the letter of the problem, followed by
-|'.in'|. The whole filename should be in lowercase! For example, input for
-problem C is supplied in the file called |'c.in'|. Make sure you use the
-format just described. \emph{Do not use capitals} in the filename, since filenames are case sensitive on our filesystems.
+The name of the input file is the letter of the problem, followed by |'.in'|.
+For example, input for problem C is supplied in the file called |'C.in'|.
 
 Reading from or writing to other files is not allowed. If you read from
-stdin (the ``keyboard''), you will get a \emph{run time exceeded}, because
+stdin (the ``keyboard''), you will get a \emph{runtime exceeded}, because
 your program will be waiting for input, which it won't get.
 
-\vspace{-0.8cm}
 \section*{C / C++}
 
 \begin{tabular}{rl}
@@ -93,7 +88,6 @@ Please be careful when using the C++ stream operators \verb|<<| and
 \verb|>>|, these will make your program run slower than if you would use the
 equivalent C-functions.
 
-\vspace{-0.8cm}
 \section*{Java}
 
 \begin{tabular}{rl}
@@ -103,7 +97,7 @@ Flags: & {\tt javac -O} \\
 
 In Java you can use the packages |java.io|, |java.lang|, |java.text|, |java.math| and |java.util|. Using other packages is not allowed.
 
-You can use multiple classes in your program, but you'll need to define them all in a single |.java| file. If you do this, you can't define these classes as being |public|. One of your classes should have a |main| method. The name of this class \emph{must always} be |Problem| followed by a capital letter indicating the problem you solved. For example: your class that solves problem A should be called |ProblemA|. Calling it differently will result in either a \emph{compiler error} (if your class is |public|) or a \emph{runtime error} (if your class is package private, i.e. when you haven't given an access specifier).
+You can use multiple classes in your program, but you'll need to define them all in a single |.java| file. If you do this, you can't define these classes as being |public|. One of your classes should have a |main| method. The name of this class \emph{must always} be |Problem| followed by a capital letter indicating the problem you solved. For example, your class that solves problem A should be called |ProblemA|. Calling it differently will result in either a \emph{compiler error} (if your class is |public|) or a \emph{runtime error} (if your class is package private, i.e. when you haven't given an access specifier).
 
 For reading input files you can use the |Scanner| class. You can write output with |System.out.print| or |System.out.println|.
 
@@ -113,46 +107,46 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-class ProblemX {
-	public static void main(String[] args) throws FileNotFoundException {
-		Scanner sc = new Scanner(new File("X.in"));
-	
-		int cases = sc.nextInt();
-		while (cases-- > 0) {
-			solve(sc);
-		}
-	}
-	
-	private static void solve(Scanner s) {
-		int a = s.nextInt();
-		String b = s.next();
-		System.out.println("Hello there, " + a + " and " + b);
-	}
+public class ProblemX {
+  public static void main(String[] args) throws FileNotFoundException {
+    Scanner sc = new Scanner(new File("X.in"));
+
+    int cases = sc.nextInt();
+    while (cases-- > 0) {
+      solve(sc);
+    }
+  }
+
+  private static void solve(Scanner s) {
+    int a = s.nextInt();
+    String b = s.next();
+    System.out.println("Hello there, " + a + " and " + b);
+  }
 }
 \end{lstlisting}
 
 When using the Eclipse IDE, note that its default settings are to allow only Java 1.4-compatible code. This can be changed in the Eclipse settings: from the menu, select Window$\rightarrow$Preferences, then Java$\rightarrow$Compiler. Select \emph{6.0} in the \emph{Compiler compliance level} field.
 
-\vspace{-0.8cm}
 \section*{The GNU/Linux system during the contest}
-\vspace{-0.1cm}
+
 \subsection*{Logging in}
-\vspace{-0.2cm}
+
 After booting the computer a |gdm| login screen appears. You can log in
 using the username |team| and the password |team|. If you want you can choose
-a different window manager. Do this before logging in. You cannot work from the console (text mode) because you'll need a graphical browser to access the contest system.
+a different window manager. Do this before logging in. You cannot work from the
+console (text mode) because you'll need a graphical browser to access the contest system.
 
 It's recommended to start Iceweasel directly after logging in. It will automatically open TeamTool.
-\vspace{-0.3cm}
-\subsection*{Printing}
-\vspace{-0.2cm}
-You can print using |a2ps| from the command line: \\ {\tt
-a2ps \it filename}
 
-Most editors are capable of printing opened files directly. Printed documents will be brought to your computer by a runner. You are \emph{not} allowed to go to the printer to retrieve the document.
-\vspace{-0.3cm}
+\subsection*{Printing}
+
+You can print using |a2ps| from the command line: \\ {\tt a2ps \it filename}
+
+Most editors are capable of printing opened files directly. Printed documents will be brought
+to your computer by a runner. You are \emph{not} allowed to go to the printer to retrieve the document.
+
 \subsection*{Documentation}
-\vspace{-0.2cm}
+
 Documentation for the C library and the system is available using the |man|
 command. Java documentation is available in HTML. Iceweasel contains bookmarks
 to the relevant locations.

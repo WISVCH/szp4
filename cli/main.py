@@ -168,6 +168,8 @@ class addproblem():
 		check_script.save()
 		problem.check_script_file = check_script
 		problem.save()
+		print 'Added problem %s' % problem
+		Contest.objects.get().save() # Updates 'resulttime'
 
 class addcompiler():
 	def __init__(self, subparsers):

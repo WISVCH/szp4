@@ -33,7 +33,7 @@ Your program is not allowed to use:
 \item file access to files other than the input file,
 \item process manipulation (|system()|, |fork()|,
   |exec()|, |kill()| and the likes),
-\item more than 512MiB of memory.
+\item more than 1GiB of memory.
 \end{itemize}
 
 It's your own responsibility to make sure your programs comply with the
@@ -93,7 +93,7 @@ equivalent C-functions.
 
 \begin{tabular}{rl}
 Compiler: & Sun Java 1.6.0\_12 \\
-Flags: & {\tt javac -O} \\
+Flags: & {\tt javac} \\
 \end{tabular}
 
 In Java you can use the packages |java.io|, |java.lang|, |java.text|, |java.math| and |java.util|. Using other packages is not allowed.

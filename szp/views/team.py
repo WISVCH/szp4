@@ -20,7 +20,7 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import *
 from szp.models import *
 from szp.forms import *
@@ -109,17 +109,17 @@ def submitscript(request):
 	else:
 		return HttpResponseRedirect('/look/')
 
-# def teamlogin(request):
-# 	ip_address = request.META['REMOTE_ADDR']
-# 	user = authenticate(ip_address=ip_address)
-# 	if user is not None:
-# 		if user.is_active:
-# 			login(request, user)
-# 			return HttpResponseRedirect('/team/')
-# 		else:
-# 			return HttpResponseRedirect('/look/')
-# 
-# 	return HttpResponseRedirect('/jury/login/')
+def teamlogin(request):
+	ip_address = request.META['REMOTE_ADDR']
+	user = authenticate(ip_address=ip_address)
+	if user is not None:
+		if user.is_active:
+			login(request, user)
+			return HttpResponseRedirect('/team/')
+		else:
+			return HttpResponseRedirect('/look/')
+
+	return HttpResponseRedirect('/jury/login/')
 
 @login_required
 def home(request):

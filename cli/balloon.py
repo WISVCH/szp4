@@ -48,7 +48,7 @@ try:
 	print "Some pickled balloons found."
 except IOError:
 	balloons = {}
-	print "No picked balloons found."
+	print "No pickled balloons found."
 
 while True:
 	contest = Contest.objects.get()

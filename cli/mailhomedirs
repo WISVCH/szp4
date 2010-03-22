@@ -1,0 +1,84 @@
+#!/usr/bin/python
+
+from random import choice
+import os, string, shutil, sys, re, hashlib
+
+import smtplib
+from email.MIMEText import MIMEText
+from email.Utils import formatdate, make_msgid
+from email.Encoders import encode_7or8bit
+
+# SELECT teamnaam, deeln1email, deeln2email, deeln3email FROM `inschr2009`
+teammembers = {}
+fd = open("teamemails")
+for line in fd:
+	l = line.strip().split('\t')
+	if l[0] not in teammembers:
+		teammembers[l[0]] = l[1:4]
+
+fd = open("teamlist")
+teamlistfile = fd.read()
+teamhosts = {}
+
+for teamname in teammembers.keys():
+	for line in teamlistfile.splitlines():
+		if line.find(teamname) != -1:
+			teamhosts[teamname] = line.split(" ")[3]
+
+teamlist = []
+for nr, teamname in enumerate(teammembers.keys()):
+	team = {}
+	team["naam"] = teamname
+	team["hostname"] = teamhosts[teamname]
+	team["emails"] = teammembers[teamname]
+	team["to"] = ", ".join(teammembers[teamname])
+	team["emails"].append('mark@ch.tudelft.nl')
+	teamlist.append(team)
+
+body = """Dear team %s,
+
+You can find your SKP2010 homedirectory at the following location:
+
+%s
+
+If you have any problems, don't hesitate to contact either me 
+(mark@ch.tudelft.nl) or the CHipCie (chipcie@ch.tudelft.nl).
+
+Kind Regards,
+
+Mark Janssen"""
+
+smtp = smtplib.SMTP("localhost")
+
+# FIXME: Check whether e-mail address is correct before calling
+# smtp.sendmail, or else catch the exception.
+
+for team in teamlist:
+	print "Team: "+team["naam"]
+	print "To: "+team["to"]
+	print "Recipients: ", team["emails"]
+	print "Hostname: ", team["hostname"]
+	
+	oldname = "homedir.tar.bz2." + team["hostname"]
+
+	f = open(oldname, 'rb')
+	sha1sum = hashlib.sha1(f.read()).hexdigest()
+	f.close()
+	
+	newname = "skp2010-%s-%s.tar.bz2" % (team["hostname"], sha1sum)
+	
+	shutil.copy(oldname, "/var/www/teamhomedirs/"+newname)
+	mail = body % (team["naam"], "http://chipcie.ch.tudelft.nl/homedir/"+newname)
+	msg = MIMEText(mail)
+	msg["Subject"] = "SKP2010 home directory"
+	msg["From"] = "Mark Janssen <mark@ch.tudelft.nl>"
+	msg["To"] = team["to"]
+	msg["Date"] = formatdate(localtime=True)
+	msg["Message-Id"] = make_msgid()
+	msg.set_charset("utf-8")
+	
+	print
+	print msg.as_string()
+	
+	# smtp.sendmail("mark@ch.tudelft.nl", team["emails"], msg.as_string())
+	print "------------------------------------------------------"

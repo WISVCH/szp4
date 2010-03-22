@@ -7,3 +7,4 @@ doc/*.pdf
 *.log
 *.synctex.gz
 *.aux
+*.dvi

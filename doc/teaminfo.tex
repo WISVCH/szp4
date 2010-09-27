@@ -96,8 +96,6 @@ Compiler: & Sun Java 1.6.0\_12 \\
 Flags: & {\tt javac} \\
 \end{tabular}
 
-In Java you can use the packages |java.io|, |java.lang|, |java.text|, |java.math| and |java.util|. Using other packages is not allowed.
-
 You can use multiple classes in your program, but you'll need to define them all in a single |.java| file. If you do this, you can't define these classes as being |public|. One of your classes should have a |main| method. The name of this class \emph{must always} be |Problem| followed by a capital letter indicating the problem you solved. For example, your class that solves problem A should be called |ProblemA|. Calling it differently will result in either a \emph{compiler error} (if your class is |public|) or a \emph{runtime error} (if your class is package private, i.e. when you haven't given an access specifier).
 
 For reading input files you can use the |Scanner| class. You can write output with |System.out.print| or |System.out.println|.

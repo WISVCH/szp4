@@ -22,9 +22,9 @@
 
 Submitted programs will be automatically compiled and checked on the jury computers. This will always be done on GNU/Linux. This document will describe to you how your program should read its input and how it should write its output. We will also tell you about the compiler and language constructs you're allowed to use. Please follow the guidelines carefully, since small mistakes will mean that your solution will be rejected.
 
-We've created a Makefile so you can compile your programs using the same settings as the jury. You'll only need to type |make| to compile programs. The only requirement is that the source files have the correct extension: |.c| for C, |.cc| for C++ and |.java| for Java.
+We have created a Makefile so you can compile your programs using the same settings as the jury. You'll only need to type |make| to compile programs. The only requirement is that the source files have the correct extension: |.c| for C, |.cc| for C++ and |.java| for Java.
 
-There's HTML documentation available for C, C++ and Java, which can be accessed using Iceweasel (Firefox). We've also installed the |man|pages for C.
+There is HTML documentation available for C, C++ and Java, which can be accessed using Iceweasel (Firefox). We've also installed the |man|pages for C.
 
 Your program is not allowed to use:
 \begin{itemize}
@@ -36,7 +36,7 @@ Your program is not allowed to use:
 \item more than 1 GiB of memory.
 \end{itemize}
 
-It's your own responsibility to make sure your programs comply with the
+It is your own responsibility to make sure your programs comply with the
 above rules. The judges can disqualify your team if it disregards the rules.
 
 If your program uses more than 1 GiB of memory, or writes more than 64 MiB
@@ -49,7 +49,7 @@ For example, input for problem C is supplied in the file called |'C.in'|.
 
 Reading from or writing to other files is not allowed. If you read from
 stdin (the ``keyboard''), you will get a \emph{runtime exceeded}, because
-your program will be waiting for input, which it won't get.
+your program will be waiting for input, which it will not get.
 
 \section*{C / C++}
 
@@ -97,7 +97,7 @@ Compiler flags: & {\tt javac} \\
 Runtime flags: & {\tt java -Xmx256M -Xms32M -Xss8M -server} \\
 \end{tabular}
 
-You can use multiple classes in your program, but you'll need to define them all in a single |.java| file. If you do this, you can't define these classes as being |public|. One of your classes should have a |main| method. The name of this class \emph{must always} be |Problem| followed by a capital letter indicating the problem you solved. For example, your class that solves problem A should be called |ProblemA|. Calling it differently will result in either a \emph{compiler error} (if your class is |public|) or a \emph{runtime error} (if your class is package private, i.e. when you haven't given an access specifier).
+You can use multiple classes in your program, but you will need to define them all in a single |.java| file. If you do this, you can't define these classes as being |public|. One of your classes should have a |main| method. The name of this class \emph{must always} be |Problem| followed by a capital letter indicating the problem you solved. For example, your class that solves problem A should be called |ProblemA|. Calling it differently will result in either a \emph{compiler error} (if your class is |public|) or a \emph{runtime error} (if your class is package private, i.e. when you haven't given an access specifier).
 
 For reading input files you can use the |Scanner| class. You can write output with |System.out.print| or |System.out.println|.
 

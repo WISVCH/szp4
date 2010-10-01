@@ -52,7 +52,7 @@
 
 TeamTool is your interface with the jury during the contest. It allows you
 to submit solutions and send messages to the jury. It consists of two parts:
-\cmd{submit}, a command line tool to submit solutions and TeamTool, a web
+\cmd{submit}, a command-line tool to submit solutions and TeamTool, a web
 interface to get contest information and communicate with the jury.
 
 \section{\cmd{submit}}
@@ -126,13 +126,11 @@ for a submission. You can check the submission status by going to
 
 \item The clock shows the time since the start of the contest. If there is
 no clock, but the word ``WAIT'' it means the contest has not started yet. If
-the word ``STOPPED'' appears, the contest has ended. If there's no clock, you
+the word ``STOPPED'' appears, the contest has ended. If there is no clock, you
 cannot submit files. You can send clarification requests if you need to.
 
 \item Finally it shows your team rank. Once the scorelist is no longer
 updated (usually in the last hour) your rank is no longer updated either.
-The rank considers equal scores and equal time the same rank, so the rank
-may be higher than your place in the scorelist.
 
 \end{itemize}
 
@@ -150,7 +148,7 @@ Standings are decided by:
 \end{itemize}
 
 The time is calculated by the time between the contest start and the time of
-submission. Every wrong submission gives you 20 penalty minutes, but they
+submission. Every wrong submission gives a 20-minute penalty, but they
 only count if you eventually solve the problem.
 
 \subsection{Clarifications}
@@ -159,7 +157,7 @@ In the clarifications part, you can send clarification requests or read
 clarifications from the jury. A clarification or clarification request can
 refer to a specific problem, but this is not required.
 
-On the right of this page is the index of messages. You can read your own
+On the right side of this page is the index of messages. You can read your own
 messages sent to the jury, read all clarifications, or just those that refer
 to a specific problem. The number of messages is indicated after each group.
 The number of unread messages is written between brackets. A message is
@@ -176,11 +174,11 @@ CLARIFICATIONS'' light in the top right corner. This is refreshed automatically.
 The submissions part enables you to submit solutions and see the results of
 your submissions. You are advised not to use TeamTool's submission ability,
 if possible. \cmd{submit} (see section~\ref{sec:submit}) is the recommended
-way, since it has a few more checks to prevent accidentally submitting the
+way, since it has a some checks to prevent accidentally submitting the
 wrong file. If you do submit using the teamtool, \emph{make sure to fill in
 the right problem and compiler}.
 
-The right side of the window shows the statuses of your own submissions. You
+The right side of the window shows the status of your own submissions. You
 can select to see all submissions or only those of a specified problem. The
 status can be:
 
@@ -201,6 +199,6 @@ may have crashed, it may not have returned a zero exit status or it may have
 exceeded limits (such as memory usage or disk quota) set by the system.
 \emph{Please make sure your program returns a zero exit status.} Several
 languages do this automatically (Java for example), but some
-don't (most notably C and C++).
+do not (most notably C and C++).
 
 \end{document}

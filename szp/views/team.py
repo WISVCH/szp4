@@ -87,7 +87,7 @@ def submitscript(request):
 				response.write("ERROR: Contest is not running.")
 				return response
 			if Submission.objects.filter(team=profile.team, problem=problem, result__judgement__exact="ACCEPTED").count():
-				response.write("ERROR: A submission for this problem was already accepted.")
+				response.write("ERROR: A submission for this problem has been accepted already.")
 				return response
 		
 		submission = Submission()

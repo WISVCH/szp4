@@ -92,8 +92,9 @@ equivalent C-functions.
 \section*{Java}
 
 \begin{tabular}{rl}
-Compiler: & Sun Java 1.6.0\_12 \\
-Flags: & {\tt javac} \\
+Version: & Sun Java 1.6.0\_20 \\
+Compiler flags: & {\tt javac} \\
+Runtime flags: & {\tt java -Xmx256M -Xms32M -Xss8M -server} \\
 \end{tabular}
 
 You can use multiple classes in your program, but you'll need to define them all in a single |.java| file. If you do this, you can't define these classes as being |public|. One of your classes should have a |main| method. The name of this class \emph{must always} be |Problem| followed by a capital letter indicating the problem you solved. For example, your class that solves problem A should be called |ProblemA|. Calling it differently will result in either a \emph{compiler error} (if your class is |public|) or a \emph{runtime error} (if your class is package private, i.e. when you haven't given an access specifier).
@@ -123,7 +124,7 @@ public class ProblemX {
 }
 \end{lstlisting}
 
-When using the Eclipse IDE, note that its default settings are to allow only Java 1.4-compatible code. This can be changed in the Eclipse settings: from the menu, select Window$\rightarrow$Preferences, then Java$\rightarrow$Compiler. Select \emph{6.0} in the \emph{Compiler compliance level} field.
+When using the Eclipse IDE, note that its default settings are to allow only Java 1.4-compatible code. This can be changed in the Eclipse settings: from the menu, select Window$\rightarrow$Preferences, then Java$\rightarrow$Compiler. Select \emph{6.0} in the \emph{Compiler compliance level} field. Please also take notice of the runtime options noted above.
 
 \section*{The GNU/Linux system during the contest}
 

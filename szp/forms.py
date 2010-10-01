@@ -50,6 +50,6 @@ class SubmitForm(forms.Form):
 			submissions = Submission.objects.filter(team=profile.team, problem=problem, result__judgement__exact="ACCEPTED").count()
 
 			if submissions:
-				raise forms.ValidationError("A submission for this problem was already accepted.")
+				raise forms.ValidationError("A submission for this problem has been accepted already.")
 		
 		return cleaned_data

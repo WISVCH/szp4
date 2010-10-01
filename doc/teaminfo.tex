@@ -24,7 +24,7 @@ Submitted programs will be automatically compiled and checked on the jury comput
 
 We have created a Makefile so you can compile your programs using the same settings as the jury. You'll only need to type |make| to compile programs. The only requirement is that the source files have the correct extension: |.c| for C, |.cc| for C++ and |.java| for Java.
 
-There is HTML documentation available for C, C++ and Java, which can be accessed using Iceweasel (Firefox). We've also installed the |man|pages for C.
+There is HTML documentation available for C, C++ and Java, which can be accessed using Iceweasel (Firefox). We have also installed the |man|pages for C.
 
 Your program is not allowed to use:
 \begin{itemize}
@@ -45,11 +45,10 @@ output, the result will be a \emph{runtime error}.
 \section*{Input and output}
 
 The name of the input file is the letter of the problem, followed by |'.in'|.
-For example, input for problem C is supplied in the file called |'C.in'|.
+For example, input for problem C is supplied in the file called |'C.in'|. Reading
+the input from stdin is also supported.
 
-Reading from or writing to other files is not allowed. If you read from
-stdin (the ``keyboard''), you will get a \emph{runtime exceeded}, because
-your program will be waiting for input, which it will not get.
+Reading from or writing to other files is not allowed.
 
 \section*{C / C++}
 

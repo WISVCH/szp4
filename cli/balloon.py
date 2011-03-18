@@ -70,7 +70,6 @@ while True:
 			print "\nBalloon for team '%s' (%s), problem %s, colour %s" % (b.team.name, b.team.location, str(b.problem.letter), b.problem.colour)
 			
 			teamname = b.team.name
-			print len(teamname)
 			teamname = teamname[:39] + '...' if len(teamname) > 42 else teamname
 			
 			postscript = postscript_template

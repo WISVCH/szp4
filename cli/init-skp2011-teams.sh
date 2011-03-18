@@ -1,4 +1,3 @@
-szp addteam -ip team01 "The Rat Pack"                      'TU Delft' 1 'DW 01.150.xx'
 szp addteam -ip team02 "Altijd-Error"                      'TU Delft' 1 'DW 01.150.xx'
 szp addteam -ip team03 "Team Bestla"                       'TU Delft' 1 'DW 01.150.xx'
 szp addteam -ip team04 "There's no place like 127.0.0.1"   'TU Delft' 1 'DW 01.150.xx'

@@ -301,7 +301,11 @@ int main(int argc, char **argv)
 	fclose(file1);
 	fclose(file2);
 
-	if ( diff > 0 ) printf("Found %d differences in %d lines\n",diff,linenr-1);
-
+	if ( diff > 0 )
+	  {
+	    printf("Found %d differences in %d lines\n",diff,linenr-1);
+	    return 1;
+	  }
+	
 	return 0;
 }

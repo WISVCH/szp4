@@ -8,3 +8,4 @@ doc/*.pdf
 *.synctex.gz
 *.aux
 *.dvi
+check_float

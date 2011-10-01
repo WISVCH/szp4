@@ -1,10 +1,8 @@
-/* @override http://127.0.0.1:8000/static/szp.css */
-
 /*page structure team*/
 
 body 
 {
-  font-family: Verdana;
+  font-family: Helvetica, sans-serif;
   background: #cdd5f6 url('achtergrond.jpg');
   margin: 1em;
 }
@@ -100,7 +98,7 @@ td.single
 }
 
 /*cell in scorelist representing a problem*/
-td.app, td.not_app {
+td.problem-correct, td.problem-incorrect, td.problem-untried {
   background-position: right center;
   background-repeat: no-repeat;
   text-align: center;
@@ -108,14 +106,14 @@ td.app, td.not_app {
 }
 
 /*cell in scorelist representing a solved problem*/
-td.app
+td.problem-correct
 {
   background-color: #69b169!important;
   background-image: url('correct.png');
 }
 
 /*cell in scorelist representing a not-solved problem */
-td.not_app {
+td.problem-incorrect {
   background-color: #ab5656!important;
   background-image: url('incorrect.png');
 }

@@ -32,15 +32,13 @@
       <td class="single">{{ team.time }}</td>
       {% for problem in team.details %}
         {% if problem.correct %}
-        <td class="app">{{problem.count}}&nbsp;<small>({{problem.time}})</small></td>
+        <td class="problem-correct">{{problem.count}}&nbsp;<small>({{problem.time}})</small></td>
         {% else %}
-        <td class="not_app">
-            {% if not problem.count %} 
-            - 
-            {% else %}
-            {{ problem.count }}
-            {% endif %}
-        </td>
+          {% if not problem.count %} 
+            <td class="problem-untried">-</td>
+          {% else %}
+            <td class="problem-incorrect">{{ problem.count }}</td>
+          {% endif %}
         {% endif %}
       {% endfor %}
     </tr>
@@ -48,10 +46,10 @@
   {% endfor %}
 </table>
 
-<!--<div style="text-align: center; margin-top: 2em;">
+<div style="text-align: center; margin-top: 2em;">
 <img style="margin-right: 4em" src="/static/technolution.png"/>
-<img style="position: relative; top: -15px;" src="/static/flowtraders.png"/>
-</div>-->
+<!-- <img style="position: relative; top: -15px;" src="/static/flowtraders.png"/> -->
+</div>
 
 <script type="text/javascript">
 setTimeout("location.reload();",30000);

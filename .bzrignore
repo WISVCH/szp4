@@ -9,3 +9,5 @@ doc/*.pdf
 *.aux
 *.dvi
 check_float
+cli/balloon-pickle
+

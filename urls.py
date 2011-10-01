@@ -33,7 +33,7 @@ urlpatterns = patterns('',
     (r'^$', 'szp.views.general.index'),
     (r'^admin/(.*)', admin.site.root),
     (r'^look/$', 'szp.views.look.score'),
-#    (r'^accounts/login/$', 'django.contrib.auth.views.login'),
+    (r'^jury/login/$', 'django.contrib.auth.views.login'),
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout_then_login'),
 	(r'^accounts/profile/$', 'django.views.generic.simple.redirect_to', {'url': '/jury/'}),
 )

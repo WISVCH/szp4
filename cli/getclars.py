@@ -2,19 +2,17 @@
 
 import os
 import sys
-import time
 
 # This will insert the parent directory to the path so we can import
 # the settings.
-sys.path.insert(0, os.path.normpath(sys.path[0]+"/.."))
+sys.path.insert(0, os.path.normpath(sys.path[0] + "/.."))
 
 from django.core.management import setup_environ
 import settings
 
 setup_environ(settings)
 
-from django.core.exceptions import ObjectDoesNotExist
-from szp.models import *
+from szp.models import Clarreq, Sentclar
 
 clarreqs = Clarreq.objects.order_by("timestamp")
 

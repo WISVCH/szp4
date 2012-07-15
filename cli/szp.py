@@ -5,7 +5,7 @@ import sys
 
 # This will insert the parent directory to the path so we can import
 # the settings.
-sys.path.insert(0, os.path.normpath(sys.path[0]+"/.."))
+sys.path.insert(0, os.path.normpath(sys.path[0] + "/.."))
 
 from django.core.management import setup_environ
 import settings
@@ -15,5 +15,4 @@ setup_environ(settings)
 import main
 
 if __name__ == '__main__':
-	main.main()
-	
+    main.main()

@@ -8,6 +8,7 @@ doc/*.pdf
 *.synctex.gz
 *.aux
 *.dvi
+*.pyc
 check_float
 cli/balloon-pickle
 
